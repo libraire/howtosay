@@ -1,0 +1,43 @@
+name: deployment
+on:
+  workflow_dispatch:
+    inputs:
+      app:
+        description: 'The service to deploy'
+        required: true
+        default: 'hts'
+        type: choice
+        options:
+        - hts
+jobs:
+  hts:
+    if : ${{ github.event.inputs.app == 'hts' }}
+    runs-on: lensman
+    steps:
+      - name: Clean Unused Images
+        run: |
+          unused_images=$(docker images -q -f dangling=true)
+          if [[ -n "$unused_images" ]]; then
+            docker rmi -f $unused_images
+          fi
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: |
+          docker network create --driver bridge my-network || true
+
+          containers=$(docker ps -q --filter "ancestor=hts")
+          if [[ -n "$containers" ]]; then
+            docker build -t hts .
+            docker stop $containers
+            docker rm $containers
+          else
+            if [[ -n $(docker images -qa -f reference="hts") ]]; then
+              docker rmi hts
+            fi
+            docker build -t hts .
+          fi
+
+          docker run -d -p 6000:6000 --name hts --network my-network hts
+
