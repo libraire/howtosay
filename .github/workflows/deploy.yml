@@ -39,5 +39,5 @@ jobs:
             docker build -t hts .
           fi
 
-          docker run -d -p 6000:6000 --name hts --network my-network hts
+          docker run -d -p 80:6000 --name hts --network my-network hts
 
