@@ -17,6 +17,7 @@
   color: white;
   width: 100%;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .charContainer {
@@ -56,6 +57,7 @@
   margin-top: 20px;
   display: flex;
   flex:auto;
+  overflow-y: auto;
 }
 
 .title {
@@ -106,6 +108,7 @@
   justify-content: center;
   align-items: center;
   margin: 2px;
+  user-select: none;
 }
 
 .keybaordFunc {
@@ -117,6 +120,7 @@
   justify-content: center;
   align-items: center;
   margin: 2px;
+  user-select: none;
 }
 
 
