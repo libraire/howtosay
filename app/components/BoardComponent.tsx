@@ -3,18 +3,20 @@ import { Word } from "./types";
 import React, { useState, useEffect } from "react";
 import styles from "./ComponentStyle.module.css";
 import WordComponent from "./WordComponent";
+import KeyBoardComponent from "./KeyBoardComponent";
 
 const BoardComponent: React.FC<{}> = () => {
   const [word, setWord] = useState<Word>();
   const [wordList, setWordList] = useState<Word[]>([]);
+  const [keyboard, setKeyboard]= useState<boolean>(/Mobi|Android/i.test(navigator.userAgent))
 
   useEffect(() => {
     if (wordList.length == 0) {
       fetchData();
     }
-    
+    setKeyboard(/Mobi|Android/i.test(navigator.userAgent))
   }, [word, wordList]);
-  
+
   const fetchData = async () => {
     try {
       const response = await fetch("api/words");
@@ -33,7 +35,7 @@ const BoardComponent: React.FC<{}> = () => {
     if (wordList.length == 0) {
       fetchData();
     }
-  }  
+  }
 
   return (
     <div className={styles.boardContainer}>
@@ -46,6 +48,9 @@ const BoardComponent: React.FC<{}> = () => {
         next={() => nextWord()}
         definition={word?.definition ?? ""}
       />
+
+      <KeyBoardComponent />
+      
     </div>
   );
 };

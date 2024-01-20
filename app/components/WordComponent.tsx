@@ -47,6 +47,9 @@ const WordComponent: React.FC<Props> = ({ word, next, definition }) => {
     } else if (key === "?") {
       playSound("press");
       hint();
+    } else if (key === "!") {
+      playSound("press");
+      next();
     } else if (/^[a-zA-Z]$/.test(key)) {
       setChars((prevChars) => {
         if (checkComplete(prevChars)) {
@@ -150,7 +153,7 @@ const WordComponent: React.FC<Props> = ({ word, next, definition }) => {
 
       {completed && (
         <div className={styles.congratulation}>
-          Congratulations! <br/> Press any key to continue.
+          Congratulations! <br /> Press any key to continue.
         </div>
       )}
 

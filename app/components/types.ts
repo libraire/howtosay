@@ -9,3 +9,9 @@ export interface Char {
     index: number
     state: number // 0 white 1 right  2 wrong
 }
+
+
+export interface FuncKey {
+    char: string
+    key: string
+}
