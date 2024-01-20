@@ -1,16 +1,18 @@
 "use client";
 import { Char } from "./types";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, AudioHTMLAttributes } from "react";
 import styles from "./ComponentStyle.module.css";
 import CharComponent from "./Charcomponent";
 
 type Props = {
   word: string;
   next: () => void;
+  definition: string;
 };
 
-const WordComponent: React.FC<Props> = ({ word, next }) => {
+const WordComponent: React.FC<Props> = ({ word, next, definition }) => {
   const [chars, setChars] = useState<Char[]>([]);
+  const [completed, setCompleted] = useState<boolean>(false);
 
   useEffect(() => {
     setChars(
@@ -22,6 +24,8 @@ const WordComponent: React.FC<Props> = ({ word, next }) => {
         })
     );
 
+    setCompleted(false);
+
     document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
@@ -31,6 +35,7 @@ const WordComponent: React.FC<Props> = ({ word, next }) => {
   function handleKeyDown(event: KeyboardEvent) {
     const key = event.key;
     if (key === "Backspace") {
+      playSound("press");
       setChars((prevChars) => {
         const newChars = [...prevChars];
         const char = curChar(prevChars);
@@ -40,6 +45,7 @@ const WordComponent: React.FC<Props> = ({ word, next }) => {
         return newChars;
       });
     } else if (key === "?") {
+      playSound("press");
       hint();
     } else if (/^[a-zA-Z]$/.test(key)) {
       setChars((prevChars) => {
@@ -50,9 +56,21 @@ const WordComponent: React.FC<Props> = ({ word, next }) => {
         const newChars = [...prevChars];
         const char = nextChar(prevChars);
         if (char !== null) {
-          char.state = char.char == key ? 1 : 2;
+          if (char.char == key) {
+            playSound("press");
+            char.state = 1;
+          } else {
+            playSound("alert");
+            char.state = 2;
+          }
           char.inputChar = key;
         }
+
+        if (checkComplete(newChars)) {
+          playSound("complete");
+          setCompleted(true);
+        }
+
         return newChars;
       });
     } else {
@@ -83,6 +101,11 @@ const WordComponent: React.FC<Props> = ({ word, next }) => {
           break;
         }
       }
+
+      if (checkComplete(newChars)) {
+        playSound("complete");
+        setCompleted(true);
+      }
       return newChars;
     });
   }
@@ -105,12 +128,44 @@ const WordComponent: React.FC<Props> = ({ word, next }) => {
     return null;
   }
 
+  function playSound(name: string) {
+    const audio: HTMLAudioElement = document.getElementById(
+      name
+    ) as HTMLAudioElement;
+    audio.currentTime = 0; // Rewind to the beginning of the audio file
+    audio.play();
+  }
+
   return (
-    <div className={styles.wordContainer}>
-      {chars?.map((char, index) => (
-        <CharComponent char={char} />
-      ))}
-    </div>
+    <>
+      <audio id="press" src="/press.mp3"></audio>
+      <audio id="alert" src="/alert.mp3"></audio>
+      <audio id="complete" src="/completed.mp3"></audio>
+
+      <div className={styles.wordContainer}>
+        {chars?.map((char, index) => (
+          <CharComponent key={index} char={char} />
+        ))}
+      </div>
+
+      {completed && (
+        <div className={styles.congratulation}>
+          Congratulations! <br/> Press any key to continue.
+        </div>
+      )}
+
+      <p className={styles.definition}> {definition}</p>
+
+      {completed && (
+        <a
+          className={styles.youglish}
+          href={"https://youglish.com/pronounce/" + word + "/english"}
+          target="_blank"
+        >
+          learn pronunciation on youglish.
+        </a>
+      )}
+    </>
   );
 };
 
