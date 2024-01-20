@@ -8,13 +8,11 @@ const BoardComponent: React.FC<{}> = () => {
   const [word, setWord] = useState<Word>();
   const [wordList, setWordList] = useState<Word[]>([]);
 
-  // const API_HOST = process.env.NEXT_PUBLIC_NODE_HOST;
-
   useEffect(() => {
     if (wordList.length == 0) {
       fetchData();
     }
-    triggerKeyboard();
+    showAlertOnMobile();
   }, [word, wordList]);
 
   const fetchData = async () => {
@@ -37,10 +35,10 @@ const BoardComponent: React.FC<{}> = () => {
     }
   }
 
-  function triggerKeyboard(): void {
-    const input: HTMLInputElement | null = document.getElementById('hidden-input') as HTMLInputElement;
-    if (input) {
-      input.focus();
+  function showAlertOnMobile() {
+    if (/Mobi|Android/i.test(navigator.userAgent)) {
+      // User is on a mobile device
+      alert('Sorry, this app is not supported on mobile devices.');
     }
   }
 
@@ -54,10 +52,6 @@ const BoardComponent: React.FC<{}> = () => {
         word={word?.word ?? ""}
         next={() => nextWord()}
         definition={word?.definition ?? ""}
-      />
-      <input
-        id="hidden-input"
-        style={{ position: "absolute", top: "-9999px", left: "-9999px" }}
       />
     </div>
   );
