@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px;
+  padding-top: 10px;
   height: 100vh;
   justify-content: space-around;
 }
@@ -55,6 +55,7 @@
 .definition {
   max-width: 400px;
   margin-top: 20px;
+  padding: 0 10px;
   display: flex;
   flex:auto;
   overflow-y: auto;
@@ -90,7 +91,7 @@
   flex-direction: column;
   width: 100%;
   visibility: hidden;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
 }
 
 .keyboardRow {
@@ -98,6 +99,8 @@
   flex-direction: row;
   width: 100%;
   justify-content: center;
+  /* margin-bottom: 4px; */
+  margin: 2px
 }
 
 .keybaordChar {
