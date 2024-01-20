@@ -90,6 +90,7 @@
   flex-direction: column;
   width: 100%;
   visibility: hidden;
+  margin-bottom: 30px;
 }
 
 .keyboardRow {
