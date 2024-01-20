@@ -8,13 +8,12 @@ import KeyBoardComponent from "./KeyBoardComponent";
 const BoardComponent: React.FC<{}> = () => {
   const [word, setWord] = useState<Word>();
   const [wordList, setWordList] = useState<Word[]>([]);
-  const [keyboard, setKeyboard]= useState<boolean>(/Mobi|Android/i.test(navigator.userAgent))
+  const [keyboard, setKeyboard] = useState<boolean>(true);
 
   useEffect(() => {
     if (wordList.length == 0) {
       fetchData();
     }
-    setKeyboard(/Mobi|Android/i.test(navigator.userAgent))
   }, [word, wordList]);
 
   const fetchData = async () => {
@@ -41,7 +40,8 @@ const BoardComponent: React.FC<{}> = () => {
     <div className={styles.boardContainer}>
       <div className={styles.title}> How To Say</div>
       <div className={styles.subTitle}>
-        Type the word by its definition, Press ? for hint
+        Type the word by its definition
+        {/* <br/> { !keyboard && ", Press ? for hint, ! skip, - to pronounce" } */}
       </div>
       <WordComponent
         word={word?.word ?? ""}
@@ -50,7 +50,6 @@ const BoardComponent: React.FC<{}> = () => {
       />
 
       <KeyBoardComponent />
-      
     </div>
   );
 };

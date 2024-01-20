@@ -161,7 +161,7 @@ const WordComponent: React.FC<Props> = ({ word, next, definition }) => {
 
       <p className={styles.definition}> {definition}</p>
 
-      {completed && (
+      {/* {completed && (
         <a
           className={styles.youglish}
           href={"https://youglish.com/pronounce/" + word + "/english"}
@@ -169,7 +169,7 @@ const WordComponent: React.FC<Props> = ({ word, next, definition }) => {
         >
           learn pronunciation on youglish.
         </a>
-      )}
+      )} */}
     </>
   );
 };
