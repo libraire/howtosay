@@ -14,6 +14,7 @@ const KeyBoardRowComponent: React.FC<{ char: string }> = ({ char }) => {
     <div className={styles.keyboardRow}>
       {wordChar?.map((char, index) => (
         <div
+          key={index}
           className={styles.keybaordChar}
           onClick={() => {
             const event = new KeyboardEvent("keydown", {
@@ -37,6 +38,7 @@ const KeyBoardFuncComponent: React.FC = () => {
   const [wordChar, setChar] = useState<FuncKey[]>([
     { char: "skip", key: "!" },
     { char: "hint", key: "?" },
+    { char: "pronounce", key: "-" },
     { char: "delete", key: "Backspace" },
   ]);
 
@@ -44,6 +46,7 @@ const KeyBoardFuncComponent: React.FC = () => {
     <div className={styles.keyboardRow}>
       {wordChar?.map((char, index) => (
         <div
+          key={index}
           className={styles.keybaordFunc}
           onClick={() => {
             const event = new KeyboardEvent("keydown", {

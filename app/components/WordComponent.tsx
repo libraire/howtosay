@@ -50,6 +50,8 @@ const WordComponent: React.FC<Props> = ({ word, next, definition }) => {
     } else if (key === "!") {
       playSound("press");
       next();
+    } else if (key === "-") {
+      speechSynthesis.speak(new SpeechSynthesisUtterance(word));
     } else if (/^[a-zA-Z]$/.test(key)) {
       setChars((prevChars) => {
         if (checkComplete(prevChars)) {
@@ -153,7 +155,7 @@ const WordComponent: React.FC<Props> = ({ word, next, definition }) => {
 
       {completed && (
         <div className={styles.congratulation}>
-          Congratulations! <br /> Press any key to continue.
+          Congratulations! Press any key to continue.
         </div>
       )}
 
