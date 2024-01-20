@@ -12,9 +12,9 @@ const BoardComponent: React.FC<{}> = () => {
     if (wordList.length == 0) {
       fetchData();
     }
-    showAlertOnMobile();
+    
   }, [word, wordList]);
-
+  
   const fetchData = async () => {
     try {
       const response = await fetch("api/words");
@@ -33,14 +33,7 @@ const BoardComponent: React.FC<{}> = () => {
     if (wordList.length == 0) {
       fetchData();
     }
-  }
-
-  function showAlertOnMobile() {
-    if (/Mobi|Android/i.test(navigator.userAgent)) {
-      // User is on a mobile device
-      alert('Sorry, this app is not supported on mobile devices.');
-    }
-  }
+  }  
 
   return (
     <div className={styles.boardContainer}>
