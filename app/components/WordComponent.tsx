@@ -14,8 +14,6 @@ type Props = {
 const WordComponent: React.FC<Props> = ({ word, next, definition }) => {
   const [chars, setChars] = useState<Char[]>([]);
   const [completed, setCompleted] = useState<boolean>(false);
-  const audioContext = useAudioContext();
-
   useEffect(() => {
     setChars(
       word
@@ -27,12 +25,11 @@ const WordComponent: React.FC<Props> = ({ word, next, definition }) => {
     );
 
     setCompleted(false);
-    loadBuffer();
     document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [word, audioContext]);
+  }, [word]);
 
   function handleKeyDown(event: KeyboardEvent) {
     const key = event.key;
@@ -136,78 +133,22 @@ const WordComponent: React.FC<Props> = ({ word, next, definition }) => {
   }
 
   function playSound(name: string) {
-    // const audio: HTMLAudioElement = document.getElementById(
-    //   name
-    // ) as HTMLAudioElement;
-    // audio.currentTime = 0; // Rewind to the beginning of the audio file
-    // audio.play();
-
-    var buffer:AudioBuffer | null = null;
-    if (name == "press") {
-      buffer = pressBuffer;
-    }else if(name == "alert") {
-      buffer = alertBuffer;
-    }else if(name == "complete") {
-      buffer = completeBuffer;
-    }
-
-    if (buffer && audioContext != null) {
-      const source = audioContext.createBufferSource();
-      source.buffer = buffer;
-      source.connect(audioContext.destination);
-      source.start(0);
-      return;
-    }
-
+    const eventAwesome = new CustomEvent("playSound", {
+      bubbles: true,
+      detail: { name: name },
+    });
+    document.dispatchEvent(eventAwesome);
   }
 
-  let pressBuffer: AudioBuffer;
-  let alertBuffer: AudioBuffer;
-  let completeBuffer: AudioBuffer;
-
-  function loadBuffer() {
-
-    fetch("/press.mp3")
-      .then((response) => response.arrayBuffer())
-      .then((arrayBuffer) => audioContext?.decodeAudioData(arrayBuffer))
-      .then((audioBuffer) => {
-        // Use the audioBuffer as needed
-        pressBuffer = audioBuffer!;
-      })
-      .catch((error) => {
-        console.error("Error loading sound file:", error);
-      });
-
-
-      fetch("/completed.mp3")
-      .then((response) => response.arrayBuffer())
-      .then((arrayBuffer) => audioContext?.decodeAudioData(arrayBuffer))
-      .then((audioBuffer) => {
-        // Use the audioBuffer as needed
-        completeBuffer = audioBuffer!;
-      })
-      .catch((error) => {
-        console.error("Error loading sound file:", error);
-      });
-
-      fetch("/alert.mp3")
-      .then((response) => response.arrayBuffer())
-      .then((arrayBuffer) => audioContext?.decodeAudioData(arrayBuffer))
-      .then((audioBuffer) => {
-        // Use the audioBuffer as needed
-        alertBuffer = audioBuffer!;
-      })
-      .catch((error) => {
-        console.error("Error loading sound file:", error);
-      });
+  function mask(wordToMask: string, originalString: string) {
+    const mask = '*'.repeat(wordToMask.length);
+    const regex = new RegExp(wordToMask, 'gi');
+    const maskedString = originalString.replace(regex, mask);
+    return maskedString;
   }
 
   return (
     <>
-      <audio id="press" src="/press.mp3"></audio>
-      <audio id="alert" src="/alert.mp3"></audio>
-      <audio id="complete" src="/completed.mp3"></audio>
-
       <div className={styles.wordContainer}>
         {chars?.map((char, index) => (
           <CharComponent key={index} char={char} />
@@ -220,7 +161,7 @@ const WordComponent: React.FC<Props> = ({ word, next, definition }) => {
         </div>
       )}
 
-      <p className={styles.definition}> {definition}</p>
+      <p className={styles.definition}> {mask(word, definition)}</p>
 
       {/* {completed && (
         <a

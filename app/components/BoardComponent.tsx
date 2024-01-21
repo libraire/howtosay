@@ -8,7 +8,6 @@ import KeyBoardComponent from "./KeyBoardComponent";
 const BoardComponent: React.FC<{}> = () => {
   const [word, setWord] = useState<Word>();
   const [wordList, setWordList] = useState<Word[]>([]);
-  const [keyboard, setKeyboard] = useState<boolean>(true);
 
   useEffect(() => {
     if (wordList.length == 0) {
