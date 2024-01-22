@@ -4,9 +4,10 @@ import styles from "./ComponentStyle.module.css";
 
 type Props = {
   choose: (value: string) => void;
+  className: string
 };
 
-const SelectComponent: React.FC<Props> = ({ choose }) => {
+const SelectComponent: React.FC<Props> = ({ choose, className }) => {
   const [selectedValue, setSelectedValue] = useState<string>("15");
   const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
@@ -18,7 +19,7 @@ const SelectComponent: React.FC<Props> = ({ choose }) => {
     <select
       value={selectedValue}
       onChange={handleSelectChange}
-      className={styles.selectComponent}
+      className={[styles.selectComponent, className].join(" ")}
     >
       <option value="15">IELT</option>
       <option value="14">TOEFL</option>

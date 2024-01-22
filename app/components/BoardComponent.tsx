@@ -36,9 +36,25 @@ const BoardComponent: React.FC<{}> = () => {
 
   return (
     <div className={styles.boardContainer}>
-      <div className={styles.headContainer}>
-        <div className={styles.title}> ✨ How To Say</div>
+      <div className={styles.manual}>
+        <div className={styles.manualItem}>⬅️ Reveal</div>
+        <div className={styles.manualItem}>➡️ Hint </div>
+        <div className={styles.manualItem}>⬆️ Pronounce</div>
+        <div className={styles.manualItem}>⬇️ Skip</div>
+        | Level
         <SelectComponent
+          className={styles.displayWider}
+          choose={(lv) => {
+            setLevel(lv);
+            fetchData(lv);
+          }}
+        />
+      </div>
+
+      <div className={styles.headContainer}>
+        <div className={styles.title}> <span className={styles.displayNarrow}>💡 </span>How To Say</div>
+        <SelectComponent
+          className={styles.displayNarrow}
           choose={(lv) => {
             setLevel(lv);
             fetchData(lv);
@@ -47,12 +63,6 @@ const BoardComponent: React.FC<{}> = () => {
       </div>
       <div className={styles.subTitle}>Type the word by its definition</div>
 
-      <div className={styles.manual}>
-        <div className={styles.manualItem}>⬅️ Reveal</div>
-        <div className={styles.manualItem}>➡️ Hint </div>
-        <div className={styles.manualItem}>⬆️ Pronounce</div>
-        <div className={styles.manualItem}>⬇️ Skip</div>
-      </div>
       <WordComponent
         word={word?.word ?? ""}
         next={() => nextWord()}
