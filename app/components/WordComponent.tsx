@@ -33,7 +33,15 @@ const WordComponent: React.FC<Props> = ({ word, next, definition }) => {
   function handleKeyDown(event: KeyboardEvent) {
     console.log(event);
     const key = event.key;
-    if (key === "Backspace") {
+
+    if (key == " " || key == "Enter") {
+      setChars((prevChars) => {
+        if (checkComplete(prevChars)) {
+          next();
+        }
+        return prevChars;
+      });
+    } else if (key === "Backspace") {
       playSound("press");
       setChars((prevChars) => {
         const newChars = [...prevChars];

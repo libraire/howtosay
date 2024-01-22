@@ -12,24 +12,41 @@ const KeyBoardRowComponent: React.FC<{ char: string }> = ({ char }) => {
 
   return (
     <div className={styles.keyboardRow}>
-      {wordChar?.map((char, index) => (
-        <div
-          key={index}
-          className={styles.keybaordChar}
-          onClick={() => {
-            const event = new KeyboardEvent("keydown", {
-              key: char, // The key you want to simulate
-              // code: 'Enter', // Optional - the code associated with the key
-              // keyCode: 13, // Optional - the key code of the key
-              // which: 13, // Optional - the key code of the key
-            });
+      {wordChar?.map((char, index) => {
+        if (char == "⌫") {
+          return (
+            <div
+              key={index}
+              className={styles.keybaordCharWider}
+              onClick={() => {
+                const event = new KeyboardEvent("keydown", {
+                  key: "Backspace",
+                });
 
-            document.dispatchEvent(event);
-          }}
-        >
-          {char}
-        </div>
-      ))}
+                document.dispatchEvent(event);
+              }}
+            >
+              {char}
+            </div>
+          );
+        }
+
+        return (
+          <div
+            key={index}
+            className={styles.keybaordChar}
+            onClick={() => {
+              const event = new KeyboardEvent("keydown", {
+                key: char,
+              });
+
+              document.dispatchEvent(event);
+            }}
+          >
+            {char}
+          </div>
+        );
+      })}
     </div>
   );
 };
@@ -40,7 +57,6 @@ const KeyBoardFuncComponent: React.FC = () => {
     { char: "Hint", key: "ArrowRight" },
     { char: "Reveal", key: "ArrowLeft" },
     { char: "▶", key: "ArrowUp" },
-    { char: "⌫", key: "Backspace" },
   ]);
 
   return (
@@ -51,10 +67,7 @@ const KeyBoardFuncComponent: React.FC = () => {
           className={styles.keybaordFunc}
           onClick={() => {
             const event = new KeyboardEvent("keydown", {
-              key: char.key, // The key you want to simulate
-              // code: 'Enter', // Optional - the code associated with the key
-              // keyCode: 13, // Optional - the key code of the key
-              // which: 13, // Optional - the key code of the key
+              key: char.key,
             });
 
             document.dispatchEvent(event);
@@ -70,10 +83,10 @@ const KeyBoardFuncComponent: React.FC = () => {
 const KeyBoardComponent: React.FC = () => {
   return (
     <div className={styles.keyboardContainer}>
-      <KeyBoardFuncComponent />
       <KeyBoardRowComponent char="qwertyuiop" />
       <KeyBoardRowComponent char="asdfghjkl" />
-      <KeyBoardRowComponent char="zxcvbnm" />
+      <KeyBoardRowComponent char="zxcvbnm⌫" />
+      <KeyBoardFuncComponent />
     </div>
   );
 };
