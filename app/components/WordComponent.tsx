@@ -3,7 +3,6 @@ import { Char } from "./types";
 import React, { useState, useEffect, AudioHTMLAttributes } from "react";
 import styles from "./ComponentStyle.module.css";
 import CharComponent from "./Charcomponent";
-import useAudioContext from "./AudioComponent";
 
 type Props = {
   word: string;
