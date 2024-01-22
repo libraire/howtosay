@@ -38,9 +38,12 @@ const BoardComponent: React.FC<{}> = () => {
   return (
     <div className={styles.boardContainer}>
       <div className={styles.title}> How To Say</div>
-      <div className={styles.subTitle}>
-        Type the word by its definition
-        {/* <br/> { !keyboard && ", Press ? for hint, ! skip, - to pronounce" } */}
+      <div className={styles.subTitle}>Type the word by its definition</div>
+      <div className={styles.manual}>
+        <div className={styles.manualItem}>⬅️ Reveal</div>
+        <div className={styles.manualItem}>➡️ Hint </div>
+        <div className={styles.manualItem}>⬆️ Pronounce</div>
+        <div className={styles.manualItem}>⬇️ Skip</div>
       </div>
       <WordComponent
         word={word?.word ?? ""}

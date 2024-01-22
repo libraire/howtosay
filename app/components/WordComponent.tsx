@@ -32,6 +32,7 @@ const WordComponent: React.FC<Props> = ({ word, next, definition }) => {
   }, [word]);
 
   function handleKeyDown(event: KeyboardEvent) {
+    console.log(event);
     const key = event.key;
     if (key === "Backspace") {
       playSound("press");
@@ -43,19 +44,22 @@ const WordComponent: React.FC<Props> = ({ word, next, definition }) => {
         }
         return newChars;
       });
-    } else if (key === "?") {
+    } else if (key === "ArrowRight") {
       playSound("press");
-      hint();
-    } else if (key === "!") {
+      hint(false);
+    } else if (key === "ArrowLeft") {
+      playSound("press");
+      hint(true);
+    } else if (key === "ArrowDown") {
       playSound("press");
       next();
-    } else if (key === "-") {
+    } else if (key === "ArrowUp") {
       speechSynthesis.speak(new SpeechSynthesisUtterance(word));
     } else if (/^[a-zA-Z]$/.test(key)) {
       setChars((prevChars) => {
         if (checkComplete(prevChars)) {
           next();
-          return [];
+          return prevChars;
         }
         const newChars = [...prevChars];
         const char = nextChar(prevChars);
@@ -77,13 +81,6 @@ const WordComponent: React.FC<Props> = ({ word, next, definition }) => {
 
         return newChars;
       });
-    } else {
-      setChars((prevChars) => {
-        if (checkComplete(prevChars)) {
-          next();
-        }
-        return prevChars;
-      });
     }
   }
 
@@ -96,13 +93,15 @@ const WordComponent: React.FC<Props> = ({ word, next, definition }) => {
     return true;
   }
 
-  function hint() {
+  function hint(all: boolean) {
     setChars((prevChars) => {
       const newChars = [...prevChars];
       for (var c of newChars) {
         if (c.state != 1) {
           c.state = 1;
-          break;
+          if (!all) {
+            break;
+          }
         }
       }
 
@@ -141,8 +140,8 @@ const WordComponent: React.FC<Props> = ({ word, next, definition }) => {
   }
 
   function mask(wordToMask: string, originalString: string) {
-    const mask = '*'.repeat(wordToMask.length);
-    const regex = new RegExp(wordToMask, 'gi');
+    const mask = "*".repeat(wordToMask.length);
+    const regex = new RegExp(wordToMask, "gi");
     const maskedString = originalString.replace(regex, mask);
     return maskedString;
   }
