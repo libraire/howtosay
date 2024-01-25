@@ -61,7 +61,7 @@ const BoardComponent: React.FC<{}> = () => {
           }}
         />
       </div>
-      <div className={styles.subTitle}>Type the word by its definition</div>
+      <div className={styles.subTitle}>Type the word by its definition. <a style={{textDecoration:"underline"}} href="https://feedback.bytegush.com/"> Feedback</a></div>
 
       <WordComponent
         word={word?.word ?? ""}
