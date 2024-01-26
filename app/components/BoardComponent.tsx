@@ -8,7 +8,7 @@ import SelectComponent from "./SelectComponent";
 
 const BoardComponent: React.FC<{}> = () => {
   const [word, setWord] = useState<Word>();
-  const [level, setLevel] = useState<string>("15");
+  const [level, setLevel] = useState<string>("16");
   const [wordList, setWordList] = useState<Word[]>([]);
 
   useEffect(() => {
@@ -67,6 +67,7 @@ const BoardComponent: React.FC<{}> = () => {
         word={word?.word ?? ""}
         next={() => nextWord()}
         definition={word?.definition ?? ""}
+        imgurl={word?.imgurl ?? ""}
       />
 
       <KeyBoardComponent />

@@ -1,6 +1,7 @@
 export interface Word {
     word: string;
     definition:string;
+    imgurl:string;
 }
 
 export interface Char {

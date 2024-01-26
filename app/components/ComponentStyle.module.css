@@ -60,6 +60,7 @@
   display: flex;
   flex: auto;
   overflow-y: auto;
+  flex-direction: column;
 }
 
 .title {

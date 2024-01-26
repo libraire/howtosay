@@ -8,7 +8,7 @@ type Props = {
 };
 
 const SelectComponent: React.FC<Props> = ({ choose, className }) => {
-  const [selectedValue, setSelectedValue] = useState<string>("15");
+  const [selectedValue, setSelectedValue] = useState<string>("16");
   const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
     setSelectedValue(value);
@@ -21,6 +21,7 @@ const SelectComponent: React.FC<Props> = ({ choose, className }) => {
       onChange={handleSelectChange}
       className={[styles.selectComponent, className].join(" ")}
     >
+      <option value="16">Scene</option>
       <option value="15">IELT</option>
       <option value="14">TOEFL</option>
       <option value="13">SAT</option>

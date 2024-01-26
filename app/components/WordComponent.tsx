@@ -8,9 +8,10 @@ type Props = {
   word: string;
   next: () => void;
   definition: string;
+  imgurl: string;
 };
 
-const WordComponent: React.FC<Props> = ({ word, next, definition }) => {
+const WordComponent: React.FC<Props> = ({ word, next, definition, imgurl }) => {
   const [chars, setChars] = useState<Char[]>([]);
   const [completed, setCompleted] = useState<boolean>(false);
   useEffect(() => {
@@ -147,6 +148,11 @@ const WordComponent: React.FC<Props> = ({ word, next, definition }) => {
   }
 
   function mask(wordToMask: string, originalString: string) {
+
+    if(completed) {
+      return originalString;
+    }
+    
     const mask = "*".repeat(wordToMask.length);
     const regex = new RegExp(wordToMask, "gi");
     const maskedString = originalString.replace(regex, mask);
@@ -167,17 +173,8 @@ const WordComponent: React.FC<Props> = ({ word, next, definition }) => {
         </div>
       )}
 
-      <p className={styles.definition}> {mask(word, definition)}</p>
+      <p className={styles.definition}> {mask(word, definition)} { imgurl!="" && <img src={imgurl}/>}</p>
 
-      {/* {completed && (
-        <a
-          className={styles.youglish}
-          href={"https://youglish.com/pronounce/" + word + "/english"}
-          target="_blank"
-        >
-          learn pronunciation on youglish.
-        </a>
-      )} */}
     </>
   );
 };
