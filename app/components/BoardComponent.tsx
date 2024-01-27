@@ -17,11 +17,19 @@ const BoardComponent: React.FC<{}> = () => {
     }
   }, [word, wordList, level]);
 
+  function shuffleList(list: Word[]) {
+    for (let i = list.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [list[i], list[j]] = [list[j], list[i]];
+    }
+    return list;
+  }
+
   const fetchData = async (lv: string) => {
     try {
       const response = await fetch("api/words?level=" + lv);
       const jsonData = await response.json();
-      let list = jsonData.wordlist;
+      let list = shuffleList(jsonData.wordlist);
       setWord(list.shift());
       setWordList(list);
     } catch (error) {
@@ -41,7 +49,7 @@ const BoardComponent: React.FC<{}> = () => {
         <div className={styles.manualItem}>➡️ Hint </div>
         <div className={styles.manualItem}>⬆️ Pronounce</div>
         <div className={styles.manualItem}>⬇️ Skip</div>
-        | Level
+        | 
         <SelectComponent
           className={styles.displayWider}
           choose={(lv) => {
@@ -52,7 +60,10 @@ const BoardComponent: React.FC<{}> = () => {
       </div>
 
       <div className={styles.headContainer}>
-        <div className={styles.title}> <span className={styles.displayNarrow}>💡 </span>How To Say</div>
+        <div className={styles.title}>
+          {" "}
+          <span className={styles.displayNarrow}>💡 </span>How To Say
+        </div>
         <SelectComponent
           className={styles.displayNarrow}
           choose={(lv) => {
@@ -61,7 +72,16 @@ const BoardComponent: React.FC<{}> = () => {
           }}
         />
       </div>
-      <div className={styles.subTitle}>Type the word by its definition. <a style={{textDecoration:"underline"}} href="https://feedback.bytegush.com/"> Feedback</a></div>
+      <div className={styles.subTitle}>
+        Type the word by its definition.{" "}
+        <a
+          style={{ textDecoration: "underline" }}
+          href="https://feedback.bytegush.com/"
+        >
+          {" "}
+          Feedback
+        </a>
+      </div>
 
       <WordComponent
         word={word?.word ?? ""}

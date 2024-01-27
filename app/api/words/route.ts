@@ -73,7 +73,7 @@ export async function GET(request: Request) {
       indexer = ielt;
       break;
     case "16":
-      return Response.json(randomScene());
+      return sceneList();
   }
 
   const wordlist = [];
@@ -86,11 +86,10 @@ export async function GET(request: Request) {
   return Response.json({ wordlist });
 }
 
-function randomScene() {
+function sceneList() {
   const wordlist = [];
-  for (var i = 0; i < 10; i++) {
-    var randomIndex = Math.floor(Math.random() * scene.length);
-    var vec = scene[randomIndex];
+  for (var i = 0; i < scene.length; i++) {
+    var vec = scene[i];
     wordlist.push({
       word: vec[0],
       definition: vec[1],
@@ -98,5 +97,5 @@ function randomScene() {
     });
   }
 
-  return { wordlist };
+  return Response.json({ wordlist });
 }
