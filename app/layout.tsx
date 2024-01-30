@@ -6,8 +6,9 @@ import { Analytics } from "@vercel/analytics/react";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "How To Say",
-  description: "Learning by word definitions.",
+  title: "HowToSay - English Guessing Game",
+  description: "Play the ultimate English guessing game on HowToSay. Guess words by their meanings, expand your vocabulary, and have fun while learning English. Test your knowledge and challenge yourself with various levels and categories. Join now and improve your language skills through an interactive and engaging game experience.",
+  keywords:"English leanring, Guessing game, vocabulary training",
 };
 
 export default function RootLayout({
