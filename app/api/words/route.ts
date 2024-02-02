@@ -16,6 +16,7 @@ import ielt from "../../data/index/IELTIndex.json";
 import toefl from "../../data/index/TOEFLIndex.json";
 import sat from "../../data/index/SATIndex.json";
 import scene from "../../data/scene.json";
+import imagelist from "../../data/image.json";
 
 export const dynamic = "force-dynamic"; // defaults to auto
 export async function GET(request: Request) {
@@ -74,6 +75,9 @@ export async function GET(request: Request) {
       break;
     case "16":
       return sceneList();
+    case "17":
+      return images();
+
   }
 
   const wordlist = [];
@@ -98,4 +102,19 @@ function sceneList() {
   }
 
   return Response.json({ wordlist });
+}
+
+function images() {
+  const wordlist = [];
+  const host = "https://158f2f6d.telegraph-image-bya.pages.dev"
+  for (var i = 0; i < imagelist.length; i++) {
+    var vec = imagelist[i];
+    wordlist.push({
+      word: vec[0],
+      definition: vec[1],
+      imgurl: vec.length > 2 ? host + vec[2] : "",
+    });
+  }
+
+  return Response.json({ wordlist }); 
 }

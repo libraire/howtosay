@@ -21,6 +21,7 @@ const SelectComponent: React.FC<Props> = ({ choose, className }) => {
       onChange={handleSelectChange}
       className={[styles.selectComponent, className].join(" ")}
     >
+      <option value="17">Image</option>
       <option value="16">Scene</option>
       <option value="15">IELT</option>
       <option value="14">TOEFL</option>

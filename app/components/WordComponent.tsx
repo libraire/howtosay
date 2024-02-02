@@ -148,16 +148,26 @@ const WordComponent: React.FC<Props> = ({ word, next, definition, imgurl }) => {
   }
 
   function mask(wordToMask: string, originalString: string) {
-
-    if(completed) {
+    if (completed) {
       return originalString;
     }
-    
+
     const mask = "*".repeat(wordToMask.length);
     const regex = new RegExp(wordToMask, "gi");
     const maskedString = originalString.replace(regex, mask);
     return maskedString;
   }
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleLoadStart = () => {
+    console.log("is loading?")
+    setIsLoading(true);
+  };
+
+  const handleLoadEnd = () => {
+    setIsLoading(false);
+  };
 
   return (
     <>
@@ -173,8 +183,18 @@ const WordComponent: React.FC<Props> = ({ word, next, definition, imgurl }) => {
         </div>
       )}
 
-      <p className={styles.definition}> {mask(word, definition)} { imgurl!="" && <img src={imgurl}/>}</p>
-
+      <p className={styles.definition}>
+        {" "}
+        {mask(word, definition)}{" "}
+        {imgurl != "" && (
+          <img
+            className={isLoading ? "hidden" : ""}
+            src={imgurl}
+            onProgress={handleLoadStart}
+            onLoad={handleLoadEnd}
+          />
+        )}
+      </p>
     </>
   );
 };
