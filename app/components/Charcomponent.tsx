@@ -19,6 +19,9 @@ const CharComponent: React.FC<{ char: Char }> = ({ char }) => {
       {char.state == 2 && (
         <div className={styles.redChar}>{char.inputChar}</div>
       )}
+      {char.state == 3 && (
+        <div className={styles.blackChar}>{char.char}</div>
+      )}
     </div>
   );
 };

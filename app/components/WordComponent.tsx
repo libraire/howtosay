@@ -3,6 +3,7 @@ import { Char } from "./types";
 import React, { useState, useEffect, AudioHTMLAttributes } from "react";
 import styles from "./ComponentStyle.module.css";
 import CharComponent from "./Charcomponent";
+import Image from "next/image";
 
 type Props = {
   word: string;
@@ -14,16 +15,20 @@ type Props = {
 const WordComponent: React.FC<Props> = ({ word, next, definition, imgurl }) => {
   const [chars, setChars] = useState<Char[]>([]);
   const [completed, setCompleted] = useState<boolean>(false);
+  const [imageUrl, setImageUrl] = useState(imgurl);
   useEffect(() => {
     setChars(
       word
         ?.toLowerCase()
+        ?.replaceAll(" ", "-")
         ?.split("")
         .map((c, i) => {
-          return { char: c, index: i, state: 0, inputChar: "" };
+          var state = c == "-" ? 3 : 0;
+          return { char: c, index: i, state: state, inputChar: "" };
         })
     );
 
+    updateImage(imgurl);
     setCompleted(false);
     document.addEventListener("keydown", handleKeyDown);
     return () => {
@@ -94,6 +99,10 @@ const WordComponent: React.FC<Props> = ({ word, next, definition, imgurl }) => {
 
   function checkComplete(chars: Char[]) {
     for (var c of chars) {
+      if (c.state == 3) {
+        continue;
+      }
+
       if (c.state != 1) {
         return false;
       }
@@ -105,7 +114,7 @@ const WordComponent: React.FC<Props> = ({ word, next, definition, imgurl }) => {
     setChars((prevChars) => {
       const newChars = [...prevChars];
       for (var c of newChars) {
-        if (c.state != 1) {
+        if (c.state != 1 && c.state != 3) {
           c.state = 1;
           if (!all) {
             break;
@@ -123,7 +132,7 @@ const WordComponent: React.FC<Props> = ({ word, next, definition, imgurl }) => {
 
   function nextChar(chars: Char[]) {
     for (var c of chars) {
-      if (c.state != 1) {
+      if (c.state != 1 && c.state != 3) {
         return c;
       }
     }
@@ -132,7 +141,7 @@ const WordComponent: React.FC<Props> = ({ word, next, definition, imgurl }) => {
 
   function curChar(chars: Char[]) {
     for (var i = chars.length - 1; i >= 0; i--) {
-      if (chars[i].state != 0) {
+      if (chars[i].state != 0 && chars[i].state != 3) {
         return chars[i];
       }
     }
@@ -152,7 +161,7 @@ const WordComponent: React.FC<Props> = ({ word, next, definition, imgurl }) => {
       return originalString;
     }
 
-    const mask = "*".repeat(wordToMask.length);
+    const mask = "_".repeat(wordToMask.length);
     const regex = new RegExp(wordToMask, "gi");
     const maskedString = originalString.replace(regex, mask);
     return maskedString;
@@ -160,13 +169,9 @@ const WordComponent: React.FC<Props> = ({ word, next, definition, imgurl }) => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLoadStart = () => {
-    console.log("is loading?")
+  const updateImage = (imgurl: string) => {
     setIsLoading(true);
-  };
-
-  const handleLoadEnd = () => {
-    setIsLoading(false);
+    setImageUrl(imgurl);
   };
 
   return (
@@ -187,12 +192,31 @@ const WordComponent: React.FC<Props> = ({ word, next, definition, imgurl }) => {
         {" "}
         {mask(word, definition)}{" "}
         {imgurl != "" && (
-          <img
-            className={isLoading ? "hidden" : ""}
-            src={imgurl}
-            onProgress={handleLoadStart}
-            onLoad={handleLoadEnd}
-          />
+          <div>
+            {isLoading && <div className="placeholder"></div>}
+            <Image
+              src={imgurl}
+              alt="Picture of the author"
+              width={500}
+              height={500}
+              onLoad={() => {
+                setIsLoading(false);
+              }}
+              placeholder="blur"
+              blurDataURL="/blur.png"
+              quality={100}
+            />
+            <style jsx>{`
+              .placeholder {
+                width: 500px;
+                height: 500px;
+                background-image: url("/blur.png");
+                background-size: cover;
+                position:fixed;
+                background-color: #f3f3f3;
+              }
+            `}</style>
+          </div>
         )}
       </p>
     </>
