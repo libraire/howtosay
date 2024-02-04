@@ -77,13 +77,13 @@ const BoardComponent: React.FC<{}> = () => {
       </div>
 
       {completed && (
-        <div className={styles.congratulation}>
+        <div className={"text-yellow-500 text-base"}>
           🎉🎉🎉 Bravo! Press any key to continue.
         </div>
       )}
 
       {!completed && (
-        <div className={styles.subTitle}>
+        <div className={"text-base≠"}>
           Type the word by its definition.{" "}
           <a
             style={{ textDecoration: "underline" }}

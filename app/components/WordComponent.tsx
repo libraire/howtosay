@@ -13,7 +13,13 @@ type Props = {
   imgurl: string;
 };
 
-const WordComponent: React.FC<Props> = ({ word, next, complete, definition, imgurl }) => {
+const WordComponent: React.FC<Props> = ({
+  word,
+  next,
+  complete,
+  definition,
+  imgurl,
+}) => {
   const [chars, setChars] = useState<Char[]>([]);
   const [completed, setCompleted] = useState<boolean>(false);
   const [imageUrl, setImageUrl] = useState(imgurl);
@@ -29,7 +35,7 @@ const WordComponent: React.FC<Props> = ({ word, next, complete, definition, imgu
         })
     );
 
-    updateImage(imgurl);
+    setImageUrl(imgurl);
     setCompleted(false);
     document.addEventListener("keydown", handleKeyDown);
     return () => {
@@ -91,8 +97,8 @@ const WordComponent: React.FC<Props> = ({ word, next, complete, definition, imgu
         if (checkComplete(newChars)) {
           playSound("complete");
           setCompleted((pre) => {
-            complete()
-            return true
+            complete();
+            return true;
           });
         }
 
@@ -129,8 +135,8 @@ const WordComponent: React.FC<Props> = ({ word, next, complete, definition, imgu
       if (checkComplete(newChars)) {
         playSound("complete");
         setCompleted((pre) => {
-          complete()
-          return true
+          complete();
+          return true;
         });
       }
       return newChars;
@@ -174,13 +180,6 @@ const WordComponent: React.FC<Props> = ({ word, next, complete, definition, imgu
     return maskedString;
   }
 
-  const [isLoading, setIsLoading] = useState(false);
-
-  const updateImage = (imgurl: string) => {
-    setIsLoading(true);
-    setImageUrl(imgurl);
-  };
-
   return (
     <>
       <div className={styles.wordContainer}>
@@ -194,28 +193,15 @@ const WordComponent: React.FC<Props> = ({ word, next, complete, definition, imgu
         {mask(word, definition)}{" "}
         {imageUrl != "" && (
           <div>
-            {isLoading && <div className="placeholder"></div>}
-            <img
+            <Image
               src={imageUrl}
-              alt="Picture of the author"
+              alt={word}
+              key={imageUrl}
               width={500}
               height={500}
-              onLoad={() => {
-                setIsLoading(false);
-              }}
-              onError={()=>{
-                setIsLoading(false);
-              }}
+              placeholder="blur"
+              blurDataURL="/loading.png"
             />
-            <style jsx>{`
-              .placeholder {
-                width: 500px;
-                height: 500px;
-                background-image: url("/bg.png");
-                background-size: auto;
-                background-color: #f3f3f3;
-              }
-            `}</style>
           </div>
         )}
       </p>

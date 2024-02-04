@@ -27,6 +27,7 @@ const SelectComponent: React.FC<Props> = ({ choose, className }) => {
         <option value="18">Fruits</option>
         <option value="17">Kitchen</option>
         <option value="19">Animals</option>
+        <option value="20">Food</option>
       </optgroup>
 
       <optgroup label="Vocabulary">
