@@ -1,5 +1,4 @@
 import React, { useState, ChangeEvent } from "react";
-import Select from "react-select";
 import styles from "./ComponentStyle.module.css";
 
 type Props = {
@@ -8,7 +7,7 @@ type Props = {
 };
 
 const SelectComponent: React.FC<Props> = ({ choose, className }) => {
-  const [selectedValue, setSelectedValue] = useState<string>("16");
+  const [selectedValue, setSelectedValue] = useState<string>("18");
   const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
     setSelectedValue(value);
@@ -25,6 +24,7 @@ const SelectComponent: React.FC<Props> = ({ choose, className }) => {
       className={[styles.selectComponent, className].join(" ")}
     >
       <optgroup label="Image">
+        <option value="18">Fruit</option>
         <option value="17">Kitchen</option>
       </optgroup>
 

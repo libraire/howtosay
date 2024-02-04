@@ -202,17 +202,19 @@ const WordComponent: React.FC<Props> = ({ word, next, definition, imgurl }) => {
               onLoad={() => {
                 setIsLoading(false);
               }}
+              onError={()=>{
+                setIsLoading(false);
+              }}
               placeholder="blur"
-              blurDataURL="/blur.png"
+              blurDataURL="/bg.png"
               quality={100}
             />
             <style jsx>{`
               .placeholder {
                 width: 500px;
                 height: 500px;
-                background-image: url("/blur.png");
-                background-size: cover;
-                position:fixed;
+                background-image: url("/bg.png");
+                background-size: auto;
                 background-color: #f3f3f3;
               }
             `}</style>

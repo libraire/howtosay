@@ -16,7 +16,8 @@ import ielt from "../../data/index/IELTIndex.json";
 import toefl from "../../data/index/TOEFLIndex.json";
 import sat from "../../data/index/SATIndex.json";
 import scene from "../../data/scene.json";
-import imagelist from "../../data/image.json";
+import kitchen from "../../data/image.json";
+import fruits from "../../data/fruits.json";
 
 export const dynamic = "force-dynamic"; // defaults to auto
 export async function GET(request: Request) {
@@ -76,7 +77,9 @@ export async function GET(request: Request) {
     case "16":
       return sceneList();
     case "17":
-      return images();
+      return imageList(kitchen);
+    case "18":
+      return imageList(fruits);
 
   }
 
@@ -104,11 +107,11 @@ function sceneList() {
   return Response.json({ wordlist });
 }
 
-function images() {
+function imageList(list: string[][]) {
   const wordlist = [];
   const host = "https://158f2f6d.telegraph-image-bya.pages.dev"
-  for (var i = 0; i < imagelist.length; i++) {
-    var vec = imagelist[i];
+  for (var i = 0; i < list.length; i++) {
+    var vec = list[i];
     wordlist.push({
       word: vec[0],
       definition: vec[1],

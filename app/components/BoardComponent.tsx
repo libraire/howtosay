@@ -8,7 +8,8 @@ import SelectComponent from "./SelectComponent";
 
 const BoardComponent: React.FC<{}> = () => {
   const [word, setWord] = useState<Word>();
-  const [level, setLevel] = useState<string>("16");
+  // TOOD set a global value
+  const [level, setLevel] = useState<string>("18");
   const [wordList, setWordList] = useState<Word[]>([]);
 
   useEffect(() => {
