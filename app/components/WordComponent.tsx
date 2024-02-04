@@ -191,11 +191,11 @@ const WordComponent: React.FC<Props> = ({ word, next, definition, imgurl }) => {
       <p className={styles.definition}>
         {" "}
         {mask(word, definition)}{" "}
-        {imgurl != "" && (
+        {imageUrl != "" && (
           <div>
             {isLoading && <div className="placeholder"></div>}
             <Image
-              src={imgurl}
+              src={imageUrl}
               alt="Picture of the author"
               width={500}
               height={500}
