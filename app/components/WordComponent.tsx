@@ -194,7 +194,7 @@ const WordComponent: React.FC<Props> = ({ word, next, definition, imgurl }) => {
         {imageUrl != "" && (
           <div>
             {isLoading && <div className="placeholder"></div>}
-            <Image
+            <img
               src={imageUrl}
               alt="Picture of the author"
               width={500}
@@ -205,9 +205,6 @@ const WordComponent: React.FC<Props> = ({ word, next, definition, imgurl }) => {
               onError={()=>{
                 setIsLoading(false);
               }}
-              placeholder="blur"
-              blurDataURL="/bg.png"
-              quality={100}
             />
             <style jsx>{`
               .placeholder {
