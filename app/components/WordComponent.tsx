@@ -1,6 +1,6 @@
 "use client";
 import { Char } from "./types";
-import React, { useState, useEffect, AudioHTMLAttributes } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./ComponentStyle.module.css";
 import CharComponent from "./Charcomponent";
 import Image from "next/image";
@@ -8,11 +8,12 @@ import Image from "next/image";
 type Props = {
   word: string;
   next: () => void;
+  complete: () => void;
   definition: string;
   imgurl: string;
 };
 
-const WordComponent: React.FC<Props> = ({ word, next, definition, imgurl }) => {
+const WordComponent: React.FC<Props> = ({ word, next, complete, definition, imgurl }) => {
   const [chars, setChars] = useState<Char[]>([]);
   const [completed, setCompleted] = useState<boolean>(false);
   const [imageUrl, setImageUrl] = useState(imgurl);
@@ -37,7 +38,6 @@ const WordComponent: React.FC<Props> = ({ word, next, definition, imgurl }) => {
   }, [word]);
 
   function handleKeyDown(event: KeyboardEvent) {
-    console.log(event);
     const key = event.key;
 
     if (key == " " || key == "Enter") {
@@ -60,6 +60,7 @@ const WordComponent: React.FC<Props> = ({ word, next, definition, imgurl }) => {
     } else if (key === "ArrowRight") {
       playSound("press");
       hint(false);
+      speechSynthesis.speak(new SpeechSynthesisUtterance(word));
     } else if (key === "ArrowLeft") {
       playSound("press");
       hint(true);
@@ -89,7 +90,10 @@ const WordComponent: React.FC<Props> = ({ word, next, definition, imgurl }) => {
 
         if (checkComplete(newChars)) {
           playSound("complete");
-          setCompleted(true);
+          setCompleted((pre) => {
+            complete()
+            return true
+          });
         }
 
         return newChars;
@@ -124,7 +128,10 @@ const WordComponent: React.FC<Props> = ({ word, next, definition, imgurl }) => {
 
       if (checkComplete(newChars)) {
         playSound("complete");
-        setCompleted(true);
+        setCompleted((pre) => {
+          complete()
+          return true
+        });
       }
       return newChars;
     });
@@ -181,12 +188,6 @@ const WordComponent: React.FC<Props> = ({ word, next, definition, imgurl }) => {
           <CharComponent key={index} char={char} />
         ))}
       </div>
-
-      {completed && (
-        <div className={styles.congratulation}>
-          Congratulations! Press any key to continue.
-        </div>
-      )}
 
       <p className={styles.definition}>
         {" "}

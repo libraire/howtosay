@@ -19,6 +19,7 @@ import scene from "../../data/scene.json";
 import kitchen from "../../data/imageset/kitchen.json";
 import fruits from "../../data/imageset/fruits.json";
 import animals from "../../data/imageset/animals.json";
+import food from "../../data/imageset/food.json";
 
 export const dynamic = "force-dynamic"; // defaults to auto
 export async function GET(request: Request) {
@@ -83,6 +84,8 @@ export async function GET(request: Request) {
       return imageList(fruits);
     case "19":
       return imageList(animals);
+    case "20":
+      return imageList(food);
   }
 
   const wordlist = [];

@@ -11,6 +11,7 @@ const BoardComponent: React.FC<{}> = () => {
   // TOOD set a global value
   const [level, setLevel] = useState<string>("18");
   const [wordList, setWordList] = useState<Word[]>([]);
+  const [completed, setCompleted] = useState<boolean>(false);
 
   useEffect(() => {
     if (wordList.length == 0) {
@@ -39,6 +40,7 @@ const BoardComponent: React.FC<{}> = () => {
   };
 
   function nextWord() {
+    setCompleted(false);
     setWord(wordList.shift());
     setWordList(wordList);
   }
@@ -49,8 +51,8 @@ const BoardComponent: React.FC<{}> = () => {
         <div className={styles.manualItem}>⬅️ Reveal</div>
         <div className={styles.manualItem}>➡️ Hint </div>
         <div className={styles.manualItem}>⬆️ Pronounce</div>
-        <div className={styles.manualItem}>⬇️ Skip</div>
-        | 
+        <div className={styles.manualItem}>⬇️ Next</div>
+        |
         <SelectComponent
           className={styles.displayWider}
           choose={(lv) => {
@@ -73,20 +75,32 @@ const BoardComponent: React.FC<{}> = () => {
           }}
         />
       </div>
-      <div className={styles.subTitle}>
-        Type the word by its definition.{" "}
-        <a
-          style={{ textDecoration: "underline" }}
-          href="https://feedback.bytegush.com/"
-        >
-          {" "}
-          Feedback
-        </a>
-      </div>
+
+      {completed && (
+        <div className={styles.congratulation}>
+          🎉🎉🎉 Bravo! Press any key to continue.
+        </div>
+      )}
+
+      {!completed && (
+        <div className={styles.subTitle}>
+          Type the word by its definition.{" "}
+          <a
+            style={{ textDecoration: "underline" }}
+            href="https://feedback.bytegush.com/"
+          >
+            {" "}
+            Feedback
+          </a>
+        </div>
+      )}
 
       <WordComponent
         word={word?.word ?? ""}
         next={() => nextWord()}
+        complete={() =>
+          setCompleted(true)
+        }
         definition={word?.definition ?? ""}
         imgurl={word?.imgurl ?? ""}
       />
