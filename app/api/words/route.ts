@@ -16,8 +16,9 @@ import ielt from "../../data/index/IELTIndex.json";
 import toefl from "../../data/index/TOEFLIndex.json";
 import sat from "../../data/index/SATIndex.json";
 import scene from "../../data/scene.json";
-import kitchen from "../../data/image.json";
-import fruits from "../../data/fruits.json";
+import kitchen from "../../data/imageset/kitchen.json";
+import fruits from "../../data/imageset/fruits.json";
+import animals from "../../data/imageset/animals.json";
 
 export const dynamic = "force-dynamic"; // defaults to auto
 export async function GET(request: Request) {
@@ -80,7 +81,8 @@ export async function GET(request: Request) {
       return imageList(kitchen);
     case "18":
       return imageList(fruits);
-
+    case "19":
+      return imageList(animals);
   }
 
   const wordlist = [];
@@ -109,7 +111,7 @@ function sceneList() {
 
 function imageList(list: string[][]) {
   const wordlist = [];
-  const host = "https://158f2f6d.telegraph-image-bya.pages.dev"
+  const host = "https://158f2f6d.telegraph-image-bya.pages.dev";
   for (var i = 0; i < list.length; i++) {
     var vec = list[i];
     wordlist.push({
@@ -119,5 +121,5 @@ function imageList(list: string[][]) {
     });
   }
 
-  return Response.json({ wordlist }); 
+  return Response.json({ wordlist });
 }

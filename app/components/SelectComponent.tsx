@@ -24,8 +24,9 @@ const SelectComponent: React.FC<Props> = ({ choose, className }) => {
       className={[styles.selectComponent, className].join(" ")}
     >
       <optgroup label="Image">
-        <option value="18">Fruit</option>
+        <option value="18">Fruits</option>
         <option value="17">Kitchen</option>
+        <option value="19">Animals</option>
       </optgroup>
 
       <optgroup label="Vocabulary">
