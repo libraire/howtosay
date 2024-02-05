@@ -2,6 +2,7 @@ export interface Word {
     word: string;
     definition:string;
     imgurl:string;
+    emoji:string;
 }
 
 export interface Char {

@@ -8,8 +8,7 @@ import SelectComponent from "./SelectComponent";
 
 const BoardComponent: React.FC<{}> = () => {
   const [word, setWord] = useState<Word>();
-  // TOOD set a global value
-  const [level, setLevel] = useState<string>("18");
+  const [level, setLevel] = useState<string>("default");
   const [wordList, setWordList] = useState<Word[]>([]);
   const [completed, setCompleted] = useState<boolean>(false);
 
@@ -103,6 +102,7 @@ const BoardComponent: React.FC<{}> = () => {
         }
         definition={word?.definition ?? ""}
         imgurl={word?.imgurl ?? ""}
+        emoji={word?.emoji ?? ""}
       />
 
       <KeyBoardComponent />

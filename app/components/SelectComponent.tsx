@@ -7,7 +7,7 @@ type Props = {
 };
 
 const SelectComponent: React.FC<Props> = ({ choose, className }) => {
-  const [selectedValue, setSelectedValue] = useState<string>("18");
+  const [selectedValue, setSelectedValue] = useState<string>("default");
   const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
     setSelectedValue(value);
@@ -23,6 +23,14 @@ const SelectComponent: React.FC<Props> = ({ choose, className }) => {
       onChange={handleSelectChange}
       className={[styles.selectComponent, className].join(" ")}
     >
+      <optgroup label="Emoji">
+        <option value="default">Activity</option>
+        <option value="emoji-2">Animal&Nature</option>
+        <option value="emoji-3">Food&Drink</option>
+        <option value="emoji-4">Object</option>
+        <option value="emoji-5">Travel&Place</option>
+      </optgroup>
+
       <optgroup label="Image">
         <option value="18">Fruits</option>
         <option value="17">Kitchen</option>

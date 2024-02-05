@@ -11,6 +11,7 @@ type Props = {
   complete: () => void;
   definition: string;
   imgurl: string;
+  emoji: string;
 };
 
 const WordComponent: React.FC<Props> = ({
@@ -19,6 +20,7 @@ const WordComponent: React.FC<Props> = ({
   complete,
   definition,
   imgurl,
+  emoji
 }) => {
   const [chars, setChars] = useState<Char[]>([]);
   const [completed, setCompleted] = useState<boolean>(false);
@@ -188,9 +190,8 @@ const WordComponent: React.FC<Props> = ({
         ))}
       </div>
 
-      <p className={styles.definition}>
-        {" "}
-        {mask(word, definition)}{" "}
+      <div className={styles.definition}>
+        {mask(word, definition)}
         {imageUrl != "" && (
           <div>
             <Image
@@ -204,7 +205,10 @@ const WordComponent: React.FC<Props> = ({
             />
           </div>
         )}
-      </p>
+        {emoji != "" && (
+          <div className="text-9xl mt-10">{emoji}</div>
+        )}
+      </div>
     </>
   );
 };

@@ -20,6 +20,11 @@ import kitchen from "../../data/imageset/kitchen.json";
 import fruits from "../../data/imageset/fruits.json";
 import animals from "../../data/imageset/animals.json";
 import food from "../../data/imageset/food.json";
+import emoji_activity from "../../data/emoji/activity.json";
+import emoji_animal from "../../data/emoji/animal-nature.json";
+import emoji_food from "../../data/emoji/food-drink.json";
+import emoji_object from "../../data/emoji/objects.json";
+import emoji_travel from "../../data/emoji/travel-place.json";
 
 export const dynamic = "force-dynamic"; // defaults to auto
 export async function GET(request: Request) {
@@ -29,53 +34,37 @@ export async function GET(request: Request) {
   var indexer = ielt;
   switch (level) {
     case "0":
-      indexer = kindergarten;
-      break;
+      return indexerList(kindergarten);
     case "1":
-      indexer = grade1;
-      break;
+      return indexerList(grade1);
     case "2":
-      indexer = grade2;
-      break;
+      return indexerList(grade2);
     case "3":
-      indexer = grade3;
-      break;
+      return indexerList(grade3);
     case "4":
-      indexer = grade4;
-      break;
+      return indexerList(grade4);
     case "5":
-      indexer = grade5;
-      break;
+      return indexerList(grade5);
     case "6":
-      indexer = grade6;
-      break;
+      return indexerList(grade6);
     case "7":
-      indexer = grade7;
-      break;
+      return indexerList(grade7);
     case "8":
-      indexer = grade8;
-      break;
+      return indexerList(grade8);
     case "9":
-      indexer = grade9;
-      break;
+      return indexerList(grade9);
     case "10":
-      indexer = grade10;
-      break;
+      return indexerList(grade10);
     case "11":
-      indexer = grade11;
-      break;
+      return indexerList(grade11);
     case "12":
-      indexer = grade12;
-      break;
+      return indexerList(grade12);
     case "13":
-      indexer = sat;
-      break;
+      return indexerList(sat);
     case "14":
-      indexer = toefl;
-      break;
+      indexerList(toefl);
     case "15":
-      indexer = ielt;
-      break;
+      return indexerList(ielt);
     case "16":
       return sceneList();
     case "17":
@@ -86,6 +75,16 @@ export async function GET(request: Request) {
       return imageList(animals);
     case "20":
       return imageList(food);
+    case "default":
+      return emojiList(emoji_activity);
+    case "emoji-2":
+      return emojiList(emoji_animal);
+    case "emoji-3":
+      return emojiList(emoji_food);
+    case "emoji-4":
+      return emojiList(emoji_object);
+    case "emoji-5":
+      return emojiList(emoji_travel);
   }
 
   const wordlist = [];
@@ -96,6 +95,20 @@ export async function GET(request: Request) {
   }
 
   return Response.json({ wordlist });
+}
+
+
+function indexerList(indexer: number[]) {
+
+  const wordlist = [];
+  for (var i = 0; i < 10; i++) {
+    var randomIndex = Math.floor(Math.random() * indexer.length);
+    var vec = list[indexer[randomIndex]];
+    wordlist.push({ word: vec[0], definition: vec[1] });
+  }
+
+  return Response.json({ wordlist });
+
 }
 
 function sceneList() {
@@ -126,3 +139,17 @@ function imageList(list: string[][]) {
 
   return Response.json({ wordlist });
 }
+
+function emojiList(list: string[][]) {
+  const wordlist = [];
+  for (var i = 0; i < list.length; i++) {
+    var vec = list[i];
+    wordlist.push({
+      word: vec[0],
+      emoji: vec[1],
+    });
+  }
+
+  return Response.json({ wordlist });
+}
+
