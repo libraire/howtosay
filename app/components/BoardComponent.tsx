@@ -46,26 +46,15 @@ const BoardComponent: React.FC<{}> = () => {
 
   return (
     <div className={styles.boardContainer}>
-      <div className={styles.manual}>
-        <div className={styles.manualItem}>⬅️ Reveal</div>
-        <div className={styles.manualItem}>➡️ Hint </div>
-        <div className={styles.manualItem}>⬆️ Pronounce</div>
-        <div className={styles.manualItem}>⬇️ Next</div>
-        |
-        <SelectComponent
-          className={styles.displayWider}
-          choose={(lv) => {
-            setLevel(lv);
-            fetchData(lv);
-          }}
-        />
-      </div>
-
       <div className={styles.headContainer}>
         <div className={styles.title}>
           {" "}
           <span className={styles.displayNarrow}>💡 </span>How To Say
         </div>
+
+        <div className="flex-1 "> </div>
+        <a className="text-base text-black" href="https://feedback.bytegush.com/">Feedback</a>
+        <a className="text-base text-black mx-4" href="http://donation.bytegush.com/">Donation</a>
         <SelectComponent
           className={styles.displayNarrow}
           choose={(lv) => {
@@ -73,6 +62,13 @@ const BoardComponent: React.FC<{}> = () => {
             fetchData(lv);
           }}
         />
+      </div>
+
+      <div className={styles.manual}>
+        <div className={styles.manualItem}>⬅️ Reveal</div>
+        <div className={styles.manualItem}>➡️ Hint </div>
+        <div className={styles.manualItem}>⬆️ Pronounce</div>
+        <div className={styles.manualItem}>⬇️ Next</div>
       </div>
 
       {completed && (
@@ -83,23 +79,14 @@ const BoardComponent: React.FC<{}> = () => {
 
       {!completed && (
         <div className={"text-base≠"}>
-          Type the word by its definition.{" "}
-          <a
-            style={{ textDecoration: "underline" }}
-            href="https://feedback.bytegush.com/"
-          >
-            {" "}
-            Feedback
-          </a>
+          Type the word by its definition.
         </div>
       )}
 
       <WordComponent
         word={word?.word ?? ""}
         next={() => nextWord()}
-        complete={() =>
-          setCompleted(true)
-        }
+        complete={() => setCompleted(true)}
         definition={word?.definition ?? ""}
         imgurl={word?.imgurl ?? ""}
         emoji={word?.emoji ?? ""}
