@@ -25,9 +25,11 @@ import emoji_animal from "../../data/emoji/animal-nature.json";
 import emoji_food from "../../data/emoji/food-drink.json";
 import emoji_object from "../../data/emoji/objects.json";
 import emoji_travel from "../../data/emoji/travel-place.json";
+import { auth } from "auth"
 
 export const dynamic = "force-dynamic"; // defaults to auto
 export async function GET(request: Request) {
+
   const url = new URL(request.url);
   const params = new URLSearchParams(url.search);
   const level = params.get("level");

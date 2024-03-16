@@ -3,6 +3,7 @@ export interface Word {
     definition:string;
     imgurl:string;
     emoji:string;
+    marked:boolean;
 }
 
 export interface Char {

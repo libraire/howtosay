@@ -5,12 +5,22 @@ import styles from "./ComponentStyle.module.css";
 import WordComponent from "./WordComponent";
 import KeyBoardComponent from "./KeyBoardComponent";
 import SelectComponent from "./SelectComponent";
+import UserButton from "./user-button"
+import { useSession } from "next-auth/react"
+import { useRouter } from 'next/navigation'
+
 
 const BoardComponent: React.FC<{}> = () => {
   const [word, setWord] = useState<Word>();
   const [level, setLevel] = useState<string>("default");
   const [wordList, setWordList] = useState<Word[]>([]);
   const [completed, setCompleted] = useState<boolean>(false);
+  const [marked, setMarked] = useState<boolean>(false);
+  const router = useRouter()
+
+  const { data: session, update } = useSession({
+    required: false,
+  })
 
   useEffect(() => {
     if (wordList.length == 0) {
@@ -31,7 +41,9 @@ const BoardComponent: React.FC<{}> = () => {
       const response = await fetch("api/words?level=" + lv);
       const jsonData = await response.json();
       let list = shuffleList(jsonData.wordlist);
-      setWord(list.shift());
+      var wd = list.shift()
+      setWord(wd);
+      setMarked(!!wd?.marked);
       setWordList(list);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -40,8 +52,33 @@ const BoardComponent: React.FC<{}> = () => {
 
   function nextWord() {
     setCompleted(false);
-    setWord(wordList.shift());
+    var wd = wordList.shift();
+    setWord(wd);
+    setMarked(!!wd?.marked);
     setWordList(wordList);
+  }
+
+  function markWord() {
+
+    if (!session?.user) {
+      router.push('/api/auth/signin')
+    }
+
+    if (word) {
+      word.marked = true;
+      setMarked(true);
+    }
+  }
+
+  function unmarkWord() {
+    if (!session?.user) {
+      router.push('/api/auth/signin')
+    }
+
+    if (word) {
+      word.marked = false;
+      setMarked(false);
+    }
   }
 
   return (
@@ -51,17 +88,20 @@ const BoardComponent: React.FC<{}> = () => {
           {" "}
           <span className={styles.displayNarrow}>💡 </span>How To Say
         </div>
+        <div className="ml-2">
+          <SelectComponent
+            className={styles.displayNarrow}
+            choose={(lv) => {
+              setLevel(lv);
+              fetchData(lv);
+            }}
+          />
+        </div>
 
         <div className="flex-1 "> </div>
         <a className="text-base text-black" href="https://feedback.bytegush.com/">Feedback</a>
         <a className="text-base text-black mx-4" href="http://donation.bytegush.com/">Donation</a>
-        <SelectComponent
-          className={styles.displayNarrow}
-          choose={(lv) => {
-            setLevel(lv);
-            fetchData(lv);
-          }}
-        />
+        <UserButton />
       </div>
 
       <div className={styles.manual}>
@@ -80,6 +120,8 @@ const BoardComponent: React.FC<{}> = () => {
       {!completed && (
         <div className={"text-base≠"}>
           Type the word by its definition.
+          {!marked && <button onClick={markWord} className={styles.star_button}>★</button>}
+          {marked && <button onClick={unmarkWord} className={styles.star_button_marked}>★</button>}
         </div>
       )}
 
