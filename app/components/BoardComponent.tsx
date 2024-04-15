@@ -8,6 +8,8 @@ import SelectComponent from "./SelectComponent";
 import UserButton from "./user-button"
 import { useSession } from "next-auth/react"
 import { useRouter } from 'next/navigation'
+import MyDropDown from "./DrowDown";
+import HelpSlideOver from "./HelpSlideOver";
 
 
 const BoardComponent: React.FC<{}> = () => {
@@ -16,6 +18,8 @@ const BoardComponent: React.FC<{}> = () => {
   const [wordList, setWordList] = useState<Word[]>([]);
   const [completed, setCompleted] = useState<boolean>(false);
   const [marked, setMarked] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const handleOnClose = () => setIsOpen(false);
   const router = useRouter()
 
   const { data: session, update } = useSession({
@@ -41,6 +45,7 @@ const BoardComponent: React.FC<{}> = () => {
       const response = await fetch("api/words?level=" + lv);
       const jsonData = await response.json();
       let list = shuffleList(jsonData.wordlist);
+      list = await fetchMarkList(list)
       var wd = list.shift()
       setWord(wd);
       setMarked(!!wd?.marked);
@@ -58,6 +63,29 @@ const BoardComponent: React.FC<{}> = () => {
     setWordList(wordList);
   }
 
+  async function  fetchMarkList(wordList: Word[]) {
+    const words = wordList.map(word=>word.word).join(",")
+    const response = await fetch("/hts/api/v1/mark?words=" + words, { method: 'GET', })
+    const jsonData = await response.json()
+
+    if(!jsonData['words']) {
+      return wordList
+    }
+
+    const map = jsonData['words'].reduce((res: { [key: string]: number }, n: { word: string; mark: number }) => {
+      res[n['word']] = n['mark'];
+      return res;
+    }, {});
+
+    console.log(map)
+    
+    return wordList.map(word=>{
+      word.marked = map[word.word] ?? false
+      console.log(word.word,map[word.word])
+      return word
+    })
+  }
+
   function markWord() {
 
     if (!session?.user) {
@@ -65,8 +93,11 @@ const BoardComponent: React.FC<{}> = () => {
     }
 
     if (word) {
-      word.marked = true;
-      setMarked(true);
+      fetch("/hts/api/v1/mark?word=" + word.word, { method: 'POST', }).then((response: Response) => {
+        console.log(response.body)
+        word.marked = true;
+        setMarked(true);
+      });
     }
   }
 
@@ -76,8 +107,10 @@ const BoardComponent: React.FC<{}> = () => {
     }
 
     if (word) {
-      word.marked = false;
-      setMarked(false);
+      fetch("/hts/api/v1/mark?word=" + word.word, { method: 'DELETE', }).then((response: Response) => {
+        word.marked = false;
+        setMarked(false);
+      });
     }
   }
 
@@ -99,29 +132,44 @@ const BoardComponent: React.FC<{}> = () => {
         </div>
 
         <div className="flex-1 "> </div>
-        <a className="text-base text-black" href="https://feedback.bytegush.com/">Feedback</a>
-        <a className="text-base text-black mx-4" href="http://donation.bytegush.com/">Donation</a>
+        <MyDropDown showHelpSlide={() => {
+          setIsOpen(true)
+        }} />
         <UserButton />
       </div>
 
-      <div className={styles.manual}>
-        <div className={styles.manualItem}>⬅️ Reveal</div>
-        <div className={styles.manualItem}>➡️ Hint </div>
-        <div className={styles.manualItem}>⬆️ Pronounce</div>
-        <div className={styles.manualItem}>⬇️ Next</div>
-      </div>
-
       {completed && (
-        <div className={"text-yellow-500 text-base"}>
+        <div className="text-yellow-500 text-base mt-10">
           🎉🎉🎉 Bravo! Press any key to continue.
+          {!marked && <button onClick={markWord} className={styles.star_button}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 inline">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+            </svg>
+          </button>}
+          {marked && <button onClick={unmarkWord} className={styles.star_button_marked}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 inline">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+            </svg>
+
+          </button>}
         </div>
       )}
 
       {!completed && (
-        <div className={"text-base≠"}>
+        <div className="text-base≠ mt-10">
           Type the word by its definition.
-          {!marked && <button onClick={markWord} className={styles.star_button}>★</button>}
-          {marked && <button onClick={unmarkWord} className={styles.star_button_marked}>★</button>}
+          {!marked && <button onClick={markWord} className={styles.star_button}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 inline">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+            </svg>
+          </button>}
+          {marked && <button onClick={unmarkWord} className={styles.star_button_marked}>
+
+
+            <svg xmlns="http://www.w3.org/2000/svg" fill="yellow" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 inline">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
+            </svg>
+          </button>}
         </div>
       )}
 
@@ -135,6 +183,8 @@ const BoardComponent: React.FC<{}> = () => {
       />
 
       <KeyBoardComponent />
+      <HelpSlideOver open={isOpen} onClose={handleOnClose} />
+
     </div>
   );
 };
