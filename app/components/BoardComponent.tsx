@@ -27,10 +27,12 @@ const BoardComponent: React.FC<{}> = () => {
   })
 
   useEffect(() => {
-    if (wordList.length == 0) {
+
+    if (wordList.length == 0 && session) {
       fetchData(level);
     }
-  }, [word, wordList, level]);
+
+  }, [session, word, wordList, level]);
 
   function shuffleList(list: Word[]) {
     for (let i = list.length - 1; i > 0; i--) {
@@ -68,7 +70,6 @@ const BoardComponent: React.FC<{}> = () => {
     if (!session?.user) {
       return wordList
     }
-    
     const words = wordList.map(word=>word.word).join(",")
     const response = await fetch("/hts/api/v1/mark?words=" + words, { method: 'GET', })
     const jsonData = await response.json()
