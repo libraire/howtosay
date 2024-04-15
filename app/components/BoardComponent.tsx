@@ -64,6 +64,11 @@ const BoardComponent: React.FC<{}> = () => {
   }
 
   async function  fetchMarkList(wordList: Word[]) {
+
+    if (!session?.user) {
+      return wordList
+    }
+    
     const words = wordList.map(word=>word.word).join(",")
     const response = await fetch("/hts/api/v1/mark?words=" + words, { method: 'GET', })
     const jsonData = await response.json()
