@@ -12,7 +12,7 @@ type Props = {
     showHelpSlide: MyFunctionType;
 };
 
-export default function MyDropDown({showHelpSlide}: Props) {
+export default function MyDropDown({ showHelpSlide }: Props) {
     return (
         <Menu as="div" className="relative inline-block text-left">
             <div>
@@ -36,7 +36,20 @@ export default function MyDropDown({showHelpSlide}: Props) {
                         <Menu.Item>
                             {({ active }) => (
                                 <a
-                                    onClick={()=>{
+                                    href='/bank/filter'
+                                    className={classNames(
+                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                                        'block px-4 py-2 text-sm'
+                                    )}
+                                >
+                                    Filter
+                                </a>
+                            )}
+                        </Menu.Item>
+                        <Menu.Item>
+                            {({ active }) => (
+                                <a
+                                    onClick={() => {
                                         showHelpSlide();
                                     }}
                                     className={classNames(
@@ -51,7 +64,7 @@ export default function MyDropDown({showHelpSlide}: Props) {
                         <Menu.Item>
                             {({ active }) => (
                                 <a
-                                    href="https://feedback.bytegush.com"
+                                    href="https://www.bytegush.com/about/feedback"
                                     className={classNames(
                                         active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                                         'block px-4 py-2 text-sm'
@@ -64,7 +77,7 @@ export default function MyDropDown({showHelpSlide}: Props) {
                         <Menu.Item>
                             {({ active }) => (
                                 <a
-                                    href="http://donation.bytegush.com/"
+                                    href="https://bytegush.lemonsqueezy.com/buy/229d1aed-9c23-426f-9c34-c584381ba777?embed=1"
                                     className={classNames(
                                         active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                                         'block px-4 py-2 text-sm'

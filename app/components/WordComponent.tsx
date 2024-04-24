@@ -68,7 +68,6 @@ const WordComponent: React.FC<Props> = ({
     } else if (key === "ArrowRight") {
       playSound("press");
       hint(false);
-      speechSynthesis.speak(new SpeechSynthesisUtterance(word));
     } else if (key === "ArrowLeft") {
       playSound("press");
       hint(true);

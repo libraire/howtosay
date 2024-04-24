@@ -60,21 +60,22 @@ const BoardComponent: React.FC<{}> = () => {
   function nextWord() {
     setCompleted(false);
     var wd = wordList.shift();
+    console.log("next word", wd)
     setWord(wd);
     setMarked(!!wd?.marked);
     setWordList(wordList);
   }
 
-  async function  fetchMarkList(wordList: Word[]) {
+  async function fetchMarkList(wordList: Word[]) {
 
     if (!session?.user) {
       return wordList
     }
-    const words = wordList.map(word=>word.word).join(",")
+    const words = wordList.map(word => word.word).join(",")
     const response = await fetch("/hts/api/v1/mark?words=" + words, { method: 'GET', })
     const jsonData = await response.json()
 
-    if(!jsonData['words']) {
+    if (!jsonData['words']) {
       return wordList
     }
 
@@ -84,10 +85,10 @@ const BoardComponent: React.FC<{}> = () => {
     }, {});
 
     console.log(map)
-    
-    return wordList.map(word=>{
+
+    return wordList.map(word => {
       word.marked = map[word.word] ?? false
-      console.log(word.word,map[word.word])
+      console.log(word.word, map[word.word])
       return word
     })
   }

@@ -1,6 +1,6 @@
 "use client"
-import AudioComponent from "./components/AudioComponent";
-import BoardComponent from "./components/BoardComponent"
+import AudioComponent from "@/app/components/AudioComponent";
+import BoardComponent from "@/app/components/BoardComponent"
 
 
 export default function Home() {
@@ -9,7 +9,7 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center justify-between">
 
     <AudioComponent str={"xxxx"}/>
-    <BoardComponent />
+    <BoardComponent/>
 
     </main>
   );

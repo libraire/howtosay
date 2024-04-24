@@ -4,6 +4,8 @@ export interface Word {
     imgurl:string;
     emoji:string;
     marked:boolean;
+    level: number;
+    query_count: number;
 }
 
 export interface Char {
