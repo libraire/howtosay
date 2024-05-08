@@ -53,10 +53,10 @@ const KeyBoardRowComponent: React.FC<{ char: string }> = ({ char }) => {
 
 const KeyBoardFuncComponent: React.FC = () => {
   const [wordChar, setChar] = useState<FuncKey[]>([
-    { char: "▶", key: "ArrowUp" },
-    { char: "Hint", key: "ArrowRight" },
-    { char: "Reveal", key: "ArrowLeft" },
-    { char: "Next", key: "ArrowDown" },
+    { char: "▶", key: "3" },
+    { char: "Hint", key: "1" },
+    { char: "Reveal", key: "2" },
+    { char: "Next", key: "4" },
   ]);
 
   return (

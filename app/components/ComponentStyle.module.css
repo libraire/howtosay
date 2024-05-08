@@ -265,8 +265,6 @@
   -webkit-background-clip: text;
 }
 
-
-
 .star_button {
   font-size: 17px;
   width: 32px;
@@ -291,4 +289,29 @@
 
 .svg_inline {
   display: inline;
+}
+
+
+.popoverContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.trigger {
+  border: none;
+  cursor: pointer;
+  color: #186cb8;
+}
+
+.popover {
+  position: absolute;
+  bottom: 30px;
+  left: 0;
+  width: 120px;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 8px;
 }

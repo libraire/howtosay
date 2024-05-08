@@ -1,13 +1,13 @@
 "use client"
 import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react"
-import WordList from "@/app/components/WordList";
 import { Word } from "@/app/components/types";
-import AudioComponent from "@/app/components/AudioComponent";
-import PractiseComponent from "@/app/components/PractiseComponent"
 import styles from "@/app/components/ComponentStyle.module.css";
 import MyDropDown from "@/app/components/DrowDown";
 import UserButton from "@/app/components/user-button"
+import { XMarkIcon, Bars3Icon } from '@heroicons/react/20/solid'
+import WordSlideOver from "@/app/components/WordSlideOver";
+
 
 export default function Home() {
 
@@ -16,10 +16,11 @@ export default function Home() {
     })
 
     const [message, setMessage] = useState('');
-    const [practise, setPractise] = useState(false)
     const [read, setRead] = useState(false)
     const [isButtonDisabled, setButtonDisabled] = useState(false);
     const [wordList, setWordList] = useState<Word[]>([]);
+    const [isOpen, setIsOpen] = useState(false);
+    const handleOnClose = () => setIsOpen(false);
 
     const [popoverVisible, setPopoverVisible] = useState<boolean[]>(Array(10000).fill(false));
 
@@ -67,19 +68,15 @@ export default function Home() {
         }
     };
 
-
-    function togglePractise() {
-
-        setPractise(true)
-    }
-
     async function toggleReading() {
 
-        await handleSending()
-        setRead(true)
+        if (read) {
+            setRead(false)
+        } else {
+            await handleSending()
+            setRead(true)
+        }
     }
-
-
 
     useEffect(() => {
 
@@ -101,13 +98,9 @@ export default function Home() {
                 <UserButton />
             </div>
 
-            {!practise &&
+            {!read &&
                 <div className="container mx-auto pt-2">
                     <div className='max-w-screen-sm mx-auto p-4'>
-                        <label htmlFor="email" className="mb-2 block text-m font-medium leading-6 text-white">
-                            Filter the words
-                        </label>
-
                         <div className="flex items-start space-x-4">
                             <div className="min-w-0 flex-1">
                                 <div className="relative">
@@ -157,25 +150,6 @@ export default function Home() {
                                                 Read Mode
                                             </button>
 
-                                            <button
-                                                type="button"
-                                                id='send'
-                                                className="mr-4 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                                onClick={handleSending}
-                                                disabled={isButtonDisabled}
-                                            >
-                                                Practice Mode
-                                            </button>
-
-                                            <button
-                                                type="button"
-                                                id='send'
-                                                className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                                onClick={handleSending}
-                                                disabled={isButtonDisabled}
-                                            >
-                                                Filter Mode
-                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -186,28 +160,13 @@ export default function Home() {
                 </div>
             }
 
-
-            {!practise && wordList.length > 0 && <WordList wordList={wordList} practise={() => setPractise(true)}></WordList>}
-
-
-            {practise && <>
-                <AudioComponent str={"xxxx"} />
-                <PractiseComponent list={wordList} />
-            </>}
-
             {read && <>
-                <div className="text-lg font-sans bg-white text-gray-900 rounded-lg shadow-lg p-6  whitespace-pre-wrap max-w-screen-md">
-                    {/* <div dangerouslySetInnerHTML={{
-                        __html: message.split(' ').map((item) => {
-                            if (wordList.some(v => v.word == item)) {
-                                return `<span className={styles.trigger} onMouseEnter={handlePopoverToggle} onMouseLeave={handlePopoverToggle} >${item} </span>`
-                            }
-                            return item
-                        }).join(" ")
-                    }}>
+                <div className="text-lg font-sans bg-white text-gray-900 rounded-lg shadow-lg p-6  whitespace-pre-wrap max-w-screen-md mb-20 mt-5">
 
-                    </div> */}
-
+                    <div className="flex justify-end">
+                        <Bars3Icon className="cursor-pointer -mr-1 h-6 w-10 mr-2" onClick={() => { setIsOpen(true) }} > </Bars3Icon>
+                        <XMarkIcon className="cursor-pointer -mr-1 h-6 w-6" onClick={() => { toggleReading() }}> </XMarkIcon>
+                    </div>
 
 
                     {
@@ -231,15 +190,10 @@ export default function Home() {
                             return `${item} `
                         })
                     }
-
-
-
                 </div>
             </>}
 
-
-
-
+            <WordSlideOver open={isOpen} onClose={handleOnClose} wordList={wordList} />
 
         </main>
     );

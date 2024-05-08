@@ -17,19 +17,8 @@ export default function Home() {
 
     const [message, setMessage] = useState('');
     const [practise, setPractise] = useState(false)
-    const [read, setRead] = useState(false)
     const [isButtonDisabled, setButtonDisabled] = useState(false);
     const [wordList, setWordList] = useState<Word[]>([]);
-
-    const [popoverVisible, setPopoverVisible] = useState<boolean[]>(Array(10000).fill(false));
-
-    const handlePopoverToggle = (index: number) => {
-        setPopoverVisible((prevState) => {
-            const updatedState = [...prevState];
-            updatedState[index] = !updatedState[index];
-            return updatedState;
-        });
-    };
 
     const handleSending = async () => {
         if (!message) {
@@ -57,6 +46,7 @@ export default function Home() {
             if (response.ok) {
                 const json = await response.json();
                 setWordList(json.words)
+                setPractise(true)
             } else {
                 console.log('Post request failed');
             }
@@ -66,20 +56,6 @@ export default function Home() {
             setButtonDisabled(false)
         }
     };
-
-
-    function togglePractise() {
-
-        setPractise(true)
-    }
-
-    async function toggleReading() {
-
-        await handleSending()
-        setRead(true)
-    }
-
-
 
     useEffect(() => {
 
@@ -151,30 +127,10 @@ export default function Home() {
                                                 type="button"
                                                 id='send'
                                                 className="mr-4 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                                onClick={() => { toggleReading() }}
-                                                disabled={isButtonDisabled}
-                                            >
-                                                Read Mode
-                                            </button>
-
-                                            <button
-                                                type="button"
-                                                id='send'
-                                                className="mr-4 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                                                 onClick={handleSending}
                                                 disabled={isButtonDisabled}
                                             >
-                                                Practice Mode
-                                            </button>
-
-                                            <button
-                                                type="button"
-                                                id='send'
-                                                className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                                onClick={handleSending}
-                                                disabled={isButtonDisabled}
-                                            >
-                                                Filter Mode
+                                                Practice
                                             </button>
                                         </div>
                                     </div>
@@ -194,52 +150,6 @@ export default function Home() {
                 <AudioComponent str={"xxxx"} />
                 <PractiseComponent list={wordList} />
             </>}
-
-            {read && <>
-                <div className="text-lg font-sans bg-white text-gray-900 rounded-lg shadow-lg p-6  whitespace-pre-wrap max-w-screen-md">
-                    {/* <div dangerouslySetInnerHTML={{
-                        __html: message.split(' ').map((item) => {
-                            if (wordList.some(v => v.word == item)) {
-                                return `<span className={styles.trigger} onMouseEnter={handlePopoverToggle} onMouseLeave={handlePopoverToggle} >${item} </span>`
-                            }
-                            return item
-                        }).join(" ")
-                    }}>
-
-                    </div> */}
-
-
-
-                    {
-                        message.split(' ').map((item, index) => {
-                            if (wordList.some(v => v.word == item)) {
-                                return (
-
-                                    <div className={styles.popoverContainer}>
-                                        <span key={index} className={styles.trigger} onClick={() => handlePopoverToggle(index)} >
-                                            {`${item} `}
-                                            {popoverVisible[index] && (
-                                                <div className={styles.popover}>
-                                                    <p>Ignore</p>
-                                                    <p>Add</p>
-                                                </div>
-                                            )}
-                                        </span>
-                                    </div>
-                                )
-                            }
-                            return `${item} `
-                        })
-                    }
-
-
-
-                </div>
-            </>}
-
-
-
-
 
         </main>
     );

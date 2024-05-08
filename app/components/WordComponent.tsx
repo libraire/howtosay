@@ -47,6 +47,7 @@ const WordComponent: React.FC<Props> = ({
 
   function handleKeyDown(event: KeyboardEvent) {
     const key = event.key;
+    console.log(key)
 
     if (key == " " || key == "Enter") {
       setChars((prevChars) => {
@@ -65,16 +66,16 @@ const WordComponent: React.FC<Props> = ({
         }
         return newChars;
       });
-    } else if (key === "ArrowRight") {
+    } else if (key === "1") {
       playSound("press");
       hint(false);
-    } else if (key === "ArrowLeft") {
+    } else if (key === "2") {
       playSound("press");
       hint(true);
-    } else if (key === "ArrowDown") {
+    } else if (key === "4") {
       playSound("press");
       next();
-    } else if (key === "ArrowUp") {
+    } else if (key === "3") {
       speechSynthesis.speak(new SpeechSynthesisUtterance(word));
     } else if (/^[a-zA-Z]$/.test(key)) {
       setChars((prevChars) => {
