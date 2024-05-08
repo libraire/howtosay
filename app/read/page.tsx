@@ -9,6 +9,7 @@ import { XMarkIcon, Bars3Icon } from '@heroicons/react/20/solid'
 import WordSlideOver from "@/app/components/WordSlideOver";
 import AudioComponent from "@/app/components/AudioComponent";
 import PractiseComponent from "@/app/components/PractiseComponent"
+import { BookmarkIcon, EyeSlashIcon, EyeIcon } from '@heroicons/react/24/outline'
 
 export default function Home() {
 
@@ -18,11 +19,13 @@ export default function Home() {
 
     const [message, setMessage] = useState('');
     const [read, setRead] = useState(false)
+    const [hidden, setHidden] = useState(false)
     const [isButtonDisabled, setButtonDisabled] = useState(false);
     const [wordList, setWordList] = useState<Word[]>([]);
     const [isOpen, setIsOpen] = useState(false);
     const handleOnClose = () => setIsOpen(false);
     const [practise, setPractise] = useState(false)
+    var wordbackup: Word[] = []
 
     const [popoverVisible, setPopoverVisible] = useState<boolean[]>(Array(10000).fill(false));
 
@@ -33,6 +36,37 @@ export default function Home() {
             return updatedState;
         });
     };
+
+    function ignoreWord(word: string) {
+        fetch("/hts/api/v1/ignore", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ body: word }),
+        }).then((response: Response) => {
+            return response.json()
+        }).then((data) => {
+            if (data.status == 'ok') {
+                setWordList((prevList) => {
+                    return [...prevList.filter((item) => item.word !== word)]
+                })
+            }
+        });
+    }
+
+    function markWord(word: string) {
+        fetch("/hts/api/v1/mark?word=" + word, { method: 'POST', })
+            .then((response: Response) => {
+                return response.json()
+            }).then((data) => {
+                if (data.status == 'ok') {
+                    setWordList((prevList) => {
+                        return [...prevList.filter((item) => item.word !== word)]
+                    })
+                }
+            });
+    }
 
     const handleSending = async () => {
         if (!message) {
@@ -185,6 +219,8 @@ export default function Home() {
                 <div className="text-lg font-sans bg-white text-gray-900 rounded-lg shadow-lg p-6  whitespace-pre-wrap max-w-screen-md mb-20 mt-5">
 
                     <div className="flex justify-end">
+                        {!hidden && <EyeSlashIcon className="cursor-pointer -mr-1 h-6 w-6 mr-2" onClick={() => { wordbackup = wordList; setWordList([]); setHidden(true) }}> </EyeSlashIcon>}
+                        {hidden && <EyeIcon className="cursor-pointer -mr-1 h-6 w-6 mr-2" onClick={() => { setWordList(wordbackup); setHidden(false) }}> </EyeIcon>}
                         <Bars3Icon className="cursor-pointer -mr-1 h-6 w-10 mr-2" onClick={() => { setIsOpen(true) }} > </Bars3Icon>
                         <XMarkIcon className="cursor-pointer -mr-1 h-6 w-6" onClick={() => { toggleReading() }}> </XMarkIcon>
                     </div>
@@ -194,14 +230,18 @@ export default function Home() {
                         message.split(' ').map((item, index) => {
                             if (wordList.some(v => v.word == item)) {
                                 return (
-
                                     <div className={styles.popoverContainer}>
                                         <span key={index} className={styles.trigger} onClick={() => handlePopoverToggle(index)} >
                                             {`${item} `}
                                             {popoverVisible[index] && (
                                                 <div className={styles.popover}>
-                                                    <p>Ignore</p>
-                                                    <p>Add</p>
+                                                    <EyeSlashIcon className="cursor-pointer h-5 w-5 text-gray-900" onClick={() => {
+                                                        ignoreWord(item)
+                                                    }}> </EyeSlashIcon>
+
+                                                    <BookmarkIcon className="cursor-pointer h-5 w-5 text-gray-900" onClick={() => {
+                                                        markWord(item)
+                                                    }}></BookmarkIcon>
                                                 </div>
                                             )}
                                         </span>
@@ -216,7 +256,7 @@ export default function Home() {
 
             {practise && <>
                 <AudioComponent str={"xxxx"} />
-                <PractiseComponent list={wordList} onClose={togglePractise}/>
+                <PractiseComponent list={wordList} onClose={togglePractise} />
             </>}
 
             <WordSlideOver open={isOpen} onClose={handleOnClose} wordList={wordList} />

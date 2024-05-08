@@ -90,10 +90,6 @@ export default function Home() {
             {!practise &&
                 <div className="container mx-auto pt-2">
                     <div className='max-w-screen-sm mx-auto p-4'>
-                        <label htmlFor="email" className="mb-2 block text-m font-medium leading-6 text-white">
-                            Filter the words
-                        </label>
-
                         <div className="flex items-start space-x-4">
                             <div className="min-w-0 flex-1">
                                 <div className="relative">
