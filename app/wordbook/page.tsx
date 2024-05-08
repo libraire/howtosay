@@ -162,7 +162,7 @@ export default function Home() {
             </>}
             {practise && <>
                 <AudioComponent str={"xxxx"} />
-                <PractiseComponent list={wordList} />
+                <PractiseComponent list={wordList} onClose={() => { setPractise(false) }} />
             </>}
 
             <InputModal open={importOpen} onClose={() => { setImportOpen(false) }} importWords={importWords} ></InputModal>

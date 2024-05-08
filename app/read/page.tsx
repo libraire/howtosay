@@ -7,7 +7,8 @@ import MyDropDown from "@/app/components/DrowDown";
 import UserButton from "@/app/components/user-button"
 import { XMarkIcon, Bars3Icon } from '@heroicons/react/20/solid'
 import WordSlideOver from "@/app/components/WordSlideOver";
-
+import AudioComponent from "@/app/components/AudioComponent";
+import PractiseComponent from "@/app/components/PractiseComponent"
 
 export default function Home() {
 
@@ -21,6 +22,7 @@ export default function Home() {
     const [wordList, setWordList] = useState<Word[]>([]);
     const [isOpen, setIsOpen] = useState(false);
     const handleOnClose = () => setIsOpen(false);
+    const [practise, setPractise] = useState(false)
 
     const [popoverVisible, setPopoverVisible] = useState<boolean[]>(Array(10000).fill(false));
 
@@ -78,8 +80,18 @@ export default function Home() {
         }
     }
 
-    useEffect(() => {
+    async function togglePractise() {
 
+        if (practise) {
+            setPractise(false)
+        } else {
+            await handleSending()
+            setPractise(true)
+        }
+    }
+
+
+    useEffect(() => {
 
     }, [])
 
@@ -98,7 +110,7 @@ export default function Home() {
                 <UserButton />
             </div>
 
-            {!read &&
+            {!read && !practise &&
                 <div className="container mx-auto pt-2">
                     <div className='max-w-screen-sm mx-auto p-4'>
                         <div className="flex items-start space-x-4">
@@ -114,7 +126,6 @@ export default function Home() {
                                             id="comment"
                                             className="block w-full resize-none border-0 bg-transparent py-1.5 text-white placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 p-2"
                                             placeholder=" Paste text here..."
-                                            defaultValue={''}
                                             onChange={(e) => setMessage(e.target.value)}
                                             value={message}
                                         />
@@ -144,7 +155,17 @@ export default function Home() {
                                                 type="button"
                                                 id='send'
                                                 className="mr-4 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                                onClick={() => { toggleReading() }}
+                                                onClick={togglePractise}
+                                                disabled={isButtonDisabled}
+                                            >
+                                                Practise
+                                            </button>
+
+                                            <button
+                                                type="button"
+                                                id='send'
+                                                className="mr-4 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                                onClick={toggleReading}
                                                 disabled={isButtonDisabled}
                                             >
                                                 Read Mode
@@ -191,6 +212,11 @@ export default function Home() {
                         })
                     }
                 </div>
+            </>}
+
+            {practise && <>
+                <AudioComponent str={"xxxx"} />
+                <PractiseComponent list={wordList} onClose={togglePractise}/>
             </>}
 
             <WordSlideOver open={isOpen} onClose={handleOnClose} wordList={wordList} />

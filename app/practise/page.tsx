@@ -20,6 +20,16 @@ export default function Home() {
     const [isButtonDisabled, setButtonDisabled] = useState(false);
     const [wordList, setWordList] = useState<Word[]>([]);
 
+    async function togglePractise() {
+
+        if (practise) {
+            setPractise(false)
+        } else {
+            await handleSending()
+            setPractise(true)
+        }
+    }
+
     const handleSending = async () => {
         if (!message) {
             alert('The content is empty');
@@ -142,13 +152,9 @@ export default function Home() {
                 </div>
             }
 
-
-            {!practise && wordList.length > 0 && <WordList wordList={wordList} practise={() => setPractise(true)}></WordList>}
-
-
             {practise && <>
                 <AudioComponent str={"xxxx"} />
-                <PractiseComponent list={wordList} />
+                <PractiseComponent list={wordList} onClose={togglePractise} />
             </>}
 
         </main>

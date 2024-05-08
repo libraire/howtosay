@@ -7,11 +7,13 @@ import KeyBoardComponent from "./KeyBoardComponent";
 import { useSession } from "next-auth/react"
 import { useRouter } from 'next/navigation'
 import HelpSlideOver from "./HelpSlideOver";
+import { XCircleIcon } from '@heroicons/react/24/outline'
 
 
-const BoardComponent: React.FC<{ list: Word[] }> = ({ list }) => {
+
+const PractiseComponent: React.FC<{ list: Word[], onClose: () => void }> = ({ list, onClose }) => {
     const [word, setWord] = useState<Word>();
-    const [level, setLevel] = useState<string>("default");
+    const [definition, setDefinition] = useState<string>("");
     const [wordList, setWordList] = useState<Word[]>([]);
     const [completed, setCompleted] = useState<boolean>(false);
     const [marked, setMarked] = useState<boolean>(false);
@@ -24,16 +26,35 @@ const BoardComponent: React.FC<{ list: Word[] }> = ({ list }) => {
     })
 
     useEffect(() => {
-
         if (list && list.length > 0) {
-            fetchDefinition(list)
+            fetchDefinitions(list)
         }
-
     }, []);
 
     function nextWord() {
         setCompleted(false);
         fetchDefinition(wordList)
+    }
+
+    function fetchDefinitions(list: Word[]) {
+        let words = list.map((w) => w.word).join(',')
+        fetch("/hts/api/v1/definitions?words=" + words).then((response: Response) => {
+            return response.json()
+        }).then((data) => {
+            data.words.forEach((w: Word) => {
+                const wd = list.find(x => x.word == w.word)
+                if (wd) {
+                    wd.definition = w.definition
+                }
+            })
+
+            var wd = list.shift();
+            setWord(wd);
+            setMarked(!!wd?.marked);
+            console.log(wd?.definition)
+            setDefinition(wd?.definition || "");
+            setWordList(list);
+        })
     }
 
     function fetchDefinition(list: Word[]) {
@@ -43,16 +64,10 @@ const BoardComponent: React.FC<{ list: Word[] }> = ({ list }) => {
             return
         }
 
-        fetch("/hts/api/v1/definition?word=" + wd.word).then((response: Response) => {
-            return response.json()
-        }).then((data) => {
-            if (wd) {
-                wd.definition = data.definition
-            }
-            setWord(wd);
-            setMarked(!!wd?.marked);
-            setWordList(list);
-        })
+        setWord(wd);
+        setMarked(!!wd?.marked);
+        setDefinition(wd?.definition || "");
+        setWordList(list);
     }
 
     function markWord() {
@@ -112,12 +127,17 @@ const BoardComponent: React.FC<{ list: Word[] }> = ({ list }) => {
                         </svg>
                     </button>}
                     {marked && <button onClick={unmarkWord} className={styles.star_button_marked}>
-
-
                         <svg xmlns="http://www.w3.org/2000/svg" fill="yellow" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 inline">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
                         </svg>
                     </button>}
+
+                    {<button onClick={onClose} className={styles.star_button}>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6 inline">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+                        </svg>
+                    </button>}
+
                 </div>
             )}
 
@@ -125,7 +145,7 @@ const BoardComponent: React.FC<{ list: Word[] }> = ({ list }) => {
                 word={word?.word ?? ""}
                 next={() => nextWord()}
                 complete={() => setCompleted(true)}
-                definition={word?.definition ?? ""}
+                definition={definition}
                 imgurl={word?.imgurl ?? ""}
                 emoji={word?.emoji ?? ""}
             />
@@ -137,4 +157,4 @@ const BoardComponent: React.FC<{ list: Word[] }> = ({ list }) => {
     );
 };
 
-export default BoardComponent;
+export default PractiseComponent;

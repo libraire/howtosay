@@ -52,14 +52,16 @@ export default function HelpSlideOver({ open, onClose }: { open: boolean, onClos
                         </div>
                         <div className={styles.manualItem}>
                           <div className="-mr-1 h-10 w-10 text-gray-950 rounded-lg border-gray-950 border-2 mr-4 text-[30px] text-center" aria-hidden="true" > 2  </div>
-                          Reveal
+                          Pronounce
                         </div>
                         <div className={styles.manualItem}>
                           <div className="-mr-1 h-10 w-10 text-gray-950 rounded-lg border-gray-950 border-2 mr-4 text-[30px] text-center" aria-hidden="true" > 3  </div>
-                          Pronounce</div>
+                          Reveal
+                        </div>
                         <div className={styles.manualItem}>
                           <div className="-mr-1 h-10 w-10 text-gray-950 rounded-lg border-gray-950 border-2 mr-4 text-[30px] text-center" aria-hidden="true" > 4  </div>
-                          Next</div>
+                          Next
+                        </div>
                       </div>
                     </div>
                   </div>
