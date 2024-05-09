@@ -67,6 +67,7 @@
   max-width: 600px;
   margin-top: 20px;
   padding: 0px 10px;
+  font-size: larger;
   display: flex;
   flex: auto;
   overflow-y: auto;

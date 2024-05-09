@@ -1,10 +1,9 @@
 "use client"
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react"
 import { Word } from "@/app/components/types";
 import styles from "@/app/components/ComponentStyle.module.css";
-import MyDropDown from "@/app/components/DrowDown";
-import UserButton from "@/app/components/user-button"
+import Navbar from "@/app/components/Navbar";
 import { XMarkIcon, Bars3Icon } from '@heroicons/react/20/solid'
 import WordSlideOver from "@/app/components/WordSlideOver";
 import AudioComponent from "@/app/components/AudioComponent";
@@ -132,17 +131,7 @@ export default function Home() {
     return (
         <main className="flex min-h-screen flex-col items-center bg-gray-900">
 
-            <div className={styles.headContainer}>
-                <div className={styles.title}>
-                    {" "}
-                    <span className={styles.displayNarrow}>💡 </span>How To Say
-                </div>
-                <div className="flex-1 "> </div>
-                <MyDropDown showHelpSlide={() => {
-                    // setIsOpen(true)
-                }} />
-                <UserButton />
-            </div>
+            <Navbar />
 
             {!read && !practise &&
                 <div className="container mx-auto pt-2">
@@ -159,7 +148,7 @@ export default function Home() {
                                             name="comment"
                                             id="comment"
                                             className="block w-full resize-none border-0 bg-transparent py-1.5 text-white placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 p-2"
-                                            placeholder=" Paste text here..."
+                                            placeholder=" Paste words  here..."
                                             onChange={(e) => setMessage(e.target.value)}
                                             value={message}
                                         />

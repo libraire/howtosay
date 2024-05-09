@@ -3,9 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react"
 import WordBook from "@/app/components/WordBook";
 import { Word } from "@/app/components/types";
-import styles from "@/app/components/ComponentStyle.module.css";
-import MyDropDown from "@/app/components/DrowDown";
-import UserButton from "@/app/components/user-button"
+import Navbar from "@/app/components/Navbar";
 import Pagination from '@/app/components/Pagination'
 import ListMenu from '@/app/components/ListMenu'
 import InputModal from '@/app/components/InputModal'
@@ -28,7 +26,6 @@ export default function Home() {
 
 
     function fetchCollection(currentPage: number, level: number) {
-
         fetch("/hts/api/v1/word?level=" + level + "&page=" + currentPage).then((response: Response) => {
             response.json().then((data) => {
                 setWordList(data.words)
@@ -76,18 +73,7 @@ export default function Home() {
     return (
         <main className="flex min-h-screen flex-col items-center bg-gray-900 pb-10">
 
-            <div className={styles.headContainer}>
-                <div className={styles.title}>
-                    {" "}
-                    <span className={styles.displayNarrow}>💡 </span>How To Say
-                </div>
-                <div className="flex-1 "> </div>
-                <MyDropDown showHelpSlide={() => {
-                    // setIsOpen(true)
-                }} />
-                <UserButton />
-            </div>
-
+            <Navbar />
             {!practise && <>
                 <div className="flex justify-start mt-4 bg-white w-[600px] px-4 py-4 ">
 
