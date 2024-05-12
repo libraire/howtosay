@@ -9,11 +9,15 @@ import WordSlideOver from "@/app/components/WordSlideOver";
 import AudioComponent from "@/app/components/AudioComponent";
 import PractiseComponent from "@/app/components/PractiseComponent"
 import { BookmarkIcon, EyeSlashIcon, EyeIcon } from '@heroicons/react/24/outline'
+import { redirect } from "next/navigation"
 
 export default function Home() {
 
-    const { data: session } = useSession({
-        required: false,
+    const { data: session, update } = useSession({
+        required: true,
+        onUnauthenticated() {
+            redirect("/api/auth/signin")
+        }
     })
 
     const [message, setMessage] = useState('');

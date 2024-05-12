@@ -9,11 +9,15 @@ import ListMenu from '@/app/components/ListMenu'
 import InputModal from '@/app/components/InputModal'
 import AudioComponent from "@/app/components/AudioComponent";
 import PractiseComponent from "@/app/components/PractiseComponent"
+import { redirect } from "next/navigation"
 
 export default function Home() {
 
-    const { data: session } = useSession({
-        required: false,
+    const { data: session, update } = useSession({
+        required: true,
+        onUnauthenticated() {
+            redirect("/api/auth/signin")
+        }
     })
 
     const [wordList, setWordList] = useState<Word[]>([]);
