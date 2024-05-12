@@ -219,8 +219,8 @@ export default function Home() {
                         message.split(' ').map((item, index) => {
                             if (wordList.some(v => v.word == item)) {
                                 return (
-                                    <div className={styles.popoverContainer}>
-                                        <span key={index} className={styles.trigger} onClick={() => handlePopoverToggle(index)} >
+                                    <div key={index} className={styles.popoverContainer}>
+                                        <span className={styles.trigger} onClick={() => handlePopoverToggle(index)} >
                                             {`${item} `}
                                             {popoverVisible[index] && (
                                                 <div className={styles.popover}>
