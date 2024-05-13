@@ -15,6 +15,9 @@ function signToken(payload: Record<string, unknown>) {
 
 export async function middleware(request: NextRequest) {
 
+  console.log(request.headers)
+  console.log(request.cookies)
+  
   const session = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET }); 
   const requestHeaders = new Headers(request.headers)
   requestHeaders.set('user', signToken(session as Record<string, unknown>))
