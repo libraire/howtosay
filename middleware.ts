@@ -4,6 +4,9 @@ import { getToken } from "next-auth/jwt";
 
 
 function signToken(payload: Record<string, unknown>) {
+  console.log("xxxxx")
+  console.log(payload)
+  console.log("xxxxx")
   var encoded = btoa(JSON.stringify(payload))
   // var actual = JSON.parse(atob(encoded))
   return encoded
