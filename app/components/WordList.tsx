@@ -33,6 +33,22 @@ const WordList: React.FC<{ wordList: Word[], practise: () => void; }> = ({ wordL
         });
     }
 
+    function markWord(word: string, index: number) {
+        fetch("/hts/api/v1/mark?word=" + word, { method: 'POST', })
+            .then((response: Response) => {
+                return response.json()
+            }).then((data) => {
+                if (data.status == 'ok') {
+                    setWordList((prevList) => {
+                        const newList = [...prevList];
+                        newList.splice(index, 1);
+                        return newList;
+                    });
+                }
+            });
+    }
+
+
     function addWord() {
 
         const body = mylist?.map(w => w.word).join(' ')
@@ -103,7 +119,7 @@ const WordList: React.FC<{ wordList: Word[], practise: () => void; }> = ({ wordL
                                                     <td className="flex justify-around relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
 
                                                         <BookmarkIcon className="cursor-pointer h-4 w-4 text-gray-900" onClick={() => {
-
+                                                            markWord(item.word,index)
                                                         }}> </BookmarkIcon>
 
                                                         <Link target="_blank" href={'https://youglish.com/pronounce/' + item.word + '/english?'} >

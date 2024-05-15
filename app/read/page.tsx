@@ -209,9 +209,9 @@ export default function Home() {
             }
 
             {read && <>
-                <div className="text-lg font-sans bg-white text-gray-900 rounded-lg shadow-lg p-6  whitespace-pre-wrap max-w-screen-md mb-20 mt-5">
+                <div className="text-lg  font-serif bg-white text-gray-700 rounded-lg shadow-lg p-6  whitespace-pre-wrap max-w-screen-md mb-20 mt-5 px-16">
 
-                    <div className="flex justify-end">
+                    <div className="flex justify-end mb-10">
                         {!hidden && <EyeSlashIcon className="cursor-pointer -mr-1 h-6 w-6 mr-2" onClick={() => { wordbackup = wordList; setWordList([]); setHidden(true) }}> </EyeSlashIcon>}
                         {hidden && <EyeIcon className="cursor-pointer -mr-1 h-6 w-6 mr-2" onClick={() => { setWordList(wordbackup); setHidden(false) }}> </EyeIcon>}
                         <Bars3Icon className="cursor-pointer -mr-1 h-6 w-10 mr-2" onClick={() => { setIsOpen(true) }} > </Bars3Icon>
