@@ -12,6 +12,7 @@ type Props = {
   definition: string;
   imgurl: string;
   emoji: string;
+  showExample: boolean
 };
 
 const WordComponent: React.FC<Props> = ({
@@ -20,11 +21,14 @@ const WordComponent: React.FC<Props> = ({
   complete,
   definition,
   imgurl,
-  emoji
+  emoji,
+  showExample
 }) => {
   const [chars, setChars] = useState<Char[]>([]);
   const [completed, setCompleted] = useState<boolean>(false);
   const [imageUrl, setImageUrl] = useState(imgurl);
+  const [examples, setExamples] = useState<string[]>([]);
+
   useEffect(() => {
     setChars(
       word
@@ -37,13 +41,27 @@ const WordComponent: React.FC<Props> = ({
         })
     );
 
+    if (showExample) {
+      fetch("/hts/api/v1/search?word=" + word, { method: 'POST', }).then((response: Response) => {
+        return response.json()
+      }).then((data) => {
+        setExamples(data.examples);
+      });
+    }
+
     setImageUrl(imgurl);
     setCompleted(false);
     document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
+
+
+
+
   }, [word]);
+
+
 
   function handleKeyDown(event: KeyboardEvent) {
     const key = event.key;
@@ -207,7 +225,27 @@ const WordComponent: React.FC<Props> = ({
         {emoji != "" && (
           <div className="text-9xl mt-10">{emoji}</div>
         )}
+
+        {examples.length > 0 && <div>
+          <div className="mt-10">
+            Examples:
+          </div>
+          {
+            examples.map((example, index) => (
+
+              <div key={index} className="mb-5"
+                dangerouslySetInnerHTML={{
+                  __html: mask(word, example)
+                }}
+              />
+
+            ))
+          }
+        </div>
+        }
+
       </div>
+
     </>
   );
 };

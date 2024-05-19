@@ -187,6 +187,7 @@ const BoardComponent: React.FC<{}> = () => {
         definition={word?.definition ?? ""}
         imgurl={word?.imgurl ?? ""}
         emoji={word?.emoji ?? ""}
+        showExample={false}
       />
 
       <KeyBoardComponent />

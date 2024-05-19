@@ -151,6 +151,7 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: () => void }> = ({ li
                 definition={definition}
                 imgurl={word?.imgurl ?? ""}
                 emoji={word?.emoji ?? ""}
+                showExample={true}
             />
 
             <KeyBoardComponent />
