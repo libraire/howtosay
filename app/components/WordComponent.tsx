@@ -188,14 +188,22 @@ const WordComponent: React.FC<Props> = ({
     document.dispatchEvent(eventAwesome);
   }
 
-  function mask(wordToMask: string, originalString: string) {
+  function mask(wordToMask: string, originalString: string, index: number = -1) {
     if (completed) {
+      if (index >= 0) {
+        return index + 1 + ". " + originalString
+      }
       return originalString;
     }
 
     const mask = "_".repeat(wordToMask.length);
     const regex = new RegExp(wordToMask, "gi");
     const maskedString = originalString.replace(regex, mask);
+
+    if (index >= 0) {
+      return index + 1 + ". " + maskedString
+    }
+
     return maskedString;
   }
 
@@ -207,8 +215,8 @@ const WordComponent: React.FC<Props> = ({
         ))}
       </div>
 
-      <div className={styles.definition}>
-        {mask(word, definition)}
+      <div className="max-w-[600px] mx-auto mt-5 px-4 flex flex-col text-lg overflow-y flex-auto">
+        {word && <div className="bg-white rounded-lg p-5 text-gray-900">{mask(word, definition)}</div>}
         {imageUrl != "" && (
           <div>
             <Image
@@ -226,16 +234,16 @@ const WordComponent: React.FC<Props> = ({
           <div className="text-9xl mt-10">{emoji}</div>
         )}
 
-        {examples.length > 0 && <div>
-          <div className="mt-10">
+        {examples.length > 0 && <div className="">
+          <div className="text-white mt-6 mb-2 ">
             Examples:
           </div>
           {
             examples.map((example, index) => (
 
-              <div key={index} className="mb-5"
+              <div key={index} className="mb-5 text-gray-700 bg-white rounded-lg p-5"
                 dangerouslySetInnerHTML={{
-                  __html: mask(word, example)
+                  __html: mask(word, example, index)
                 }}
               />
 

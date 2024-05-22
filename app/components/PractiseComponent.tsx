@@ -7,8 +7,7 @@ import KeyBoardComponent from "./KeyBoardComponent";
 import { useSession } from "next-auth/react"
 import { useRouter } from 'next/navigation'
 import HelpSlideOver from "./HelpSlideOver";
-
-
+import ToolBoxComponent from "./ToolBoxComponent";
 
 const PractiseComponent: React.FC<{ list: Word[], onClose: () => void }> = ({ list, onClose }) => {
     const [word, setWord] = useState<Word>();
@@ -72,6 +71,7 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: () => void }> = ({ li
     function markWord() {
 
         if (!session?.user) {
+            console.log("333333333")
             router.push('/api/auth/signin')
         }
 
@@ -86,6 +86,7 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: () => void }> = ({ li
 
     function unmarkWord() {
         if (!session?.user) {
+            console.log("44444444444444")
             router.push('/api/auth/signin')
         }
 
@@ -100,50 +101,7 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: () => void }> = ({ li
     return (
         <div className={styles.boardContainer}>
 
-            {completed && (
-                <div className="text-yellow-500 text-base mt-10">
-                    🎉🎉🎉 Bravo! Press any key to continue.
-                    {!marked && <button onClick={markWord} className={styles.star_button}>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 inline">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
-                        </svg>
-                    </button>}
-                    {marked && <button onClick={unmarkWord} className={styles.star_button_marked}>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 inline">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
-                        </svg>
-                    </button>}
-                    {<button onClick={onClose} className={styles.star_button}>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6 inline">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
-                        </svg>
-                    </button>}
-                </div>
-            )}
-
-            {!completed && (
-                <div className="text-base≠ mt-10">
-                    Type the word by its definition.
-                    {!marked && <button onClick={markWord} className={styles.star_button}>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 inline">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
-                        </svg>
-                    </button>}
-                    {marked && <button onClick={unmarkWord} className={styles.star_button_marked}>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="yellow" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 inline">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
-                        </svg>
-                    </button>}
-
-                    {<button onClick={onClose} className={styles.star_button}>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6 inline">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
-                        </svg>
-                    </button>}
-
-                </div>
-            )}
-
+            <ToolBoxComponent selectLevel={undefined} marked={marked} mark={markWord} unmark={unmarkWord} onClose={onClose}></ToolBoxComponent>
             <WordComponent
                 word={word?.word ?? ""}
                 next={() => nextWord()}

@@ -22,7 +22,10 @@ export default function RootLayout({
       <meta name="google-adsense-account" content="ca-pub-4248324124681580" />
       <body className={inter.className}>
         <AuthProvider>
-          {children}
+          <div className="bg-gray-900">
+            {children}
+          </div>
+
           <Analytics />
         </AuthProvider>
       </body>

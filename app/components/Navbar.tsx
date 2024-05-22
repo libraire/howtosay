@@ -8,12 +8,21 @@ export default function Navbar() {
     return (
         <>
             <div className={styles.headContainer}>
-                <Link href={'/'} >
-                    <div className={styles.title}>
-                        {" "}
-                        <span className={styles.displayNarrow}>💡 </span>How To Say
+
+                <div className="flex flex-col">
+
+                    <Link href={'/'} >
+                        <div className={styles.title}>
+                            <span>💡 </span>How To Say
+                        </div>
+                    </Link>
+                    
+                    <div className="ml-2 text-gray-400 text-[13px]">
+                        Guess the word from its definition
                     </div>
-                </Link>
+                </div>
+
+
                 <div className="flex-1 "> </div>
                 <MyDropDown showHelpSlide={() => {
                     // setIsOpen(true)

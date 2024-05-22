@@ -7,7 +7,6 @@
   flex-direction: column;
   align-items: center;
   padding-top: 10px;
-  height: 100vh;
   justify-content: space-around;
 }
 
@@ -86,7 +85,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  
+
 }
 
 .manualItem {
@@ -189,31 +188,10 @@
   margin-bottom: 15px;
 }
 
-.displayNarrow {
-  display: none;
-}
-
 .displayWider {
   display: block;
 }
 
-@media only screen and (max-width: 657px) {
-  .keyboardContainer {
-    display: flex;
-    z-index: 999;
-    background-color: black;
-  }
-
-  .charContainer {
-    width: 35px;
-    margin: 4px;
-    font-size: 1.8rem;
-  }
-
-  .manual {
-    display: none;
-  }
-}
 
 .headContainer {
   justify-content: space-between;
@@ -226,16 +204,11 @@
 }
 
 .selectComponent {
-  top: 0px;
-  margin: 0;
+  margin-left: 10px;
 }
 
 .boardContainer {
   padding-top: 0px;
-}
-
-.displayNarrow {
-  display: block;
 }
 
 .displayWider {
@@ -246,6 +219,7 @@
   font-size: 1.2rem;
   font-weight: 500;
   color: transparent;
+  width: 130px;
   background: linear-gradient(220deg,
       #186cb8 19%,
       transparent 19%,
@@ -283,7 +257,7 @@
   background-color: white;
   font-size: 17px;
   cursor: pointer;
-  color: gold;
+  color: rgb(255, 99, 99);
   border-radius: 15px;
   margin-left: 5px;
 }
@@ -315,4 +289,22 @@
   background-color: #fff;
   border: 1px solid #ccc;
   padding: 8px;
+}
+
+@media only screen and (max-width: 657px) {
+  .keyboardContainer {
+    display: flex;
+    z-index: 999;
+    background-color: black;
+  }
+
+  .charContainer {
+    width: 35px;
+    margin: 4px;
+    font-size: 1.8rem;
+  }
+
+  .manual {
+    display: none;
+  }
 }

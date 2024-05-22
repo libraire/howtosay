@@ -62,21 +62,6 @@ export default function MyDropDown({ showHelpSlide }: Props) {
                         <Menu.Item>
                             {({ active }) => (
                                 <a
-                                    onClick={() => {
-                                        showHelpSlide();
-                                    }}
-                                    className={classNames(
-                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                        'block px-4 py-2 text-sm'
-                                    )}
-                                >
-                                    Help
-                                </a>
-                            )}
-                        </Menu.Item>
-                        <Menu.Item>
-                            {({ active }) => (
-                                <a
                                     href="https://www.bytegush.com/about/feedback"
                                     className={classNames(
                                         active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',

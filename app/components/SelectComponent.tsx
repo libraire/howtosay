@@ -3,10 +3,9 @@ import styles from "./ComponentStyle.module.css";
 
 type Props = {
   choose: (value: string) => void;
-  className: string;
 };
 
-const SelectComponent: React.FC<Props> = ({ choose, className }) => {
+const SelectComponent: React.FC<Props> = ({ choose,}) => {
   const [selectedValue, setSelectedValue] = useState<string>("default");
   const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
     const value = event.target.value;
@@ -21,7 +20,7 @@ const SelectComponent: React.FC<Props> = ({ choose, className }) => {
       id="mySelect"
       value={selectedValue}
       onChange={handleSelectChange}
-      className={[styles.selectComponent, className].join(" ")}
+      className={[styles.selectComponent ].join(" ")}
     >
       <optgroup label="Emoji">
         <option value="default">Activity</option>

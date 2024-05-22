@@ -4,12 +4,9 @@ import React, { useState, useEffect } from "react";
 import styles from "./ComponentStyle.module.css";
 import WordComponent from "./WordComponent";
 import KeyBoardComponent from "./KeyBoardComponent";
-import SelectComponent from "./SelectComponent";
-import UserButton from "./user-button"
+import ToolBoxComponent from "./ToolBoxComponent";
 import { useSession } from "next-auth/react"
 import { useRouter } from 'next/navigation'
-import MyDropDown from "./DrowDown";
-import HelpSlideOver from "./HelpSlideOver";
 
 
 const BoardComponent: React.FC<{}> = () => {
@@ -19,7 +16,6 @@ const BoardComponent: React.FC<{}> = () => {
   const [completed, setCompleted] = useState<boolean>(false);
   const [marked, setMarked] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState(false);
-  const handleOnClose = () => setIsOpen(false);
   const router = useRouter()
 
   const { data: session, update } = useSession({
@@ -60,7 +56,6 @@ const BoardComponent: React.FC<{}> = () => {
   function nextWord() {
     setCompleted(false);
     var wd = wordList.shift();
-    console.log("next word", wd)
     setWord(wd);
     setMarked(!!wd?.marked);
     setWordList(wordList);
@@ -84,11 +79,8 @@ const BoardComponent: React.FC<{}> = () => {
       return res;
     }, {});
 
-    console.log(map)
-
     return wordList.map(word => {
       word.marked = map[word.word] ?? false
-      console.log(word.word, map[word.word])
       return word
     })
   }
@@ -96,6 +88,7 @@ const BoardComponent: React.FC<{}> = () => {
   function markWord() {
 
     if (!session?.user) {
+      console.log("22222222222")
       router.push('/api/auth/signin')
     }
 
@@ -110,6 +103,7 @@ const BoardComponent: React.FC<{}> = () => {
 
   function unmarkWord() {
     if (!session?.user) {
+      console.log("111111111")
       router.push('/api/auth/signin')
     }
 
@@ -121,64 +115,17 @@ const BoardComponent: React.FC<{}> = () => {
     }
   }
 
+  function toggleMore() {
+    setIsOpen(!isOpen);
+  }
+
   return (
     <div className={styles.boardContainer}>
-      <div className={styles.headContainer}>
-        <div className={styles.title}>
-          {" "}
-          <span className={styles.displayNarrow}>💡 </span>How To Say
-        </div>
-        <div className="ml-2">
-          <SelectComponent
-            className={styles.displayNarrow}
-            choose={(lv) => {
-              setLevel(lv);
-              fetchData(lv);
-            }}
-          />
-        </div>
 
-        <div className="flex-1 "> </div>
-        <MyDropDown showHelpSlide={() => {
-          setIsOpen(true)
-        }} />
-        <UserButton />
-      </div>
-
-      {completed && (
-        <div className="text-yellow-500 text-base mt-10">
-          🎉🎉🎉 Bravo! Press any key to continue.
-          {!marked && <button onClick={markWord} className={styles.star_button}>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 inline">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
-            </svg>
-          </button>}
-          {marked && <button onClick={unmarkWord} className={styles.star_button_marked}>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 inline">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
-            </svg>
-
-          </button>}
-        </div>
-      )}
-
-      {!completed && (
-        <div className="text-base≠ mt-10">
-          Type the word by its definition.
-          {!marked && <button onClick={markWord} className={styles.star_button}>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 inline">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
-            </svg>
-          </button>}
-          {marked && <button onClick={unmarkWord} className={styles.star_button_marked}>
-
-
-            <svg xmlns="http://www.w3.org/2000/svg" fill="yellow" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 inline">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
-            </svg>
-          </button>}
-        </div>
-      )}
+      <ToolBoxComponent selectLevel={(lv) => {
+        setLevel(lv);
+        fetchData(lv);
+      }} marked={marked} mark={markWord} unmark={unmarkWord} onClose={undefined}></ToolBoxComponent>
 
       <WordComponent
         word={word?.word ?? ""}
@@ -191,7 +138,6 @@ const BoardComponent: React.FC<{}> = () => {
       />
 
       <KeyBoardComponent />
-      <HelpSlideOver open={isOpen} onClose={handleOnClose} />
 
     </div>
   );
