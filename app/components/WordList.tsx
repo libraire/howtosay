@@ -84,7 +84,7 @@ const WordList: React.FC<{ wordList: Word[], practise: () => void; }> = ({ wordL
                                     Build your vocabulary Notebook by adding or ignoring words.
                                 </p>
                             </div>
-                            <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+                            <div className="flex mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
                                 <button
                                     type="button"
                                     onClick={() =>
@@ -93,6 +93,16 @@ const WordList: React.FC<{ wordList: Word[], practise: () => void; }> = ({ wordL
                                     className="block rounded-md bg-indigo-500 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
                                 >
                                     Add All
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        practise()
+                                    }
+                                    className="ml-4 block rounded-md bg-indigo-500 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                                >
+                                    Practise
                                 </button>
                             </div>
                         </div>
@@ -119,7 +129,7 @@ const WordList: React.FC<{ wordList: Word[], practise: () => void; }> = ({ wordL
                                                     <td className="flex justify-around relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
 
                                                         <BookmarkIcon className="cursor-pointer h-4 w-4 text-gray-900" onClick={() => {
-                                                            markWord(item.word,index)
+                                                            markWord(item.word, index)
                                                         }}> </BookmarkIcon>
 
                                                         <Link target="_blank" href={'https://youglish.com/pronounce/' + item.word + '/english?'} >

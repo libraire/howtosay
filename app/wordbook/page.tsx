@@ -30,7 +30,13 @@ export default function Home() {
 
 
     function fetchCollection(currentPage: number, level: number) {
-        fetch("/hts/api/v1/word?level=" + level + "&page=" + currentPage).then((response: Response) => {
+
+        var url = "/hts/api/v1/word?&page=" + currentPage
+        if (level != 0) {
+            url = url + "&level=" + level
+        }
+
+        fetch(url).then((response: Response) => {
             response.json().then((data) => {
                 setWordList(data.words)
                 setTotal(data.total)

@@ -53,10 +53,9 @@
 }
 
 .blackChar {
-  background-color: #000;
+  background-color: #111827;
   width: 100%;
   height: 100%;
-  border-radius: 5px;
   display: flex;
   justify-content: center;
   align-items: center;

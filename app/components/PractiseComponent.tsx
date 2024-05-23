@@ -100,7 +100,15 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: () => void }> = ({ li
     return (
         <div className={styles.boardContainer}>
 
-            <ToolBoxComponent selectLevel={undefined} marked={marked} mark={markWord} unmark={unmarkWord} onClose={onClose}></ToolBoxComponent>
+            <ToolBoxComponent
+                selectLevel={undefined}
+                marked={marked}
+                mark={markWord}
+                unmark={unmarkWord}
+                onClose={onClose}
+                word={word?.word ?? ""}
+            />
+            
             <WordComponent
                 word={word?.word ?? ""}
                 next={() => nextWord()}

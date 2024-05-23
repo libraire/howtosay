@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Link from 'next/link';
 import { TrashIcon, PlayCircleIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
+import LevelComponent from "./LevelComponent"
 
 
 
@@ -28,6 +29,25 @@ const WordBook: React.FC<{ wordList: Word[], onCollectionChange: (e: { id: numbe
                     const newList = [...prevList];
                     newList.splice(index, 1);
                     return newList;
+                });
+
+            }
+        });
+    }
+
+    function updateLevel(word: Word, level: number) {
+        fetch("/hts/api/v1/level?word=" + word.word + "&level=" + level, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }).then((response: Response) => {
+            return response.json()
+        }).then((data) => {
+            if (data.status == 'ok') {
+                word.level = level
+                setWordList((prevList) => {
+                    return [...prevList];
                 });
 
             }
@@ -74,7 +94,7 @@ const WordBook: React.FC<{ wordList: Word[], onCollectionChange: (e: { id: numbe
                                                 <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
                                                     Word
                                                 </th>
-                                                <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                                <th scope="col" className="py-3.5 text-left text-sm font-semibold text-gray-900">
                                                     Level
                                                 </th>
                                                 <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
@@ -88,10 +108,16 @@ const WordBook: React.FC<{ wordList: Word[], onCollectionChange: (e: { id: numbe
                                         <tbody className="divide-y divide-gray-200">
                                             {mylist?.map((item, index) => (
                                                 <tr key={index}>
-                                                    <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+                                                    <td className="whitespace-nowrap py-4 text-sm font-medium text-gray-900 sm:pl-0">
                                                         {item.word}
                                                     </td>
-                                                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.level}</td>
+                                                    <td className="whitespace-nowrap py-4 text-sm text-gray-500">
+
+                                                        <LevelComponent updateLevel={(level) => {
+                                                            updateLevel(item, level == item.level ? 0 : level)
+                                                        }} currentLevel={item.level} pages={[1, 2, 3, 4, 5]} />
+
+                                                    </td>
                                                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.query_count}</td>
                                                     <td className="flex justify-start relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
 

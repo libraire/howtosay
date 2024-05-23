@@ -252,7 +252,12 @@ export default function Home() {
                 <PractiseComponent list={wordList} onClose={togglePractise} />
             </>}
 
-            <WordSlideOver open={isOpen} onClose={handleOnClose} wordList={wordList} />
+            <WordSlideOver open={isOpen} onClose={handleOnClose} wordList={wordList} practise={() => {
+                setIsOpen(false)
+                setRead(false)
+                togglePractise()
+
+            }} />
 
         </main>
     );

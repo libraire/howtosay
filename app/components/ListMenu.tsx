@@ -4,6 +4,11 @@ import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 
 const people = [
     { id: 0, name: 'Default' },
+    { id: 1, name: 'Level 1' },
+    { id: 2, name: 'Level 2' },
+    { id: 3, name: 'Level 3' },
+    { id: 4, name: 'Level 4' },
+    { id: 5, name: 'Level 5' },
     { id: 99, name: 'Ignored' },
 ]
 
@@ -12,7 +17,7 @@ function classNames(...classes: string[]): string {
 }
 
 export default function ListMenu({ onChange }: { onChange: (e: { id: number, name: string }) => void }) {
-    const [selected, setSelected] = useState({ id: 1, name: 'Collections' })
+    const [selected, setSelected] = useState({ id: 1, name: 'Proficiency' })
 
     return (
         <Listbox value={selected} onChange={(e) => {
@@ -36,7 +41,7 @@ export default function ListMenu({ onChange }: { onChange: (e: { id: number, nam
                             leaveFrom="opacity-100"
                             leaveTo="opacity-0"
                         >
-                            <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                            <Listbox.Options className="absolute z-10 mt-1 max-h-80 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                                 {people.map((person) => (
                                     <Listbox.Option
                                         key={person.id}
@@ -50,7 +55,7 @@ export default function ListMenu({ onChange }: { onChange: (e: { id: number, nam
                                     >
                                         {({ selected, active }) => (
                                             <>
-                                                <span className={classNames(selected ? 'font-semibold' : 'font-normal', 'block truncate')}>
+                                                <span className={classNames(selected ? 'font-semibold' : 'font-normal', 'block')}>
                                                     {person.name}
                                                 </span>
 

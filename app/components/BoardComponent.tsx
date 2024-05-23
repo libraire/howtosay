@@ -43,7 +43,7 @@ const BoardComponent: React.FC<{}> = () => {
       const response = await fetch("api/words?level=" + lv);
       const jsonData = await response.json();
       let list = shuffleList(jsonData.wordlist);
-      list = await fetchMarkList(list)
+      fetchMarkList(list)
       var wd = list.shift()
       setWord(wd);
       setMarked(!!wd?.marked);
@@ -61,28 +61,37 @@ const BoardComponent: React.FC<{}> = () => {
     setWordList(wordList);
   }
 
-  async function fetchMarkList(wordList: Word[]) {
+  function fetchMarkList(wordList: Word[]) {
 
     if (!session?.user) {
       return wordList
     }
+
     const words = wordList.map(word => word.word).join(",")
-    const response = await fetch("/hts/api/v1/mark?words=" + words, { method: 'GET', })
-    const jsonData = await response.json()
+    fetch("/hts/api/v1/mark?words=" + words, { method: 'GET', })
+      .then((response) => response.json())
+      .then((jsonData) => {
+        if (!jsonData['words']) {
+          return
+        }
 
-    if (!jsonData['words']) {
-      return wordList
-    }
+        const map = jsonData['words'].reduce((res: { [key: string]: number }, n: { word: string; mark: number }) => {
+          res[n['word']] = n['mark'];
+          return res;
+        }, {});
 
-    const map = jsonData['words'].reduce((res: { [key: string]: number }, n: { word: string; mark: number }) => {
-      res[n['word']] = n['mark'];
-      return res;
-    }, {});
+        const newList = wordList.map(word => {
+          word.marked = map[word.word] ?? false
+          return word
+        })
 
-    return wordList.map(word => {
-      word.marked = map[word.word] ?? false
-      return word
-    })
+        if (newList.length > 0) {
+          setMarked(newList[0].marked);
+          newList.shift()
+          setWordList(newList)
+        }
+      })
+
   }
 
   function markWord() {
@@ -125,7 +134,13 @@ const BoardComponent: React.FC<{}> = () => {
       <ToolBoxComponent selectLevel={(lv) => {
         setLevel(lv);
         fetchData(lv);
-      }} marked={marked} mark={markWord} unmark={unmarkWord} onClose={undefined}></ToolBoxComponent>
+      }}
+        marked={marked}
+        mark={markWord}
+        unmark={unmarkWord}
+        onClose={undefined}
+        word={word?.word ?? ""}
+      />
 
       <WordComponent
         word={word?.word ?? ""}

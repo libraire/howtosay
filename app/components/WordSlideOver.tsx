@@ -4,7 +4,7 @@ import { XMarkIcon } from '@heroicons/react/24/outline'
 import WordList from "@/app/components/WordList";
 import { Word } from "@/app/components/types";
 
-export default function WordSlideOver({ open, onClose, wordList }: { open: boolean, onClose: () => void, wordList: Word[] }) {
+export default function WordSlideOver({ open, onClose, wordList, practise }: { open: boolean, onClose: () => void, wordList: Word[], practise: () => void }) {
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -53,7 +53,7 @@ export default function WordSlideOver({ open, onClose, wordList }: { open: boole
                       </div>
                     </div>
                     <div className="relative mt-6 flex-1 px-4 sm:px-6">
-                        <WordList wordList={wordList} practise={()=>{}}></WordList>
+                        <WordList wordList={wordList} practise={practise}></WordList>
                     </div>
                   </div>
                 </Dialog.Panel>
