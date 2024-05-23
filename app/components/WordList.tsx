@@ -81,7 +81,7 @@ const WordList: React.FC<{ wordList: Word[], practise: () => void; }> = ({ wordL
                         <div className="sm:flex sm:items-center">
                             <div className="sm:flex-auto">
                                 <p className="text-sm text-gray-600">
-                                    Build your vocabulary Notebook by addign or ignoring words.
+                                    Build your vocabulary Notebook by adding or ignoring words.
                                 </p>
                             </div>
                             <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">

@@ -35,6 +35,7 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: () => void }> = ({ li
     }
 
     function fetchDefinitions(list: Word[]) {
+        list = [...list]
         let words = list.map((w) => w.word).join(',')
         fetch("/hts/api/v1/definitions?words=" + words).then((response: Response) => {
             return response.json()
@@ -49,7 +50,6 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: () => void }> = ({ li
             var wd = list.shift();
             setWord(wd);
             setMarked(!!wd?.marked);
-            console.log(wd?.definition)
             setDefinition(wd?.definition || "");
             setWordList(list);
         })
@@ -77,7 +77,6 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: () => void }> = ({ li
 
         if (word) {
             fetch("/hts/api/v1/mark?word=" + word.word, { method: 'POST', }).then((response: Response) => {
-                console.log(response.body)
                 word.marked = true;
                 setMarked(true);
             });
