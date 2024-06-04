@@ -81,7 +81,7 @@ export default function Home() {
     }, [])
 
     return (
-        <main className="flex min-h-screen flex-col items-center bg-gray-900 pb-10">
+        <main className="flex min-h-screen flex-col items-center bg-[#101010] pb-10">
 
             <Navbar />
             {!practise && <>

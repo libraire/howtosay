@@ -74,7 +74,7 @@ const WordList: React.FC<{ wordList: Word[], practise: () => void; }> = ({ wordL
 
     return <>
 
-        <div className="bg-gray-900">
+        <div className="bg-[#101010]">
             <div className="mx-auto max-w-7xl">
                 <div className="bg-white">
                     <div className="">

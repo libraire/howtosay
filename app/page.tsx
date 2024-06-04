@@ -7,7 +7,7 @@ import Navbar from "./components/Navbar";
 export default function Home() {
 
   return (
-    <main className="flex min-h-screen flex-col items-center  bg-gray-900">
+    <main className="flex min-h-screen flex-col items-center  bg-[#101010]">
 
     <Navbar></Navbar>
     <AudioComponent str={"xxxx"}/>

@@ -81,7 +81,7 @@ const WordBook: React.FC<{ wordList: Word[], onCollectionChange: (e: { id: numbe
 
     return <>
 
-        <div className="bg-gray-900 w-[600px]">
+        <div className="bg-[#101010] w-[600px]">
             <div className="mx-auto max-w-7xl">
                 <div className="bg-white">
                     <div className="px-4 sm:px-6 lg:px-8">

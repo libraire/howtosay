@@ -241,7 +241,7 @@ const WordComponent: React.FC<Props> = ({
           {
             examples.map((example, index) => (
 
-              <div key={index} className="mb-5 text-gray-700 bg-white rounded-lg p-5"
+              <div key={index} className="mb-5 text-[#A5A5A5] bg-[#1B1B1B] rounded-lg p-5"
                 dangerouslySetInnerHTML={{
                   __html: mask(word, example, index)
                 }}
