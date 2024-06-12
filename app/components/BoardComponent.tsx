@@ -24,7 +24,7 @@ const BoardComponent: React.FC<{}> = () => {
 
   useEffect(() => {
 
-    if (wordList.length == 0 && session) {
+    if (wordList.length == 0) {
       fetchData(level);
     }
 

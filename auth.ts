@@ -18,15 +18,15 @@ export const handler = NextAuth({
           clientId: process.env.GOOGLE_CLIENT_ID as string,
           clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
         }),
-        EmailProvider({
-          server: process.env.EMAIL_SERVER,
-          from: process.env.EMAIL_FROM
-        }),
+        // EmailProvider({
+        //   server: process.env.EMAIL_SERVER,
+        //   from: process.env.EMAIL_FROM
+        // }),
       ],
-      adapter: SupabaseAdapter({
-        url: process.env.SUPABASE_URL as string,
-        secret: process.env.SUPABASE_SERVICE_ROLE_KEY as string,
-      }) as Adapter,
+      // adapter: SupabaseAdapter({
+      //   url: process.env.SUPABASE_URL as string,
+      //   secret: process.env.SUPABASE_SERVICE_ROLE_KEY as string,
+      // }) as Adapter,
     
 })
 
