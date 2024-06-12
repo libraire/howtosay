@@ -142,6 +142,7 @@ const BoardComponent: React.FC<{}> = () => {
         word={word?.word ?? ""}
         random={()=>{
           setWordList(shuffleList(wordList))
+          nextWord()
         }}
       />
 

@@ -20,7 +20,7 @@ export default function ToolBoxComponent({ selectLevel, marked, mark, unmark, on
 
     return (
         <>
-            <div className="flex bg-white mx-2 p-2  px-2 rounded-[24px] mb-4 mt-10">
+            <div className="flex bg-white mx-2 p-2  px-2 rounded-[24px] mb-4 mt-2">
                 {selectLevel && <SelectComponent
                     choose={selectLevel}
                 />}
