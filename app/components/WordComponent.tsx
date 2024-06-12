@@ -66,11 +66,10 @@ const WordComponent: React.FC<Props> = ({
   function handleKeyDown(event: KeyboardEvent) {
     const key = event.key;
 
-    if (key == " " || key == "Enter") {
+    if (key == "Enter") {
       setChars((prevChars) => {
-        if (checkComplete(prevChars)) {
-          next();
-        }
+        playSound("press");
+        next();
         return prevChars;
       });
     } else if (key === "Backspace") {
@@ -90,14 +89,13 @@ const WordComponent: React.FC<Props> = ({
       playSound("press");
       hint(true);
     } else if (key === "4") {
-      playSound("press");
       next();
     } else if (key === "2") {
       speechSynthesis.speak(new SpeechSynthesisUtterance(word));
     } else if (/^[a-zA-Z]$/.test(key)) {
       setChars((prevChars) => {
         if (checkComplete(prevChars)) {
-          next();
+          // next();
           return prevChars;
         }
         const newChars = [...prevChars];

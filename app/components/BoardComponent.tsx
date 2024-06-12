@@ -140,6 +140,9 @@ const BoardComponent: React.FC<{}> = () => {
         unmark={unmarkWord}
         onClose={undefined}
         word={word?.word ?? ""}
+        random={()=>{
+          setWordList(shuffleList(wordList))
+        }}
       />
 
       <WordComponent

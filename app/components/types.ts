@@ -19,3 +19,11 @@ export interface FuncKey {
     char: string
     key: string
 }
+
+export interface Article {
+    title: string;
+    id: string;
+    created_at: string;
+    updated_at: string;
+    level: number;
+}

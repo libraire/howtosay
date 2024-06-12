@@ -1,0 +1,84 @@
+"use client"
+import { useSession } from "next-auth/react"
+import { Word } from "@/app/components/types";
+import Navbar from "@/app/components/Navbar";
+import AudioComponent from "@/app/components/AudioComponent";
+import PractiseComponent from "@/app/components/PractiseComponent"
+import { redirect } from "next/navigation"
+import { useEffect, useState } from 'react'
+import { usePathname, useSearchParams } from 'next/navigation'
+
+export default function Practise() {
+
+
+    const pathname = usePathname()
+    const { data: session, update } = useSession({
+        required: true,
+        onUnauthenticated() {
+            redirect("/api/auth/signin")
+        }
+    })
+
+    function shuffleList(list: Word[]) {
+        for (let i = list.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [list[i], list[j]] = [list[j], list[i]];
+        }
+        return list;
+    }
+
+    const [wordList, setWordList] = useState<Word[]>([]);
+
+    const handleSending = async (message: string) => {
+
+        const url = '/hts/api/v1/filter';
+        const data = {
+            app: 'howtosay',
+            body: message,
+        };
+
+        return fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+    };
+
+
+    useEffect(() => {
+
+        const id = pathname.substring(pathname.lastIndexOf('/') + 1);
+        if (id) {
+            fetch("/hts/api/v1/material?id=" + id)
+                .then((response: Response) => {
+                    return response.json()
+                }).then((data) => {
+                    console.log(data)
+                    if (data.status == 'ok') {
+                        return data.article.content
+                    }
+                    return ""
+
+                }).then((msg: string) => {
+                    return handleSending(msg)
+                }).then((response: Response) => {
+                    return response.json();
+                }).then((data) => {
+                    setWordList(data.words)
+                });
+        }
+
+    }, [])
+
+    return (
+        <main className="flex min-h-screen flex-col items-center bg-[#101010]">
+
+            <Navbar />
+            <AudioComponent str={"xxxx"} />
+            <PractiseComponent list={wordList} onClose={undefined} />
+
+        </main>
+    );
+}

@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation'
 import HelpSlideOver from "./HelpSlideOver";
 import ToolBoxComponent from "./ToolBoxComponent";
 
-const PractiseComponent: React.FC<{ list: Word[], onClose: () => void }> = ({ list, onClose }) => {
+const PractiseComponent: React.FC<{ list: Word[], onClose: (() => void) | undefined }> = ({ list, onClose }) => {
     const [word, setWord] = useState<Word>();
     const [definition, setDefinition] = useState<string>("");
     const [wordList, setWordList] = useState<Word[]>([]);
@@ -23,11 +23,19 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: () => void }> = ({ li
         required: false,
     })
 
+    function shuffleList(list: Word[]) {
+        for (let i = list.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [list[i], list[j]] = [list[j], list[i]];
+        }
+        return list;
+    }
+
     useEffect(() => {
         if (list && list.length > 0) {
             fetchDefinitions(list)
         }
-    }, []);
+    }, [list]);
 
     function nextWord() {
         setCompleted(false);
@@ -107,8 +115,12 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: () => void }> = ({ li
                 unmark={unmarkWord}
                 onClose={onClose}
                 word={word?.word ?? ""}
+                random={() => {
+                    setWordList([...shuffleList(wordList)])
+                    nextWord()
+                }}
             />
-            
+
             <WordComponent
                 word={word?.word ?? ""}
                 next={() => nextWord()}
