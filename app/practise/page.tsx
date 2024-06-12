@@ -16,20 +16,12 @@ export default function Home() {
         }
     })
 
-    function shuffleList(list: Word[]) {
-        for (let i = list.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [list[i], list[j]] = [list[j], list[i]];
-        }
-        return list;
-    }
-
     const [message, setMessage] = useState('');
     const [isButtonDisabled, setButtonDisabled] = useState(false);
     const [wordList, setWordList] = useState<Word[]>([]);
     const [practise, setPractise] = useState(false)
 
-    const handleSending = (randomly: boolean) => {
+    const handleSending = () => {
         if (!message) {
             alert('The content is empty');
             return;
@@ -41,15 +33,15 @@ export default function Home() {
                 return { word: word.trim(), marked: false, level: 0, query_count: 0, definition: "", imgurl: "", emoji: "" }
             })
 
-        setWordList(randomly ? shuffleList(list) : list);
+        setWordList(list);
 
     };
 
-    async function togglePractise(randomly: boolean = false) {
+    async function togglePractise() {
         if (practise) {
             setPractise(false)
         } else {
-            handleSending(randomly)
+            handleSending()
             setPractise(true)
         }
     }
@@ -101,20 +93,10 @@ export default function Home() {
                                                 type="button"
                                                 id='send'
                                                 className="mr-4 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                                onClick={() => { togglePractise(false) }}
+                                                onClick={() => { togglePractise() }}
                                                 disabled={isButtonDisabled}
                                             >
-                                                Practise Inturn
-                                            </button>
-
-                                            <button
-                                                type="button"
-                                                id='send'
-                                                className="mr-4 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                                onClick={() => { togglePractise(true) }}
-                                                disabled={isButtonDisabled}
-                                            >
-                                                Practise Randomly
+                                                Practise
                                             </button>
 
                                         </div>
