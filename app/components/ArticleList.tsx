@@ -5,9 +5,9 @@ import { Article } from "./types";
 import InputArticle from "../components/InputArticle";
 import LevelComponent from "./LevelComponent"
 
-const ArticleList: React.FC<{ wordList: Article[], onCollectionChange: (e: { id: number, name: string }) => void }> = ({ wordList, onCollectionChange }) => {
+const ArticleList: React.FC<{ wordList: Article[], onCollectionChange: (e: { id: number, name: string }) => void }> = ({ wordList: list, onCollectionChange }) => {
 
-    const [mylist, setWordList] = useState<Article[]>(wordList ?? []);
+    const [mylist, setList] = useState<Article[]>(list ?? []);
     const [importOpen, setImportOpen] = useState<boolean>(false);
     const [articleId, setArticleId] = useState<string>('');
     const [articleTitle, setArticleTitle] = useState<string>('');
@@ -30,6 +30,25 @@ const ArticleList: React.FC<{ wordList: Article[], onCollectionChange: (e: { id:
         });
     }
 
+    function revise(article: Article, proficiency: number) {
+        fetch("/hts/api/v1/material/revise", {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ material_id: article.id, proficiency: proficiency }),
+        }).then((response: Response) => {
+            return response.json()
+        }).then((data) => {
+            if (data.status == 'ok') {
+                article.proficiency = proficiency
+                setList((prevList) => {
+                    return [...prevList];
+                });
+            }
+        });
+    }
+
 
     function deleteArticle(id: string) {
 
@@ -46,8 +65,8 @@ const ArticleList: React.FC<{ wordList: Article[], onCollectionChange: (e: { id:
     }
 
     useEffect(() => {
-        setWordList(wordList)
-    }, [wordList])
+        setList(list)
+    }, [list])
 
     return <>
 
@@ -71,7 +90,7 @@ const ArticleList: React.FC<{ wordList: Article[], onCollectionChange: (e: { id:
                                                     Actions
                                                 </th>
                                                 <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                                    Last Update
+                                                    Next Learn At
                                                 </th>
                                             </tr>
                                         </thead>
@@ -86,8 +105,8 @@ const ArticleList: React.FC<{ wordList: Article[], onCollectionChange: (e: { id:
 
                                                     <td className="whitespace-nowrap py-4 text-sm font-medium text-gray-700 sm:pl-0 text-center">
                                                         <LevelComponent updateLevel={(level) => {
-                                                            // updateLevel(item, level == item.level ? 0 : level)
-                                                        }} currentLevel={item.level} pages={[1, 2, 3, 4, 5]} />
+                                                            revise(item, level)
+                                                        }} currentLevel={item.proficiency} pages={[1, 2, 3, 4, 5]} />
                                                     </td>
 
                                                     <td className="flex justify-start relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">

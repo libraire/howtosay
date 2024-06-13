@@ -21,7 +21,7 @@ export default function InputArticle({ open, onClose, id, title, content }: { op
     }
 
     function addArticle(title: string, content: string) {
-        fetch("/hts/api/v1/material/add", {
+        fetch("/hts/api/v1/material", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
