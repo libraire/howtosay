@@ -119,6 +119,9 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: (() => void) | undefi
                     setWordList([...shuffleList(wordList)])
                     nextWord()
                 }}
+                next={() => nextWord()}
+                showIgnore={true}
+                playable={true}
             />
 
             <WordComponent

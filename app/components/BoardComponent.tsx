@@ -144,6 +144,9 @@ const BoardComponent: React.FC<{}> = () => {
           setWordList(shuffleList(wordList))
           nextWord()
         }}
+        playable={false}
+        ignore={false}
+        next={()=>{}}
       />
 
       <WordComponent
