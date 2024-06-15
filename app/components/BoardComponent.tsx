@@ -145,7 +145,7 @@ const BoardComponent: React.FC<{}> = () => {
           nextWord()
         }}
         playable={false}
-        ignore={false}
+        showIgnore={false}
         next={()=>{}}
       />
 
