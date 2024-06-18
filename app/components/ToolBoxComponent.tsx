@@ -89,11 +89,13 @@ export default function ToolBoxComponent({ selectLevel, marked, mark, unmark, on
                 }
 
                 {isOpen &&
-                    ["Hint", "Pronounce", "Reveal", "Next"].map((lv, index) => {
+                    ["Hint", "Pronounce", "Reveal", "Next","Prev"].map((lv, index) => {
                         return (
                             <div className="flex text-gray-800 text-s px-1 items-center	" key={lv}>
-                                {index < 3 && <div className="h-[26px] w-[52px] text-gray-950 rounded-[4px] bg-white border-gray-950 border-[1px] mr-1 text-[16px] text-center" aria-hidden="true" > Key {index + 1}  </div>}
-                                {index == 3 && <div className="h-[26px] w-[52px] text-gray-950 rounded-[4px] bg-white border-gray-950 border-[1px] mr-1 text-[16px] text-center" aria-hidden="true" > {'Enter'}  </div>}
+                                {index < 2 && <div className="h-[26px] w-[56px] text-gray-950 rounded-[4px] bg-white border-gray-950 border-[1px] mr-1 text-[16px] text-center" aria-hidden="true" > Num {index + 1}  </div>}
+                                {index == 2 && <div className="h-[26px] w-[52px] text-gray-950 rounded-[4px] bg-white border-gray-950 border-[1px] mr-1 text-[16px] text-center" aria-hidden="true" > {'Enter'}  </div>}
+                                {index == 3 && <div className="h-[26px] w-[30px] text-gray-950 rounded-[4px] bg-white border-gray-950 border-[1px] mr-1 text-[16px] text-center" aria-hidden="true" > {'->'}  </div>}
+                                {index == 4 && <div className="h-[26px] w-[30px] text-gray-950 rounded-[4px] bg-white border-gray-950 border-[1px] mr-1 text-[16px] text-center" aria-hidden="true" > {'<-'}  </div>}
                                 {lv}
                             </div>
                         );

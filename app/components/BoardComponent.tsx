@@ -55,10 +55,32 @@ const BoardComponent: React.FC<{}> = () => {
 
   function nextWord() {
     setCompleted(false);
-    var wd = wordList.shift();
-    setWord(wd);
-    setMarked(!!wd?.marked);
-    setWordList(wordList);
+    if (word) {
+      var idx = wordList.indexOf(word);
+      if (idx < wordList.length - 1) {
+        var wd = wordList[idx + 1];
+        setWord(wd);
+        setMarked(!!wd?.marked);
+      }
+    } else if (wordList.length > 0) {
+      var wd = wordList[0];
+      setWord(wd);
+      setMarked(!!wd?.marked);
+    }
+
+  }
+
+  function prevWord() {
+    setCompleted(false);
+    if (word) {
+      var idx = wordList.indexOf(word);
+      if (idx > 1) {
+        var wd = wordList[idx - 1];
+        setWord(wd);
+        setMarked(!!wd?.marked);
+      }
+    }
+
   }
 
   function fetchMarkList(wordList: Word[]) {
@@ -140,13 +162,13 @@ const BoardComponent: React.FC<{}> = () => {
         unmark={unmarkWord}
         onClose={undefined}
         word={word?.word ?? ""}
-        random={()=>{
+        random={() => {
           setWordList(shuffleList(wordList))
           nextWord()
         }}
         playable={false}
         showIgnore={false}
-        next={()=>{}}
+        next={() => { }}
       />
 
       <WordComponent
@@ -157,6 +179,7 @@ const BoardComponent: React.FC<{}> = () => {
         imgurl={word?.imgurl ?? ""}
         emoji={word?.emoji ?? ""}
         showExample={false}
+        prev={() => { prevWord() }}
       />
 
       <KeyBoardComponent />

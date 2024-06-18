@@ -8,6 +8,7 @@ import Image from "next/image";
 type Props = {
   word: string;
   next: () => void;
+  prev: () => void;
   complete: () => void;
   definition: string;
   imgurl: string;
@@ -18,6 +19,7 @@ type Props = {
 const WordComponent: React.FC<Props> = ({
   word,
   next,
+  prev,
   complete,
   definition,
   imgurl,
@@ -56,22 +58,18 @@ const WordComponent: React.FC<Props> = ({
       document.removeEventListener("keydown", handleKeyDown);
     };
 
-
-
-
   }, [word]);
 
 
 
   function handleKeyDown(event: KeyboardEvent) {
     const key = event.key;
-
-    if (key == "Enter") {
-      setChars((prevChars) => {
-        playSound("press");
-        next();
-        return prevChars;
-      });
+    if (key == "ArrowRight") {
+      playSound("press");
+      next();
+    } else if (key == "ArrowLeft") {
+      playSound("press");
+      prev();
     } else if (key === "Backspace") {
       playSound("press");
       setChars((prevChars) => {
@@ -85,11 +83,9 @@ const WordComponent: React.FC<Props> = ({
     } else if (key === "1") {
       playSound("press");
       hint(false);
-    } else if (key === "3") {
+    } else if (key === "Enter") {
       playSound("press");
       hint(true);
-    } else if (key === "4") {
-      next();
     } else if (key === "2") {
       speechSynthesis.speak(new SpeechSynthesisUtterance(word));
     } else if (/^[a-zA-Z]$/.test(key)) {

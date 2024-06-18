@@ -42,6 +42,19 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: (() => void) | undefi
         fetchDefinition(wordList)
     }
 
+    function prevWord() {
+        setCompleted(false);
+        if (word) {
+            var idx = wordList.indexOf(word);
+            if (idx > 1) {
+                var wd = wordList[idx - 1];
+                setWord(wd);
+                setMarked(!!wd?.marked);
+            }
+        }
+
+    }
+
     function fetchDefinitions(list: Word[]) {
         list = [...list]
         let words = list.map((w) => w.word).join(',')
@@ -55,11 +68,20 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: (() => void) | undefi
                 }
             })
 
-            var wd = list.shift();
-            setWord(wd);
-            setMarked(!!wd?.marked);
-            setDefinition(wd?.definition || "");
-            setWordList(list);
+            if (word) {
+                var idx = wordList.indexOf(word);
+                if (idx < wordList.length - 1) {
+                    var wd = wordList[idx + 1];
+                    setWord(wd);
+                    setMarked(!!wd?.marked);
+                    setDefinition(wd?.definition || "");
+                }
+            } else {
+                var wd = wordList[0];
+                setWord(wd);
+                setMarked(!!wd?.marked);
+                setDefinition(wd?.definition || "");
+            }
         })
     }
 
@@ -132,6 +154,7 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: (() => void) | undefi
                 imgurl={word?.imgurl ?? ""}
                 emoji={word?.emoji ?? ""}
                 showExample={true}
+                prev={() => prevWord()}
             />
 
             <KeyBoardComponent />
