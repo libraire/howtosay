@@ -2,7 +2,8 @@
 import AudioComponent from "./components/AudioComponent";
 import BoardComponent from "./components/BoardComponent"
 import Navbar from "./components/Navbar";
-
+import PriceComponent from "./components/PriceComponent";
+import VideoPlayer from "./components/VideoComponent";
 
 export default function Home() {
 
@@ -12,6 +13,9 @@ export default function Home() {
     <Navbar></Navbar>
     <AudioComponent str={"xxxx"}/>
     <BoardComponent />
+
+    <VideoPlayer src="https://audio.howtosay.one/demo.mp4"></VideoPlayer>
+    <PriceComponent></PriceComponent>
 
     </main>
   );

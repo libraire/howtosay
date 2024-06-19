@@ -10,6 +10,12 @@ const nextConfig = {
         port: '',
         pathname: '/file/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'images.bytegush.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
   async rewrites() {
