@@ -73,7 +73,7 @@ export default function ToolBoxComponent({ selectLevel, marked, mark, unmark, on
                 </button>}
 
 
-                {playable && <AudioPlayer audioUrl={'https://audio.howtosay.one/' + word + '.mp3'}></AudioPlayer>}
+                {playable && <AudioPlayer word={word}></AudioPlayer>}
 
                 <div className="border-l border-gray-300 mr-2 ml-2"> </div>
 
@@ -89,7 +89,7 @@ export default function ToolBoxComponent({ selectLevel, marked, mark, unmark, on
                 }
 
                 {isOpen &&
-                    ["Hint", "Pronounce", "Reveal", "Next","Prev"].map((lv, index) => {
+                    ["Hint", "Pronounce", "Reveal", "Next", "Prev"].map((lv, index) => {
                         return (
                             <div className="flex text-gray-800 text-s px-1 items-center	" key={lv}>
                                 {index < 2 && <div className="h-[26px] w-[56px] text-gray-950 rounded-[4px] bg-white border-gray-950 border-[1px] mr-1 text-[16px] text-center" aria-hidden="true" > Num {index + 1}  </div>}

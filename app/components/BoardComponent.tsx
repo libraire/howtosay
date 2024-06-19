@@ -67,20 +67,18 @@ const BoardComponent: React.FC<{}> = () => {
       setWord(wd);
       setMarked(!!wd?.marked);
     }
-
   }
 
   function prevWord() {
     setCompleted(false);
     if (word) {
       var idx = wordList.indexOf(word);
-      if (idx > 1) {
+      if (idx > 0) {
         var wd = wordList[idx - 1];
         setWord(wd);
         setMarked(!!wd?.marked);
       }
     }
-
   }
 
   function fetchMarkList(wordList: Word[]) {
@@ -170,6 +168,8 @@ const BoardComponent: React.FC<{}> = () => {
         showIgnore={false}
         next={() => { }}
       />
+
+      {completed && <div className="text-gray-100" >Completed</div>}
 
       <WordComponent
         word={word?.word ?? ""}

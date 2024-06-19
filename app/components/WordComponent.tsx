@@ -85,9 +85,16 @@ const WordComponent: React.FC<Props> = ({
       hint(false);
     } else if (key === "Enter") {
       playSound("press");
-      hint(true);
-    } else if (key === "2") {
-      speechSynthesis.speak(new SpeechSynthesisUtterance(word));
+      setChars((prevChars) => {
+        const newChars = [...prevChars];
+        if (checkComplete(newChars)) {
+          next();
+        } else {
+          hint(true);
+        }
+        return newChars;
+      });
+
     } else if (/^[a-zA-Z]$/.test(key)) {
       setChars((prevChars) => {
         if (checkComplete(prevChars)) {

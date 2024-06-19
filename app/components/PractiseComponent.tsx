@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react"
 import { useRouter } from 'next/navigation'
 import HelpSlideOver from "./HelpSlideOver";
 import ToolBoxComponent from "./ToolBoxComponent";
+import StarComponent from "./StarComponent";
 
 const PractiseComponent: React.FC<{ list: Word[], onClose: (() => void) | undefined }> = ({ list, onClose }) => {
     const [word, setWord] = useState<Word>();
@@ -39,14 +40,23 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: (() => void) | undefi
 
     function nextWord() {
         setCompleted(false);
-        fetchDefinition(wordList)
+
+        if (word) {
+            var idx = wordList.indexOf(word)
+            if (idx < wordList.length - 1) {
+                var wd = wordList[idx + 1];
+                setWord(wd);
+                setMarked(!!wd?.marked);
+                setDefinition(wd?.definition || "");
+            }
+        }
     }
 
     function prevWord() {
         setCompleted(false);
         if (word) {
             var idx = wordList.indexOf(word);
-            if (idx > 1) {
+            if (idx > 0) {
                 var wd = wordList[idx - 1];
                 setWord(wd);
                 setMarked(!!wd?.marked);
@@ -67,36 +77,15 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: (() => void) | undefi
                     wd.definition = w.definition
                 }
             })
-
-            if (word) {
-                var idx = wordList.indexOf(word);
-                if (idx < wordList.length - 1) {
-                    var wd = wordList[idx + 1];
-                    setWord(wd);
-                    setMarked(!!wd?.marked);
-                    setDefinition(wd?.definition || "");
-                }
-            } else {
-                var wd = wordList[0];
-                setWord(wd);
-                setMarked(!!wd?.marked);
-                setDefinition(wd?.definition || "");
-            }
+            var wd = list[0];
+            setWord(wd);
+            setMarked(!!wd?.marked);
+            setDefinition(wd?.definition || "");
+            setWordList(list)
         })
     }
 
-    function fetchDefinition(list: Word[]) {
 
-        var wd = list.shift();
-        if (wd == undefined) {
-            return
-        }
-
-        setWord(wd);
-        setMarked(!!wd?.marked);
-        setDefinition(wd?.definition || "");
-        setWordList(list);
-    }
 
     function markWord() {
 
@@ -145,6 +134,9 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: (() => void) | undefi
                 showIgnore={true}
                 playable={true}
             />
+
+
+            {completed && <StarComponent word={word?.word ?? ""}></StarComponent>}
 
             <WordComponent
                 word={word?.word ?? ""}

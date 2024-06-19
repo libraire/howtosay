@@ -3,10 +3,10 @@ import { PlayIcon, PauseIcon } from '@heroicons/react/24/outline'
 import styles from "./ComponentStyle.module.css";
 
 interface AudioPlayerProps {
-    audioUrl: string;
+    word: string;
 }
 
-const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl }) => {
+const AudioPlayer: React.FC<AudioPlayerProps> = ({ word }) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -14,15 +14,24 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl }) => {
         const audioElement = audioRef.current;
 
         if (audioElement) {
-            audioElement.src = audioUrl;
+            audioElement.src = 'https://audio.howtosay.one/' + word + '.mp3';
             audioElement.preload = 'auto';
             audioElement.addEventListener('ended', handleAudioEnded);
+            document.addEventListener("keydown", handleKeyDown);
             return () => {
                 audioElement.removeEventListener('ended', handleAudioEnded);
+                document.removeEventListener("keydown", handleKeyDown);
             };
 
         }
-    }, [audioUrl]);
+    }, [word]);
+
+    function handleKeyDown(event: KeyboardEvent) {
+        const key = event.key;
+        if (key == "2") {
+            handlePlayPause();
+        }
+    }
 
     const handleAudioEnded = () => {
         setIsPlaying(false);
@@ -30,12 +39,14 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl }) => {
 
     const handlePlayPause = () => {
         const audioElement = audioRef.current;
-
         if (audioElement) {
             if (isPlaying) {
                 audioElement.pause();
             } else {
-                audioElement.play();
+                audioElement.play().catch(error => {
+                    speechSynthesis.speak(new SpeechSynthesisUtterance(word));
+                    setIsPlaying(false);
+                });
             }
             setIsPlaying(!isPlaying);
         }
