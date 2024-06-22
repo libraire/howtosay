@@ -1,4 +1,3 @@
-import { StarIcon } from '@heroicons/react/20/solid'
 import React, { useState } from "react";
 
 type Props = {

@@ -169,7 +169,7 @@ const BoardComponent: React.FC<{}> = () => {
         next={() => { }}
       />
 
-      {completed && <div className="text-gray-100" >Completed</div>}
+      
 
       <WordComponent
         word={word?.word ?? ""}

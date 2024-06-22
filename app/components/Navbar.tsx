@@ -1,9 +1,25 @@
 
 import styles from "@/app/components/ComponentStyle.module.css";
 import MyDropDown from "@/app/components/DrowDown";
-import UserButton from "@/app/components/user-button"
 import Link from 'next/link';
-export default function Navbar() {
+import ActivateComponent from "./ ActivateComponent";
+import { useEffect, useState } from "react";
+
+export default function Navbar({ check = true }: { check?: boolean }) {
+
+    const [isPro, setIsPro] = useState(true)
+    const [expire, setExpire] = useState('')
+
+    useEffect(() => {
+        fetch("/hts/api/v1/ispro", { method: 'GET', }).then((response: Response) => {
+            return response.json()
+        }).then((data) => {
+            if (check) {
+                setIsPro(data.isPro)
+            }
+            setExpire(data.expire)
+        })
+    })
 
     return (
         <>
@@ -16,7 +32,7 @@ export default function Navbar() {
                             <span>💡 </span>How To Say
                         </div>
                     </Link>
-                    
+
                     <div className="ml-2 text-gray-400 text-[13px]">
                         Guess the word from its definition
                     </div>
@@ -26,8 +42,9 @@ export default function Navbar() {
                 <div className="flex-1 "> </div>
                 <MyDropDown showHelpSlide={() => {
                     // setIsOpen(true)
-                }} />
-                <UserButton />
+                }} expire={expire} />
+
+                {!isPro && <ActivateComponent />}
             </div>
         </>
     )

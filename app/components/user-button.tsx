@@ -1,60 +1,29 @@
 "use client"
 
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
-import { Button } from "./ui/button"
 import { redirect } from "next/navigation"
 import { useSession } from "next-auth/react"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuTrigger,
-} from "./ui/dropdown-menu"
 import { SignIn, SignOut } from "./auth-components"
+import { useEffect } from "react";
 
-export default function UserButton() {
+type Props = {
+    expire: string,
+    user: string
+};
 
-    const { data: session, update } = useSession({
-        required: false,
-        onUnauthenticated() {
-            redirect("/api/auth/signin")
-        }
-    })
-    
-    if (!session?.user) return <SignIn />
+export default function UserButton({ expire, user }: Props) {
+
     return (
-        <div className="flex gap-2 items-center ml-2">
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative w-8 h-8 rounded-full">
-                        <Avatar className="w-8 h-8">
-                            { (
-                                <AvatarImage
-                                    src={session.user.image ?? "/avatar.jpeg"}
-                                    alt={session.user.name ?? ""}
-                                />
-                            )}
-                            <AvatarFallback>{session.user.email}</AvatarFallback>
-                        </Avatar>
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56 bg-white text-black" align="end" forceMount>
-                    <DropdownMenuLabel className="font-normal">
-                        <div className="flex flex-col space-y-1">
-                            <p className="text-sm font-medium leading-none">
-                                {session.user.name}
-                            </p>
-                            <p className="text-xs leading-none text-muted-foreground">
-                                {session.user.email}
-                            </p>
-                        </div>
-                    </DropdownMenuLabel>
-                    <DropdownMenuItem>
-                        <SignOut />
-                    </DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
+        <div className="flex gap-2 items-center ml-2  mt-4 px-2">
+            <div className="flex flex-col space-y-3 text-gray-900 ">
+                <div className="text-s leading-none text-muted-foreground">
+                    {user}
+                </div>
+
+                <div className="text-sm leading-none text-muted-foreground pb-4 border-b border-gray-200">
+                    Expire at: {expire}
+                </div>
+            </div>
+
         </div>
     )
 }

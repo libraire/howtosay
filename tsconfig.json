@@ -22,6 +22,6 @@
       "auth": ["./auth"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "app/components/pricing-types"],
   "exclude": ["node_modules"]
 }

@@ -33,7 +33,7 @@ export default function Component() {
                 <Spacer y={4} />
             </div>
             <Spacer y={8} />
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2  ">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-3">
                 {tiers.map((tier) => (
                     <Card key={tier.key} className="p-3 bg-[#17171A]" shadow="md">
                         <CardHeader className="flex flex-col items-start gap-2 pb-6">
