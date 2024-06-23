@@ -11,11 +11,13 @@ export default function Navbar({ check = true }: { check?: boolean }) {
     const [expire, setExpire] = useState('')
 
     useEffect(() => {
-        fetch("/hts/api/v1/ispro", { method: 'GET', }).then((response: Response) => {
+        fetch("/hts/api/v1/license/ispro", { method: 'GET', }).then((response: Response) => {
             return response.json()
         }).then((data) => {
             if (check) {
-                setIsPro(data.isPro)
+                // TODO 
+                // setIsPro(data.isPro)
+                setIsPro(true)
             }
             setExpire(data.expire)
         })
@@ -40,10 +42,7 @@ export default function Navbar({ check = true }: { check?: boolean }) {
 
 
                 <div className="flex-1 "> </div>
-                <MyDropDown showHelpSlide={() => {
-                    // setIsOpen(true)
-                }} expire={expire} />
-
+                <MyDropDown expire={expire} />
                 {!isPro && <ActivateComponent />}
             </div>
         </>

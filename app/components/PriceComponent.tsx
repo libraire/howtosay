@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Icon } from "@iconify/react";
 import {
     Button,
@@ -13,16 +13,15 @@ import {
     Spacer,
 } from "@nextui-org/react";
 
-import { FrequencyEnum, type Frequency } from "./pricing-types";
-import { frequencies, tiers } from "./pricing-tiers";
+import { tiers } from "./pricing-tiers";
+import ModalDialog from "./ModalDialog"
 
 export default function Component() {
-    const [selectedFrequency, setSelectedFrequency] = React.useState<Frequency>(frequencies[0]);
 
-    const onFrequencyChange = (selectedKey: React.Key) => {
-        const frequencyIndex = frequencies.findIndex((f) => f.key === selectedKey);
+    const [isOpen, setIsOpen] = useState(false)
 
-        setSelectedFrequency(frequencies[frequencyIndex]);
+    const handleEmailClick = (e: any) => {
+        setIsOpen(true)
     };
 
     return (
@@ -44,15 +43,8 @@ export default function Component() {
                         <CardBody className="gap-8">
                             <p className="flex items-baseline gap-1 pt-2">
                                 <span className="inline bg-gradient-to-br from-foreground to-foreground-600 bg-clip-text text-4xl font-semibold leading-7 tracking-tight ">
-                                    {typeof tier.price === "string" ? tier.price : tier.price[selectedFrequency.key]}
+                                    {tier.price}
                                 </span>
-                                {typeof tier.price !== "string" ? (
-                                    <span className="text-small font-medium text-default-400">
-                                        {tier.priceSuffix
-                                            ? `/${tier.priceSuffix}/${selectedFrequency.priceSuffix}`
-                                            : `/${selectedFrequency.priceSuffix}`}
-                                    </span>
-                                ) : null}
                             </p>
                             <ul className="flex flex-col gap-2">
                                 {tier.features?.map((feature) => (
@@ -68,6 +60,11 @@ export default function Component() {
                                 fullWidth
                                 as={Link}
                                 href={tier.href}
+                                onClick={(e) => {
+                                    if (tier.href == "#") {
+                                        handleEmailClick(e)
+                                    }
+                                }}
                                 className="bg-indigo-600 rounded-lg"
                             >
                                 {tier.buttonText}
@@ -77,6 +74,14 @@ export default function Component() {
                 ))}
             </div>
             <Spacer y={12} />
+            <ModalDialog
+                title="Request Pro"
+                content="Please send an email to bytegush@hotmail.com with your reason."
+                confirm="Go Back"
+                open={isOpen}
+                onClose={() => {
+                    setIsOpen(false)
+                }} />
         </div>
     );
 }

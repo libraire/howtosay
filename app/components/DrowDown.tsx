@@ -1,8 +1,9 @@
 import { Fragment, useEffect, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
+import { BookmarkSquareIcon, AcademicCapIcon, BookOpenIcon } from '@heroicons/react/24/outline'
 import { StarIcon } from '@heroicons/react/20/solid'
-import UserButton from "@/app/components/user-button"
+import UserInfo from "@/app/components/UserInfo"
 import { signOut, signIn } from "next-auth/react"
 
 import { redirect } from "next/navigation"
@@ -12,14 +13,7 @@ function classNames(...classes: string[]): string {
     return classes.filter(Boolean).join(' ')
 }
 
-type MyFunctionType = () => void;
-
-type Props = {
-    showHelpSlide: MyFunctionType;
-    expire: string
-};
-
-export default function MyDropDown({ showHelpSlide, expire }: Props) {
+export default function MyDropDown({ expire }: { expire: string }) {
 
     const [myexpire, setExpire] = useState('')
 
@@ -61,7 +55,7 @@ export default function MyDropDown({ showHelpSlide, expire }: Props) {
                 <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <div className="py-1">
 
-                        {session && <UserButton expire={myexpire} user={session?.user?.email ?? ""} />}
+                        {session && <UserInfo expire={myexpire} user={session?.user?.email ?? ""} />}
                         <Menu.Item>
                             {({ active }) => (
                                 <a
@@ -71,7 +65,7 @@ export default function MyDropDown({ showHelpSlide, expire }: Props) {
                                         'block px-4 py-2 text-sm'
                                     )}
                                 >
-                                    Word Book
+                                    <BookmarkSquareIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> Word Book
                                 </a>
                             )}
                         </Menu.Item>
@@ -84,7 +78,7 @@ export default function MyDropDown({ showHelpSlide, expire }: Props) {
                                         'block px-4 py-2 text-sm'
                                     )}
                                 >
-                                    Read Mode
+                                    <BookOpenIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> Read Mode
                                 </a>
                             )}
                         </Menu.Item>
@@ -97,7 +91,7 @@ export default function MyDropDown({ showHelpSlide, expire }: Props) {
                                         'block px-4 py-2 text-sm'
                                     )}
                                 >
-                                    Practise
+                                    <AcademicCapIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> Practise
                                 </a>
                             )}
                         </Menu.Item>
@@ -108,7 +102,7 @@ export default function MyDropDown({ showHelpSlide, expire }: Props) {
                                     href="https://www.bytegush.com/about/feedback"
                                     className={classNames(
                                         active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                        'block px-4 py-2 text-sm'
+                                        'block px-4 py-2 text-sm border-t border-gray-100'
                                     )}
                                 >
                                     Feedback

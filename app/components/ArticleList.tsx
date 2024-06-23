@@ -4,6 +4,7 @@ import { TrashIcon, RocketLaunchIcon, PencilSquareIcon } from '@heroicons/react/
 import { Article } from "./types";
 import InputArticle from "../components/InputArticle";
 import LevelComponent from "./LevelComponent"
+import AlertDialog from "./AlertDialog"
 
 const ArticleList: React.FC<{ wordList: Article[], onCollectionChange: (e: { id: number, name: string }) => void }> = ({ wordList: list, onCollectionChange }) => {
 
@@ -12,8 +13,8 @@ const ArticleList: React.FC<{ wordList: Article[], onCollectionChange: (e: { id:
     const [articleId, setArticleId] = useState<string>('');
     const [articleTitle, setArticleTitle] = useState<string>('');
     const [articleContent, setArticleContent] = useState<string>('');
-
-
+    const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
+    const [deleteId, setDeleteId] = useState<string>('');
 
     function fetchArticle(id: string) {
         return fetch("/hts/api/v1/material?id=" + id, {
@@ -49,19 +50,9 @@ const ArticleList: React.FC<{ wordList: Article[], onCollectionChange: (e: { id:
         });
     }
 
-
     function deleteArticle(id: string) {
-
-        fetch("/hts/api/v1/material?id=" + id, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }).then((response: Response) => {
-            return response.json()
-        }).then((data) => {
-
-        });
+        setDeleteId(id)
+        setShowDeleteDialog(true)
     }
 
     useEffect(() => {
@@ -146,6 +137,25 @@ const ArticleList: React.FC<{ wordList: Article[], onCollectionChange: (e: { id:
         </div>
 
         <InputArticle open={importOpen} onClose={() => { setImportOpen(false) }} id={articleId} title={articleTitle} content={articleContent} />
+        <AlertDialog open={showDeleteDialog} onClose={() => { setShowDeleteDialog(false) }}
+            title={'Delete Article'} content={'Are you sure you want to delete this article?'} confirm={'Delete'}
+            onConfirm={() => {
+                if (deleteId == '') {
+                    setShowDeleteDialog(false)
+                    return
+                }
+                fetch("/hts/api/v1/material?id=" + deleteId, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }).then((response: Response) => {
+                    return response.json()
+                }).then((data) => {
+                    setShowDeleteDialog(false)
+                });
+
+            }} />
 
     </>
 };
