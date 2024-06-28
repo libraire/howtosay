@@ -36,7 +36,7 @@ export default function Navbar({ check = true }: { check?: boolean }) {
                     </Link>
 
                     <div className="ml-2 text-gray-400 text-[13px]">
-                        Guess the word from its definition
+                        语言的边界就是世界的边界
                     </div>
                 </div>
 
