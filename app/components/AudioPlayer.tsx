@@ -53,7 +53,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ word }) => {
     };
 
     return (
-        <div>
+        <div className='mt-2'>
             <button className={styles.star_button} onClick={handlePlayPause}>
                 {!isPlaying && <PlayIcon className="h-[24px] w-[24px]"></PlayIcon>}
                 {isPlaying && <PauseIcon className="h-[24px] w-[24px]"></PauseIcon>}

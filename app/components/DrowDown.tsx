@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
-import { BookmarkSquareIcon, AcademicCapIcon, BookOpenIcon } from '@heroicons/react/24/outline'
+import { BookmarkSquareIcon, AcademicCapIcon, BookOpenIcon, FireIcon, PhotoIcon } from '@heroicons/react/24/outline'
 import { StarIcon } from '@heroicons/react/20/solid'
 import UserInfo from "@/app/components/UserInfo"
 import { signOut, signIn } from "next-auth/react"
@@ -56,6 +56,35 @@ export default function MyDropDown({ expire }: { expire: string }) {
                     <div className="py-1">
 
                         {session && <UserInfo expire={myexpire} user={session?.user?.email ?? ""} />}
+
+                        <Menu.Item>
+                            {({ active }) => (
+                                <a
+                                    href='/image'
+                                    className={classNames(
+                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                                        'block px-4 py-2 text-sm'
+                                    )}
+                                >
+                                    <PhotoIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> Image Mode
+                                </a>
+                            )}
+                        </Menu.Item>
+
+                        <Menu.Item>
+                            {({ active }) => (
+                                <a
+                                    href='/grade'
+                                    className={classNames(
+                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                                        'block px-4 py-2 text-sm'
+                                    )}
+                                >
+                                    <FireIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> Grading exercise
+                                </a>
+                            )}
+                        </Menu.Item>
+
                         <Menu.Item>
                             {({ active }) => (
                                 <a
@@ -78,10 +107,12 @@ export default function MyDropDown({ expire }: { expire: string }) {
                                         'block px-4 py-2 text-sm'
                                     )}
                                 >
-                                    <BookOpenIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> Read Mode
+                                    <BookOpenIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> Reading Mode
                                 </a>
                             )}
                         </Menu.Item>
+
+                        
                         <Menu.Item>
                             {({ active }) => (
                                 <a
@@ -91,7 +122,7 @@ export default function MyDropDown({ expire }: { expire: string }) {
                                         'block px-4 py-2 text-sm'
                                     )}
                                 >
-                                    <AcademicCapIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> Practise
+                                    <AcademicCapIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> Custom Practise
                                 </a>
                             )}
                         </Menu.Item>

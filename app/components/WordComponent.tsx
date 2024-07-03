@@ -51,7 +51,12 @@ const WordComponent: React.FC<Props> = ({
       });
     }
 
-    setImageUrl(imgurl);
+    if(imgurl.startsWith("/")) {
+      const host = "https://158f2f6d.telegraph-image-bya.pages.dev";
+      setImageUrl(host + imgurl);
+    }else {
+      setImageUrl(imgurl);
+    }
     setCompleted(false);
     document.addEventListener("keydown", handleKeyDown);
     return () => {

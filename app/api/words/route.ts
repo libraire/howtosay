@@ -25,7 +25,7 @@ import emoji_animal from "../../data/emoji/animal-nature.json";
 import emoji_food from "../../data/emoji/food-drink.json";
 import emoji_object from "../../data/emoji/objects.json";
 import emoji_travel from "../../data/emoji/travel-place.json";
-import { auth } from "auth"
+import oxford3000 from "../../data/index/oxford3000.json";
 
 export const dynamic = "force-dynamic"; // defaults to auto
 export async function GET(request: Request) {
@@ -64,7 +64,7 @@ export async function GET(request: Request) {
     case "13":
       return indexerList(sat);
     case "14":
-      indexerList(toefl);
+      return indexerList(toefl);
     case "15":
       return indexerList(ielt);
     case "16":
@@ -87,6 +87,8 @@ export async function GET(request: Request) {
       return emojiList(emoji_object);
     case "emoji-5":
       return emojiList(emoji_travel);
+    case "21":
+      return await indexerList(oxford3000);
   }
 
   const wordlist = [];
@@ -100,16 +102,19 @@ export async function GET(request: Request) {
 }
 
 
-function indexerList(indexer: number[]) {
+async function indexerList(indexer: number[]) {
 
-  const wordlist = [];
+  const indexes = [];
   for (var i = 0; i < 10; i++) {
     var randomIndex = Math.floor(Math.random() * indexer.length);
-    var vec = list[indexer[randomIndex]];
-    wordlist.push({ word: vec[0], definition: vec[1] });
+    indexes.push(indexer[randomIndex]);
   }
 
-  return Response.json({ wordlist });
+  const response = await fetch(process.env.NEXT_PUBLIC_API_HOST + "/hts/api/v1/dict/index?indexes=" + indexes.join(","), { method: 'GET' })
+  if (response.ok) {
+    const data = await response.json();
+    return Response.json({ wordlist: data.wordlist });
+  }
 
 }
 

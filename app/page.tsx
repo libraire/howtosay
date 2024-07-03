@@ -1,6 +1,6 @@
 "use client"
 import AudioComponent from "./components/AudioComponent";
-import BoardComponent from "./components/BoardComponent"
+import BoardComponent from "./components/DemoBoardComponet"
 import Navbar from "./components/Navbar";
 import PriceComponent from "./components/PriceComponent";
 import VideoPlayer from "./components/VideoComponent";

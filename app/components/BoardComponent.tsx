@@ -7,11 +7,23 @@ import KeyBoardComponent from "./KeyBoardComponent";
 import ToolBoxComponent from "./ToolBoxComponent";
 import { useSession } from "next-auth/react"
 import { useRouter } from 'next/navigation'
+import StarComponent from "./StarComponent";
 
+const selectItems = [
+  { label: "Fruit", value: "fruit" },
+  { label: "Food", value: "food" },
+  { label: "Kitchen", value: "kitchen" },
+  { label: "Animal", value: "animal" },
+  { label: "Emoji-Activity", value: "emoji-1" },
+  { label: "Emoji-Animal&Nature", value: "emoji-2" },
+  { label: "Emoji-Food&Drink", value: "emoji-3" },
+  { label: "Emoji-Object", value: "emoji-4" },
+  { label: "Emoji-Travel&Place", value: "emoji-5" },
+]
 
 const BoardComponent: React.FC<{}> = () => {
   const [word, setWord] = useState<Word>();
-  const [level, setLevel] = useState<string>("default");
+  const [level, setLevel] = useState<string>(selectItems[0].value);
   const [wordList, setWordList] = useState<Word[]>([]);
   const [completed, setCompleted] = useState<boolean>(false);
   const [marked, setMarked] = useState<boolean>(false);
@@ -40,7 +52,14 @@ const BoardComponent: React.FC<{}> = () => {
 
   const fetchData = async (lv: string) => {
     try {
-      const response = await fetch("api/words?level=" + lv);
+
+      var response
+      if (lv.includes("emoji")) {
+        response = await fetch("api/words?level=" + lv);
+      } else {
+        response = await fetch("/hts/api/v1/dict/image?category=" + lv);
+      }
+
       const jsonData = await response.json();
       let list = shuffleList(jsonData.wordlist);
       fetchMarkList(list)
@@ -61,6 +80,8 @@ const BoardComponent: React.FC<{}> = () => {
         var wd = wordList[idx + 1];
         setWord(wd);
         setMarked(!!wd?.marked);
+      } else {
+        fetchData(level)
       }
     } else if (wordList.length > 0) {
       var wd = wordList[0];
@@ -151,10 +172,12 @@ const BoardComponent: React.FC<{}> = () => {
   return (
     <div className={styles.boardContainer}>
 
-      <ToolBoxComponent selectLevel={(lv) => {
-        setLevel(lv);
-        fetchData(lv);
-      }}
+      <ToolBoxComponent
+        selectItems={selectItems}
+        selectLevel={(lv) => {
+          setLevel(lv);
+          fetchData(lv);
+        }}
         marked={marked}
         mark={markWord}
         unmark={unmarkWord}
@@ -164,12 +187,13 @@ const BoardComponent: React.FC<{}> = () => {
           setWordList(shuffleList(wordList))
           nextWord()
         }}
-        playable={false}
+        playable={true}
         showIgnore={false}
         next={() => { }}
       />
 
-      
+{completed && <StarComponent word={word?.word ?? ""}></StarComponent>}
+
 
       <WordComponent
         word={word?.word ?? ""}

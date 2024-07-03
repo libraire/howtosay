@@ -1,4 +1,4 @@
-import { ChevronLeftIcon, EllipsisHorizontalIcon } from '@heroicons/react/20/solid'
+import { ChevronLeftIcon } from '@heroicons/react/20/solid'
 import React, { useState } from "react";
 import SelectComponent from "./SelectComponent"
 import styles from "./ComponentStyle.module.css";
@@ -8,6 +8,7 @@ import AudioPlayer from './AudioPlayer';
 
 type Props = {
     selectLevel: ((lv: string) => void) | undefined;
+    selectItems: any[];
     onClose: (() => void) | undefined;
     marked: boolean,
     word: string,
@@ -18,7 +19,7 @@ type Props = {
     playable: boolean,
     showIgnore: boolean
 };
-export default function ToolBoxComponent({ selectLevel, marked, mark, unmark, onClose, word, random, playable, showIgnore, next }: Props) {
+export default function ToolBoxComponent({ selectLevel,selectItems, marked, mark, unmark, onClose, word, random, playable, showIgnore, next }: Props) {
 
     function ignoreWord(word: string) {
         fetch("/hts/api/v1/ignore", {
@@ -40,8 +41,9 @@ export default function ToolBoxComponent({ selectLevel, marked, mark, unmark, on
 
     return (
         <>
-            <div className="flex bg-white mx-2 p-2  px-2 rounded-[24px] mb-4 mt-2">
+            <div className="flex bg-white mx-2 p-2  px-2 rounded-[30px] mb-4 mt-2 items-center">
                 {selectLevel && <SelectComponent
+                    items={selectItems}
                     choose={selectLevel}
                 />}
 
@@ -53,8 +55,6 @@ export default function ToolBoxComponent({ selectLevel, marked, mark, unmark, on
                         <path d="M19.5576 20L20.4551 19.0243C20.8561 18.5883 21.0566 18.3704 20.9861 18.1852C20.9155 18 20.632 18 20.0649 18C18.7956 18 17.2771 18.2051 16.1111 17.5267C15.2976 17.0534 14.7629 16.1815 13.6935 14.4376L10.7038 9.5624C9.63441 7.81853 9.0997 6.9466 8.2862 6.4733C7.47269 6 6.50873 6 4.58082 6H3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                 </button>
-
-
 
                 {!marked && <button onClick={() => { mark() }} className={styles.star_button}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 inline">
@@ -75,7 +75,7 @@ export default function ToolBoxComponent({ selectLevel, marked, mark, unmark, on
 
                 {playable && <AudioPlayer word={word}></AudioPlayer>}
 
-                <div className="border-l border-gray-300 mr-2 ml-2"> </div>
+                <div className="border-l border-gray-900 "> | </div>
 
                 {isOpen &&
                     <button className={styles.star_button}>

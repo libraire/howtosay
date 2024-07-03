@@ -120,6 +120,7 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: (() => void) | undefi
         <div className={styles.boardContainer}>
 
             <ToolBoxComponent
+                selectItems={[]}
                 selectLevel={undefined}
                 marked={marked}
                 mark={markWord}
