@@ -188,11 +188,11 @@ const BoardComponent: React.FC<{}> = () => {
           nextWord()
         }}
         playable={true}
-        showIgnore={false}
-        next={() => { }}
+        showIgnore={true}
+        next={() => { nextWord() }}
       />
 
-{completed && <StarComponent word={word?.word ?? ""}></StarComponent>}
+      {completed && <StarComponent word={word?.word ?? ""}></StarComponent>}
 
 
       <WordComponent

@@ -34,39 +34,40 @@ export async function GET(request: Request) {
   const params = new URLSearchParams(url.search);
   const level = params.get("level");
   var indexer = ielt;
+
   switch (level) {
     case "0":
-      return indexerList(kindergarten);
+      return indexerList(kindergarten, request);
     case "1":
-      return indexerList(grade1);
+      return indexerList(grade1, request);
     case "2":
-      return indexerList(grade2);
+      return indexerList(grade2, request);
     case "3":
-      return indexerList(grade3);
+      return indexerList(grade3, request);
     case "4":
-      return indexerList(grade4);
+      return indexerList(grade4, request);
     case "5":
-      return indexerList(grade5);
+      return indexerList(grade5, request);
     case "6":
-      return indexerList(grade6);
+      return indexerList(grade6, request);
     case "7":
-      return indexerList(grade7);
+      return indexerList(grade7, request);
     case "8":
-      return indexerList(grade8);
+      return indexerList(grade8, request);
     case "9":
-      return indexerList(grade9);
+      return indexerList(grade9, request);
     case "10":
-      return indexerList(grade10);
+      return indexerList(grade10, request);
     case "11":
-      return indexerList(grade11);
+      return indexerList(grade11, request);
     case "12":
-      return indexerList(grade12);
+      return indexerList(grade12, request);
     case "13":
-      return indexerList(sat);
+      return indexerList(sat, request);
     case "14":
-      return indexerList(toefl);
+      return indexerList(toefl, request);
     case "15":
-      return indexerList(ielt);
+      return indexerList(ielt, request);
     case "16":
       return sceneList();
     case "17":
@@ -77,7 +78,9 @@ export async function GET(request: Request) {
       return imageList(animals);
     case "20":
       return imageList(food);
-    case "default":
+    case "21":
+      return indexerList(oxford3000, request);
+    case "emoji-1":
       return emojiList(emoji_activity);
     case "emoji-2":
       return emojiList(emoji_animal);
@@ -87,8 +90,6 @@ export async function GET(request: Request) {
       return emojiList(emoji_object);
     case "emoji-5":
       return emojiList(emoji_travel);
-    case "21":
-      return await indexerList(oxford3000);
   }
 
   const wordlist = [];
@@ -102,7 +103,7 @@ export async function GET(request: Request) {
 }
 
 
-async function indexerList(indexer: number[]) {
+async function indexerList(indexer: number[], request: Request) {
 
   const indexes = [];
   for (var i = 0; i < 10; i++) {
@@ -110,7 +111,12 @@ async function indexerList(indexer: number[]) {
     indexes.push(indexer[randomIndex]);
   }
 
-  const response = await fetch(process.env.NEXT_PUBLIC_API_HOST + "/hts/api/v1/dict/index?indexes=" + indexes.join(","), { method: 'GET' })
+  const cookie = request.headers.get("cookie");
+  const headers: HeadersInit = cookie ? { 'cookie': cookie } : {};
+  const response = await fetch(process.env.NEXT_PUBLIC_API_HOST + "/hts/api/v1/dict/index?indexes=" + indexes.join(","), {
+    method: 'GET',
+    headers
+  })
   if (response.ok) {
     const data = await response.json();
     return Response.json({ wordlist: data.wordlist });

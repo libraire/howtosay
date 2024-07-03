@@ -3,8 +3,9 @@ import React, { useState } from "react";
 import SelectComponent from "./SelectComponent"
 import styles from "./ComponentStyle.module.css";
 import Link from 'next/link';
-import { QuestionMarkCircleIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
+import { QuestionMarkCircleIcon, EyeSlashIcon, WrenchScrewdriverIcon } from '@heroicons/react/24/outline'
 import AudioPlayer from './AudioPlayer';
+import ReportDialog from './ReportDialog';
 
 type Props = {
     selectLevel: ((lv: string) => void) | undefined;
@@ -19,7 +20,7 @@ type Props = {
     playable: boolean,
     showIgnore: boolean
 };
-export default function ToolBoxComponent({ selectLevel,selectItems, marked, mark, unmark, onClose, word, random, playable, showIgnore, next }: Props) {
+export default function ToolBoxComponent({ selectLevel, selectItems, marked, mark, unmark, onClose, word, random, playable, showIgnore, next }: Props) {
 
     function ignoreWord(word: string) {
         fetch("/hts/api/v1/ignore", {
@@ -37,7 +38,25 @@ export default function ToolBoxComponent({ selectLevel,selectItems, marked, mark
         });
     }
 
+
+    function report(content: string) {
+        fetch("/api/report", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ body: word + ":" + content, app: 'howtosay' }),
+        }).then((response: Response) => {
+            return response.json()
+        }).then((data) => {
+            if (data.status == 'ok') {
+                next()
+            }
+        });
+    }
+
     const [isOpen, setIsOpen] = useState(false);
+    const [reportOpen, setReportOpen] = useState(false);
 
     return (
         <>
@@ -89,13 +108,13 @@ export default function ToolBoxComponent({ selectLevel,selectItems, marked, mark
                 }
 
                 {isOpen &&
-                    ["Hint", "Pronounce", "Reveal", "Next", "Prev"].map((lv, index) => {
+                    ["Hint", "Pronounce", "Prompt", "Next", "Prev"].map((lv, index) => {
                         return (
                             <div className="flex text-gray-800 text-s px-1 items-center	" key={lv}>
-                                {index < 2 && <div className="h-[26px] w-[56px] text-gray-950 rounded-[4px] bg-white border-gray-950 border-[1px] mr-1 text-[16px] text-center" aria-hidden="true" > Num {index + 1}  </div>}
+                                {index < 2 && <div className="h-[26px] w-[30px] text-gray-950 rounded-[4px] bg-white border-gray-950 border-[1px] mr-1 text-[16px] text-center" aria-hidden="true" > {index + 1}  </div>}
                                 {index == 2 && <div className="h-[26px] w-[52px] text-gray-950 rounded-[4px] bg-white border-gray-950 border-[1px] mr-1 text-[16px] text-center" aria-hidden="true" > {'Enter'}  </div>}
-                                {index == 3 && <div className="h-[26px] w-[30px] text-gray-950 rounded-[4px] bg-white border-gray-950 border-[1px] mr-1 text-[16px] text-center" aria-hidden="true" > {'->'}  </div>}
-                                {index == 4 && <div className="h-[26px] w-[30px] text-gray-950 rounded-[4px] bg-white border-gray-950 border-[1px] mr-1 text-[16px] text-center" aria-hidden="true" > {'<-'}  </div>}
+                                {index == 3 && <div className="h-[26px] w-[30px] text-gray-950 rounded-[4px] bg-white border-gray-950 border-[1px] mr-1 text-[16px] text-center" aria-hidden="true" > {'<-'}  </div>}
+                                {index == 4 && <div className="h-[26px] w-[30px] text-gray-950 rounded-[4px] bg-white border-gray-950 border-[1px] mr-1 text-[16px] text-center" aria-hidden="true" > {'->'}  </div>}
                                 {lv}
                             </div>
                         );
@@ -111,6 +130,14 @@ export default function ToolBoxComponent({ selectLevel,selectItems, marked, mark
                     {isOpen && <ChevronLeftIcon />}
                 </button>
 
+
+                <button onClick={() => {
+                    setReportOpen(true)
+                }} className={styles.star_button}>
+                    <WrenchScrewdriverIcon className="h-[20px] w-[20px]" />
+                </button>
+
+
                 {onClose && <button onClick={onClose} className={styles.star_button}>
 
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-6 h-6 inline">
@@ -120,6 +147,8 @@ export default function ToolBoxComponent({ selectLevel,selectItems, marked, mark
                 </button>}
 
             </div>
+
+            <ReportDialog open={reportOpen} onClose={() => setReportOpen(false)} report={report} />
 
         </>
     )

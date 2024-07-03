@@ -40,7 +40,7 @@ const BoardComponent: React.FC<{}> = () => {
 
     const fetchData = async (lv: string) => {
         try {
-            const response = await fetch("api/words?level=" + lv);
+            const response = await fetch("hts/api/v1/dict/daily");
             const jsonData = await response.json();
             let list = shuffleList(jsonData.wordlist);
             fetchMarkList(list)
@@ -114,36 +114,6 @@ const BoardComponent: React.FC<{}> = () => {
 
     }
 
-    function markWord() {
-
-        if (!session?.user) {
-            console.log("22222222222")
-            router.push('/api/auth/signin')
-        }
-
-        if (word) {
-            fetch("/hts/api/v1/mark?word=" + word.word, { method: 'POST', }).then((response: Response) => {
-                console.log(response.body)
-                word.marked = true;
-                setMarked(true);
-            });
-        }
-    }
-
-    function unmarkWord() {
-        if (!session?.user) {
-            console.log("111111111")
-            router.push('/api/auth/signin')
-        }
-
-        if (word) {
-            fetch("/hts/api/v1/mark?word=" + word.word, { method: 'DELETE', }).then((response: Response) => {
-                word.marked = false;
-                setMarked(false);
-            });
-        }
-    }
-
     function toggleMore() {
         setIsOpen(!isOpen);
     }
@@ -151,26 +121,9 @@ const BoardComponent: React.FC<{}> = () => {
     return (
         <div className={styles.boardContainer}>
 
-            {/* <ToolBoxComponent selectLevel={(lv) => {
-        setLevel(lv);
-        fetchData(lv);
-      }}
-        marked={marked}
-        mark={markWord}
-        unmark={unmarkWord}
-        onClose={undefined}
-        word={word?.word ?? ""}
-        random={() => {
-          setWordList(shuffleList(wordList))
-          nextWord()
-        }}
-        playable={false}
-        showIgnore={false}
-        next={() => { }}
-      /> */}
-
-            <div className="mt-10 text-4xl font-medium"> Guess and type the word. </div>
-            <div>Press &lt;1&gt; to prompt. &lt;Enter&gt; to see the answer and to continue.</div>
+            <h2 className="mt-10 font-medium text-indigo-600">20 words everyday for free users.</h2>
+            <div className="text-4xl font-medium"> Guess and type the word. </div>
+            <div className="text-gray-300">Press &lt;Enter&gt; to prompt and to continue.</div>
 
             <WordComponent
                 word={word?.word ?? ""}

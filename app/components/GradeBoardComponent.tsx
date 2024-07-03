@@ -175,9 +175,7 @@ const BoardComponent: React.FC<{}> = () => {
         <div className={styles.boardContainer}>
 
             <ToolBoxComponent
-
                 selectItems={selectItems}
-
                 selectLevel={(lv) => {
                     setLevel(lv);
                     fetchData(lv);
@@ -192,8 +190,8 @@ const BoardComponent: React.FC<{}> = () => {
                     nextWord()
                 }}
                 playable={true}
-                showIgnore={false}
-                next={() => { }}
+                showIgnore={true}
+                next={() => { nextWord() }}
             />
 
             {completed && <StarComponent word={word?.word ?? ""}></StarComponent>}

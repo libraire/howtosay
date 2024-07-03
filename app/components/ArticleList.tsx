@@ -18,7 +18,7 @@ const ArticleList: React.FC<{ wordList: Article[], onCollectionChange: (e: { id:
 
     function fetchArticle(id: string) {
         return fetch("/hts/api/v1/material?id=" + id, {
-            method: 'GEt',
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             },
