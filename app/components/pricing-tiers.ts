@@ -21,7 +21,7 @@ export const tiers: Array<Tier> = [
     description: "For advanced users who want to go further.",
     href: "https://panlover3.gumroad.com/l/wgexm",
     mostPopular: true,
-    price: "$4",
+    price: "$4/year",
     featured: false,
     features: [
       "All modes unlocked",
@@ -39,7 +39,7 @@ export const tiers: Array<Tier> = [
     description: "For student user with edu emails.",
     href: "https://panlover3.gumroad.com/l/wgexm",
     mostPopular: true,
-    price: "$2",
+    price: "$2/Year",
     featured: false,
     features: [
       "All modes unlocked",

@@ -22,9 +22,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src }) => {
             {videoSrc && <video ref={videoRef} src={videoSrc} style={{ width: '100%' }} controls />}
             {!videoSrc &&
                 <div className='rounded-lg flex flex-col justify-center'>
-
-                    <h1 className="text-4xl font-medium tracking-tight text-center mb-10 flex justify-center"><PlayCircleIcon className="h-10 w-10 rounded-full mr-2"/> Learn more about pro </h1>
-                    <Image className='rounded-lg' style={{cursor: 'pointer'}} src={"https://images.bytegush.com/demo2.png"} alt="Video" width={600} height={300} onClick={handlePlay} />
+                    <h1 className="text-4xl font-medium tracking-tight text-center mb-10 flex justify-center"> More features on pro</h1>
+                    <Image className='rounded-lg' style={{cursor: 'pointer'}} src={"https://images.bytegush.com/demo3.png"} alt="Video" width={600} height={300} onClick={handlePlay} />
 
                     
 

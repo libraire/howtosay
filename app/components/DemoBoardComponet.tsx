@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import styles from "./ComponentStyle.module.css";
 import WordComponent from "./WordComponent";
 import KeyBoardComponent from "./KeyBoardComponent";
-import ToolBoxComponent from "./ToolBoxComponent";
 import { useSession } from "next-auth/react"
 import { useRouter } from 'next/navigation'
 
@@ -16,7 +15,6 @@ const BoardComponent: React.FC<{}> = () => {
     const [completed, setCompleted] = useState<boolean>(false);
     const [marked, setMarked] = useState<boolean>(false);
     const [isOpen, setIsOpen] = useState(false);
-    const router = useRouter()
 
     const { data: session, update } = useSession({
         required: false,
@@ -121,10 +119,10 @@ const BoardComponent: React.FC<{}> = () => {
     return (
         <div className={styles.boardContainer}>
 
-            <h2 className="mt-10 font-medium text-indigo-600">20 words everyday for free users.</h2>
-            <div className="text-4xl font-medium"> Guess and type the word. </div>
-            <div className="text-gray-300">Press &lt;Enter&gt; to prompt and to continue.</div>
 
+            <h2 className="text-indigo-400 mt-10 font-medium">20 new words everyday for free</h2>
+            <div className="text-4xl font-medium"> Guess and type the word</div>
+            <div className="text-gray-200 mb-10">Press &lt;Enter&gt; to prompt and to continue</div>
             <WordComponent
                 word={word?.word ?? ""}
                 next={() => nextWord()}
