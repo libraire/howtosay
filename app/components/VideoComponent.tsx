@@ -1,6 +1,5 @@
 import React, { useRef, useState } from 'react';
 import Image from "next/image";
-import { PlayCircleIcon } from '@heroicons/react/24/outline'
 
 interface VideoPlayerProps {
     src: string;

@@ -4,29 +4,18 @@ import React, { useState, useEffect } from "react";
 import styles from "./ComponentStyle.module.css";
 import WordComponent from "./WordComponent";
 import KeyBoardComponent from "./KeyBoardComponent";
-import { useSession } from "next-auth/react"
-import { useRouter } from 'next/navigation'
 
 
 const BoardComponent: React.FC<{}> = () => {
-    const [word, setWord] = useState<Word>();
-    const [level, setLevel] = useState<string>("default");
+    const [word, setWord] = useState<Word>();;
     const [wordList, setWordList] = useState<Word[]>([]);
     const [completed, setCompleted] = useState<boolean>(false);
-    const [marked, setMarked] = useState<boolean>(false);
-    const [isOpen, setIsOpen] = useState(false);
-
-    const { data: session, update } = useSession({
-        required: false,
-    })
 
     useEffect(() => {
-
         if (wordList.length == 0) {
-            fetchData(level);
+            fetchData();
         }
-
-    }, [session, word, wordList, level]);
+    }, [word, wordList]);
 
     function shuffleList(list: Word[]) {
         for (let i = list.length - 1; i > 0; i--) {
@@ -36,15 +25,13 @@ const BoardComponent: React.FC<{}> = () => {
         return list;
     }
 
-    const fetchData = async (lv: string) => {
+    const fetchData = async () => {
         try {
             const response = await fetch("hts/api/v1/dict/daily");
             const jsonData = await response.json();
             let list = shuffleList(jsonData.wordlist);
-            fetchMarkList(list)
-            var wd = list.shift()
+            var wd = list[0]
             setWord(wd);
-            setMarked(!!wd?.marked);
             setWordList(list);
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -58,12 +45,10 @@ const BoardComponent: React.FC<{}> = () => {
             if (idx < wordList.length - 1) {
                 var wd = wordList[idx + 1];
                 setWord(wd);
-                setMarked(!!wd?.marked);
             }
         } else if (wordList.length > 0) {
             var wd = wordList[0];
             setWord(wd);
-            setMarked(!!wd?.marked);
         }
     }
 
@@ -74,53 +59,14 @@ const BoardComponent: React.FC<{}> = () => {
             if (idx > 0) {
                 var wd = wordList[idx - 1];
                 setWord(wd);
-                setMarked(!!wd?.marked);
             }
         }
-    }
-
-    function fetchMarkList(wordList: Word[]) {
-
-        if (!session?.user) {
-            return wordList
-        }
-
-        const words = wordList.map(word => word.word).join(",")
-        fetch("/hts/api/v1/mark?words=" + words, { method: 'GET', })
-            .then((response) => response.json())
-            .then((jsonData) => {
-                if (!jsonData['words']) {
-                    return
-                }
-
-                const map = jsonData['words'].reduce((res: { [key: string]: number }, n: { word: string; mark: number }) => {
-                    res[n['word']] = n['mark'];
-                    return res;
-                }, {});
-
-                const newList = wordList.map(word => {
-                    word.marked = map[word.word] ?? false
-                    return word
-                })
-
-                if (newList.length > 0) {
-                    setMarked(newList[0].marked);
-                    newList.shift()
-                    setWordList(newList)
-                }
-            })
-
-    }
-
-    function toggleMore() {
-        setIsOpen(!isOpen);
     }
 
     return (
         <div className={styles.boardContainer}>
 
-
-            <h2 className="text-indigo-400 mt-10 font-medium">20 new words everyday for free</h2>
+            <h2 className="text-indigo-600 mt-10 font-medium">20 new words everyday for free</h2>
             <div className="text-4xl font-medium"> Guess and type the word</div>
             <div className="text-gray-200 mb-10">Press &lt;Enter&gt; to prompt and to continue</div>
             <WordComponent
