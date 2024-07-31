@@ -14,6 +14,7 @@ const selectItems = [
   { label: "Food", value: "food" },
   { label: "Kitchen", value: "kitchen" },
   { label: "Body", value: "body" },
+  { label: "Room", value: "room" },
   { label: "Animal", value: "animal" },
   { label: "Emoji-Activity", value: "emoji-1" },
   { label: "Emoji-Animal&Nature", value: "emoji-2" },
