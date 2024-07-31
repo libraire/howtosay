@@ -13,6 +13,7 @@ const selectItems = [
   { label: "Fruit", value: "fruit" },
   { label: "Food", value: "food" },
   { label: "Kitchen", value: "kitchen" },
+  { label: "Body", value: "body" },
   { label: "Animal", value: "animal" },
   { label: "Emoji-Activity", value: "emoji-1" },
   { label: "Emoji-Animal&Nature", value: "emoji-2" },
