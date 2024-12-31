@@ -57,7 +57,7 @@ const BoardComponent: React.FC<{}> = () => {
 
       var response
       if (lv.includes("emoji")) {
-        response = await fetch("api/words?level=" + lv);
+        response = await fetch("api/next/words?level=" + lv);
       } else {
         response = await fetch("/hts/api/v1/dict/image?category=" + lv);
       }

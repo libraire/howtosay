@@ -44,10 +44,12 @@ const WordComponent: React.FC<Props> = ({
     );
 
     if (showExample) {
-      fetch("/hts/api/v1/search?word=" + word, { method: 'POST', }).then((response: Response) => {
+      fetch("/api/v1/search?word=" + word, { method: 'GET', }).then((response: Response) => {
         return response.json()
       }).then((data) => {
-        setExamples(data.examples);
+        if (data.results) {
+          setExamples(data.results);
+        }
       });
     }
 

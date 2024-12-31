@@ -12,7 +12,7 @@ export default function Home() {
     const { data: session, update } = useSession({
         required: true,
         onUnauthenticated() {
-            redirect("/api/auth/signin")
+            // redirect("/api/auth/signin")
         }
     })
 

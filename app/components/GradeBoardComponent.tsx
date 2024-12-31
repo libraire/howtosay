@@ -61,7 +61,7 @@ const BoardComponent: React.FC<{}> = () => {
 
     const fetchData = async (lv: string) => {
         try {
-            const response = await fetch("api/words?level=" + lv);
+            const response = await fetch("api/next/words?level=" + lv);
             const jsonData = await response.json();
             let list = shuffleList(jsonData.wordlist);
             fetchMarkList(list)
