@@ -31,6 +31,11 @@ const nextConfig = {
       {
         source: '/api/v1/auth/send-code',
         destination: `${process.env.NEXT_PUBLIC_API_HOST}/api/v1/auth/send-code`
+      },
+      {
+        
+        source: '/api/v1/auth/verify',
+        destination: `${process.env.NEXT_PUBLIC_API_HOST}/api/v1/auth/verify`
       }
     ]
   }
