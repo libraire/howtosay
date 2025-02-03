@@ -44,7 +44,15 @@ const WordComponent: React.FC<Props> = ({
     );
 
     if (showExample) {
-      fetch("/api/v1/search?word=" + word, { method: 'GET', }).then((response: Response) => {
+      const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+      
+      fetch("/api/v1/search?word=" + word, { 
+        method: 'POST',
+        headers: {
+          'X-CSRF-Token': token || '',
+        },
+        credentials: 'include',
+      }).then((response: Response) => {
         return response.json()
       }).then((data) => {
         if (data.results) {

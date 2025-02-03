@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import AuthProvider from "./context/AuthProvider";
+import CsrfProvider from "./components/CsrfProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,14 +20,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <meta name="google-adsense-account" content="ca-pub-4248324124681580" />
+      <head>
+        <meta name="google-adsense-account" content="ca-pub-4248324124681580" />
+        {/* CSRF meta tag will be added dynamically by CsrfProvider */}
+      </head>
       <body className={inter.className}>
         <AuthProvider>
-          <div className="bg-[#101010]">
-            {children}
-          </div>
+          <CsrfProvider>
+            <div className="bg-[#101010]">
+              {children}
+            </div>
 
-          <Analytics />
+            <Analytics />
+          </CsrfProvider>
         </AuthProvider>
       </body>
 

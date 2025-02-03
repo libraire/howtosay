@@ -20,7 +20,7 @@ export default function MyDropDown({ expire }: { expire: string }) {
     const { data: session, update } = useSession({
         required: false,
         onUnauthenticated() {
-            redirect("/api/auth/signin")
+            // redirect("/api/auth/signin")
         }
     })
 
@@ -164,7 +164,11 @@ export default function MyDropDown({ expire }: { expire: string }) {
                                         'block px-4 py-2 text-sm'
                                     )}
                                     onClick={() => {
-                                        signIn();
+
+                                        // 
+                                        // signIn();
+
+                                        redirect("/auth/login")
                                     }}
                                 >
                                     Sign In

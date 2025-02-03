@@ -14,7 +14,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ word }) => {
         const audioElement = audioRef.current;
 
         if (audioElement) {
-            audioElement.src = 'https://audio.howtosay.one/' + word + '.mp3';
+            audioElement.src = 'https://audio.bytegush.com/' + word + '.mp3';
             audioElement.preload = 'auto';
             audioElement.addEventListener('ended', handleAudioEnded);
             document.addEventListener("keydown", handleKeyDown);

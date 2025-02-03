@@ -89,10 +89,11 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: (() => void) | undefi
 
     function markWord() {
 
-        if (!session?.user) {
-            console.log("333333333")
-            router.push('/api/auth/signin')
-        }
+        // TODO
+        // if (!session?.user) {
+        //     console.log("333333333")
+        //     router.push('/api/auth/signin')
+        // }
 
         if (word) {
             fetch("/hts/api/v1/mark?word=" + word.word, { method: 'POST', }).then((response: Response) => {

@@ -14,7 +14,7 @@ export default function Home() {
     <AudioComponent str={"xxxx"}/>
     <BoardComponent />
 
-    <VideoPlayer src="https://audio.howtosay.one/howtosayone.mp4"></VideoPlayer>
+    <VideoPlayer src="https://audio.bytegush.com/howtosayone.mp4"></VideoPlayer>
     <PriceComponent></PriceComponent>
 
     </main>

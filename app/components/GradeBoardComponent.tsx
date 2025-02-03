@@ -139,10 +139,11 @@ const BoardComponent: React.FC<{}> = () => {
 
     function markWord() {
 
-        if (!session?.user) {
-            console.log("22222222222")
-            router.push('/api/auth/signin')
-        }
+        // TODO
+        // if (!session?.user) {
+        //     console.log("22222222222")
+        //     router.push('/api/auth/signin')
+        // }
 
         if (word) {
             fetch("/hts/api/v1/mark?word=" + word.word, { method: 'POST', }).then((response: Response) => {
@@ -154,10 +155,12 @@ const BoardComponent: React.FC<{}> = () => {
     }
 
     function unmarkWord() {
-        if (!session?.user) {
-            console.log("111111111")
-            router.push('/api/auth/signin')
-        }
+
+        // TODO
+        // if (!session?.user) {
+        //     console.log("111111111")
+        //     router.push('/api/auth/signin')
+        // }
 
         if (word) {
             fetch("/hts/api/v1/mark?word=" + word.word, { method: 'DELETE', }).then((response: Response) => {
