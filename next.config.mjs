@@ -27,6 +27,10 @@ const nextConfig = {
       {
         source: '/auth/:path*',
         destination: `${process.env.NEXT_PUBLIC_API_HOST}/auth/:path*`
+      },
+      {
+        source: '/api/v1/auth/send-code',
+        destination: `${process.env.NEXT_PUBLIC_API_HOST}/api/v1/auth/send-code`
       }
     ]
   }
