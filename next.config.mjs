@@ -23,6 +23,10 @@ const nextConfig = {
       {
         source: '/hts/api/v1/:path*',
         destination: `${process.env.NEXT_PUBLIC_API_HOST}/hts/api/v1/:path*`
+      },
+      {
+        source: '/auth/:path*',
+        destination: `${process.env.NEXT_PUBLIC_API_HOST}/auth/:path*`
       }
     ]
   }
