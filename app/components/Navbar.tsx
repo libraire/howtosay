@@ -30,7 +30,7 @@ export default function Navbar({ check = true }: { check?: boolean }) {
                 <div className="flex flex-col">
 
                     <Link href={'/'} >
-                        <div className={styles.title}>
+                        <div className={styles.title} style={{ width: 'fit-content' }}>
                             <span>💡 </span>How To Say
                         </div>
                     </Link>

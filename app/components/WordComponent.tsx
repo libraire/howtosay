@@ -44,12 +44,12 @@ const WordComponent: React.FC<Props> = ({
     );
 
     if (showExample) {
-      const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+      // const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
       
       fetch("/api/v1/search?word=" + word, { 
         method: 'POST',
         headers: {
-          'X-CSRF-Token': token || '',
+          // 'X-CSRF-Token': token || '',
         },
         credentials: 'include',
       }).then((response: Response) => {
