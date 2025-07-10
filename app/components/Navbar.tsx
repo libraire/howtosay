@@ -19,7 +19,7 @@ export default function Navbar({ check = true }: { check?: boolean }) {
             return undefined;
         }
 
-        const sessionValue = getCookie('howtosay_session');
+        const sessionValue = getCookie('bytegush_session');
         fetch("/hts/api/v1/license/ispro", {
             method: 'GET', headers: {
                 'bytegush_session': sessionValue ?? ''
