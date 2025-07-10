@@ -5,13 +5,26 @@ import Link from 'next/link';
 import ActivateComponent from "./ ActivateComponent";
 import { useEffect, useState } from "react";
 
+
 export default function Navbar({ check = true }: { check?: boolean }) {
 
     const [isPro, setIsPro] = useState(true)
     const [expire, setExpire] = useState('')
 
     useEffect(() => {
-        fetch("/hts/api/v1/license/ispro", { method: 'GET', }).then((response: Response) => {
+        var getCookie =  function(name: string): string | undefined {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop()?.split(';').shift();
+            return undefined;
+        }
+
+        const sessionValue = getCookie('howtosay_session');
+        fetch("/hts/api/v1/license/ispro", {
+            method: 'GET', headers: {
+                'bytegush_session': sessionValue ?? ''
+            }
+        }).then((response: Response) => {
             return response.json()
         }).then((data) => {
             if (check) {
