@@ -12,7 +12,7 @@ export default function Navbar({ check = true }: { check?: boolean }) {
     const [expire, setExpire] = useState('')
 
     useEffect(() => {
-        var getCookie =  function(name: string): string | undefined {
+        var getCookie = function (name: string): string | undefined {
             const value = `; ${document.cookie}`;
             console.log(`get cookie ${document.cookie}`);
             const parts = value.split(`; ${name}=`);
@@ -24,7 +24,8 @@ export default function Navbar({ check = true }: { check?: boolean }) {
         fetch("/hts/api/v1/license/ispro", {
             method: 'GET', headers: {
                 'bytegush_session': sessionValue ?? ''
-            }
+            },
+            credentials: 'include',
         }).then((response: Response) => {
             return response.json()
         }).then((data) => {
