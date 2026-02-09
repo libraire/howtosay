@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
-import { BookmarkSquareIcon, AcademicCapIcon, BookOpenIcon, FireIcon, PhotoIcon } from '@heroicons/react/24/outline'
+import { BookmarkSquareIcon, AcademicCapIcon, BookOpenIcon, FireIcon, PhotoIcon, PuzzlePieceIcon } from '@heroicons/react/24/outline'
 import { StarIcon } from '@heroicons/react/20/solid'
 import UserInfo from "@/app/components/UserInfo"
 import { signOut, signIn } from "next-auth/react"
@@ -112,7 +112,7 @@ export default function MyDropDown({ expire }: { expire: string }) {
                             )}
                         </Menu.Item>
 
-                        
+
                         <Menu.Item>
                             {({ active }) => (
                                 <a
@@ -130,10 +130,25 @@ export default function MyDropDown({ expire }: { expire: string }) {
                         <Menu.Item>
                             {({ active }) => (
                                 <a
-                                    href="https://www.bytegush.com/about/feedback"
+                                    href="https://chromewebstore.google.com/detail/focus-ai-enhancing-your-g/pfpneagkphfohdecjjcpkgjgmdkbhbea"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                     className={classNames(
                                         active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                                         'block px-4 py-2 text-sm border-t border-gray-100'
+                                    )}
+                                >
+                                    <PuzzlePieceIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> Chrome Extension
+                                </a>
+                            )}
+                        </Menu.Item>
+                        <Menu.Item>
+                            {({ active }) => (
+                                <a
+                                    href="https://www.bytegush.com/about/feedback"
+                                    className={classNames(
+                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                                        'block px-4 py-2 text-sm'
                                     )}
                                 >
                                     Feedback
