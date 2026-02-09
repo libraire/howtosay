@@ -40,6 +40,7 @@ export default function Practise() {
 
 
     useEffect(() => {
+        if (!pathname) return;
 
         const id = pathname.substring(pathname.lastIndexOf('/') + 1);
         if (id) {
@@ -62,7 +63,7 @@ export default function Practise() {
                 });
         }
 
-    }, [])
+    }, [pathname])
 
     return (
         <main className="flex min-h-screen flex-col items-center bg-[#101010]">
