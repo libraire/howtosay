@@ -11,7 +11,7 @@ import {
     Divider,
     Link,
     Spacer,
-} from "@nextui-org/react";
+} from "@heroui/react";
 
 import { tiers } from "./pricing-tiers";
 import ModalDialog from "./ModalDialog"
