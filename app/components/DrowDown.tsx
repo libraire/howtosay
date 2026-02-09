@@ -174,17 +174,11 @@ export default function MyDropDown({ expire }: { expire: string }) {
                         {!session && <Menu.Item>
                             {({ active }) => (
                                 <a
+                                    href="https://app.bytegush.com/auth/login"
                                     className={classNames(
                                         active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                                         'block px-4 py-2 text-sm'
                                     )}
-                                    onClick={() => {
-
-                                        // 
-                                        // signIn();
-
-                                        redirect("/auth/login")
-                                    }}
                                 >
                                     Sign In
                                 </a>
