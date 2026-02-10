@@ -1,6 +1,8 @@
 
+
 import styles from "@/app/components/ComponentStyle.module.css";
 import MyDropDown from "@/app/components/DrowDown";
+import AuthButton from "@/app/components/AuthButton";
 import Link from 'next/link';
 import ActivateComponent from "./ ActivateComponent";
 import { useEffect, useState } from "react";
@@ -57,7 +59,10 @@ export default function Navbar({ check = true }: { check?: boolean }) {
 
 
                 <div className="flex-1 "> </div>
-                <MyDropDown expire={expire} />
+                <div className="flex items-center gap-2">
+                    <AuthButton />
+                    <MyDropDown expire={expire} />
+                </div>
                 {!isPro && <ActivateComponent />}
             </div>
         </>

@@ -4,9 +4,6 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { BookmarkSquareIcon, AcademicCapIcon, BookOpenIcon, FireIcon, PhotoIcon, PuzzlePieceIcon } from '@heroicons/react/24/outline'
 import { StarIcon } from '@heroicons/react/20/solid'
 import UserInfo from "@/app/components/UserInfo"
-import { signOut, signIn } from "next-auth/react"
-
-import { redirect } from "next/navigation"
 import { useSession } from "next-auth/react"
 
 function classNames(...classes: string[]): string {
@@ -155,41 +152,6 @@ export default function MyDropDown({ expire }: { expire: string }) {
                                 </a>
                             )}
                         </Menu.Item>
-                        {session && <Menu.Item>
-                            {({ active }) => (
-                                <a
-                                    className={classNames(
-                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                        'block px-4 py-2 text-sm'
-                                    )}
-                                    onClick={() => {
-                                        signOut({ redirect: false });
-                                    }}
-                                >
-                                    Sign Out
-                                </a>
-                            )}
-                        </Menu.Item>}
-
-                        {!session && <Menu.Item>
-                            {({ active }) => {
-                                // Get current page URL for redirect after login
-                                const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
-                                const loginUrl = `https://app.bytegush.com/auth/login?redirect_url=${encodeURIComponent(currentUrl)}`;
-                                
-                                return (
-                                    <a
-                                        href={loginUrl}
-                                        className={classNames(
-                                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                            'block px-4 py-2 text-sm'
-                                        )}
-                                    >
-                                        Sign In
-                                    </a>
-                                );
-                            }}
-                        </Menu.Item>}
                     </div>
                 </Menu.Items>
             </Transition>
