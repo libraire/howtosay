@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
-import { BookmarkSquareIcon, AcademicCapIcon, BookOpenIcon, FireIcon, PhotoIcon, PuzzlePieceIcon } from '@heroicons/react/24/outline'
+import { BookmarkSquareIcon, AcademicCapIcon, FireIcon, PhotoIcon, PuzzlePieceIcon } from '@heroicons/react/24/outline'
 import { StarIcon } from '@heroicons/react/20/solid'
 import UserInfo from "@/app/components/UserInfo"
 import { useSession } from "next-auth/react"
@@ -95,19 +95,7 @@ export default function MyDropDown({ expire }: { expire: string }) {
                                 </a>
                             )}
                         </Menu.Item>
-                        <Menu.Item>
-                            {({ active }) => (
-                                <a
-                                    href='/read'
-                                    className={classNames(
-                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                        'block px-4 py-2 text-sm'
-                                    )}
-                                >
-                                    <BookOpenIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> Reading Mode
-                                </a>
-                            )}
-                        </Menu.Item>
+
 
 
                         <Menu.Item>

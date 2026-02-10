@@ -1,9 +1,9 @@
 export interface Word {
     word: string;
-    definition:string;
-    imgurl:string;
-    emoji:string;
-    marked:boolean;
+    definition: string;
+    imgurl: string;
+    emoji: string;
+    marked: boolean;
     level: number;
     query_count: number;
 }
@@ -18,13 +18,4 @@ export interface Char {
 export interface FuncKey {
     char: string
     key: string
-}
-
-export interface Article {
-    title: string;
-    id: string;
-    created_at: string;
-    updated_at: string;
-    level: number;
-    proficiency: number;
 }
