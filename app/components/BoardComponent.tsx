@@ -30,6 +30,7 @@ const BoardComponent: React.FC<{}> = () => {
   const [completed, setCompleted] = useState<boolean>(false);
   const [marked, setMarked] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter()
 
   const { data: session, update } = useSession({
@@ -37,12 +38,10 @@ const BoardComponent: React.FC<{}> = () => {
   })
 
   useEffect(() => {
-
-    if (wordList.length == 0) {
+    if (wordList.length == 0 && !isLoading) {
       fetchData(level);
     }
-
-  }, [session, word, wordList, level]);
+  }, [level]);
 
   function shuffleList(list: Word[]) {
     for (let i = list.length - 1; i > 0; i--) {
@@ -53,6 +52,8 @@ const BoardComponent: React.FC<{}> = () => {
   }
 
   const fetchData = async (lv: string) => {
+    if (isLoading) return;
+    setIsLoading(true);
     try {
 
       var response
@@ -71,6 +72,8 @@ const BoardComponent: React.FC<{}> = () => {
       setWordList(list);
     } catch (error) {
       console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
