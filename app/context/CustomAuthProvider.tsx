@@ -35,30 +35,24 @@ export function CustomAuthProvider({ children }: { children: ReactNode }) {
     // Check authentication status
     const checkAuth = async () => {
         try {
-            const sessionValue = getCookie('bytegush_session')
-
-            if (!sessionValue) {
-                setUser(null)
-                setIsLoading(false)
-                return
-            }
-
-            // Verify session with backend
-            const response = await fetch('/hts/api/v1/user/profile', {
+            // 注意：这里我们尝试请求后端的用户信息接口
+            // 依赖于 next.config.mjs 中的 rewrites 将 /hts/api 转发到后端
+            const response = await fetch('/hts/api/v1/user', {
                 method: 'GET',
-                headers: {
-                    'bytegush_session': sessionValue
-                },
-                credentials: 'include',
+                credentials: 'include', // 确保带上 cookie/session
             })
 
             if (response.ok) {
                 const data = await response.json()
-                setUser({
-                    email: data.email,
-                    isPro: data.isPro,
-                    expire: data.expire
-                })
+                if (data && data.email) {
+                    setUser({
+                        email: data.email,
+                        isPro: data.isPro,
+                        expire: data.expire
+                    })
+                } else {
+                    setUser(null)
+                }
             } else {
                 setUser(null)
             }
