@@ -6,6 +6,27 @@ import { StarIcon } from '@heroicons/react/20/solid'
 import UserInfo from "@/app/components/UserInfo"
 import { useSession } from "next-auth/react"
 
+const selectItems = [
+    { value: '21', label: 'Oxford3000' },
+    { value: '16', label: 'Scene' },
+    { value: '15', label: 'IELT' },
+    { value: '14', label: 'TOEFL' },
+    { value: '13', label: 'SAT' },
+    { value: '12', label: '12th' },
+    { value: '11', label: '11th' },
+    { value: '10', label: '10th' },
+    { value: '9', label: '9th' },
+    { value: '8', label: '8th' },
+    { value: '7', label: '7th' },
+    { value: '6', label: '6th' },
+    { value: '5', label: '5th' },
+    { value: '4', label: '4th' },
+    { value: '3', label: '3th' },
+    { value: '2', label: '2th' },
+    { value: '1', label: '1th' },
+    { value: '0', label: 'Kindergarten' },
+]
+
 function classNames(...classes: string[]): string {
     return classes.filter(Boolean).join(' ')
 }
@@ -13,6 +34,7 @@ function classNames(...classes: string[]): string {
 export default function MyDropDown({ expire }: { expire: string }) {
 
     const [myexpire, setExpire] = useState('')
+    const [level, setLevel] = useState<string>('0');
 
     const { data: session, update } = useSession({
         required: false,
@@ -20,6 +42,32 @@ export default function MyDropDown({ expire }: { expire: string }) {
             // redirect("/api/auth/signin")
         }
     })
+
+    useEffect(() => {
+        if (session?.user) {
+            fetch("/hts/api/user").then(res => res.json()).then(data => {
+                if (data.level !== undefined) {
+                    setLevel(String(data.level));
+                }
+            }).catch(e => console.error(e));
+        }
+    }, [session]);
+
+    const handleLevelChange = (newLevel: string) => {
+        setLevel(newLevel);
+        fetch("/hts/api/v1/user/level", {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ level: newLevel })
+        }).then(res => res.json())
+            .then(data => {
+                if (data.status === 'ok') {
+                    console.log("Level updated");
+                }
+            });
+    }
+
+
 
     useEffect(() => {
 
@@ -53,6 +101,24 @@ export default function MyDropDown({ expire }: { expire: string }) {
                     <div className="py-1">
 
                         {session && <UserInfo expire={myexpire} user={session?.user?.email ?? ""} />}
+
+                        <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-100">
+                            <label htmlFor="level-select" className="block text-xs font-medium text-gray-500 mb-1">
+                                Your Level
+                            </label>
+                            <select
+                                id="level-select"
+                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
+                                value={level}
+                                onChange={(e) => handleLevelChange(e.target.value)}
+                            >
+                                {selectItems.map((item) => (
+                                    <option key={item.value} value={item.value}>
+                                        {item.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
 
                         <Menu.Item>
                             {({ active }) => (
@@ -115,7 +181,7 @@ export default function MyDropDown({ expire }: { expire: string }) {
                         <Menu.Item>
                             {({ active }) => (
                                 <a
-                                    href="https://chromewebstore.google.com/detail/focus-ai-enhancing-your-g/pfpneagkphfohdecjjcpkgjgmdkbhbea"
+                                    href="https://chromewebstore.google.com/detail/how-to-say/okpmmopmkbaicfojimaafnloaacggnfp?hl=zh-CN"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className={classNames(
