@@ -45,7 +45,7 @@ export default function MyDropDown({ expire }: { expire: string }) {
 
     useEffect(() => {
         if (session?.user) {
-            fetch("/hts/api/user").then(res => res.json()).then(data => {
+            fetch("/hts/api/v1/user").then(res => res.json()).then(data => {
                 if (data.level !== undefined) {
                     setLevel(String(data.level));
                 }
