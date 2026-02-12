@@ -23,7 +23,7 @@ export default function Navbar({ check = true }: { check?: boolean }) {
         }
 
         const sessionValue = getCookie('bytegush_session');
-        fetch("/hts/api/user", {
+        fetch("/hts/api/v1/user", {
             method: 'GET', headers: {
                 'bytegush_session': sessionValue ?? '',
                 'Accept': 'application/json'
