@@ -23,20 +23,21 @@ export default function Navbar({ check = true }: { check?: boolean }) {
         }
 
         const sessionValue = getCookie('bytegush_session');
-        fetch("/hts/api/v1/license/ispro", {
+        fetch("/hts/api/user", {
             method: 'GET', headers: {
-                'bytegush_session': sessionValue ?? ''
+                'bytegush_session': sessionValue ?? '',
+                'Accept': 'application/json'
             },
             credentials: 'include',
         }).then((response: Response) => {
             return response.json()
         }).then((data) => {
             if (check) {
-                // TODO 
-                // setIsPro(data.isPro)
-                setIsPro(true)
+                // Use is_pro from user profile
+                setIsPro(!!data.is_pro)
             }
-            setExpire(data.expire)
+            // Use expire from user profile
+            setExpire(data.expire ?? '')
         })
     })
 
