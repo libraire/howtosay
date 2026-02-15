@@ -70,10 +70,11 @@ export function CustomAuthProvider({ children }: { children: ReactNode }) {
         await checkAuth()
     }
 
-    // Login - redirect to app.bytegush.com
+    // Login - redirect to backend login page
     const login = (redirectUrl?: string) => {
         const currentUrl = redirectUrl || (typeof window !== 'undefined' ? window.location.href : '')
-        const loginUrl = `https://app.bytegush.com/auth/login?redirect_url=${encodeURIComponent(currentUrl)}`
+        const apiHost = process.env.NEXT_PUBLIC_API_HOST || 'https://app.bytegush.com'
+        const loginUrl = `${apiHost}/auth/login?redirect_url=${encodeURIComponent(currentUrl)}`
         window.location.href = loginUrl
     }
 
