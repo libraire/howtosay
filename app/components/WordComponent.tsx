@@ -45,8 +45,8 @@ const WordComponent: React.FC<Props> = ({
 
     if (showExample) {
       // const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-      
-      fetch("/api/v1/search?word=" + word, { 
+
+      fetch("/hts/api/v1/search?word=" + word, {
         method: 'POST',
         headers: {
           // 'X-CSRF-Token': token || '',
