@@ -56,7 +56,11 @@ const WordComponent: React.FC<Props> = ({
         return response.json()
       }).then((data) => {
         if (data.results) {
-          setExamples(data.results.map((r: any) => r.snippet));
+          setExamples(
+            data.results
+              .map((r: any) => extractSentence(r.snippet, word))
+              .filter((s: string | null): s is string => !!s)
+          );
         }
       });
     }
@@ -275,3 +279,16 @@ const WordComponent: React.FC<Props> = ({
 };
 
 export default WordComponent;
+
+function extractSentence(snippet: string, word: string) {
+  const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const regex = new RegExp(
+    `(?:^|\\s)([A-Z0-9"][^.?!]*?\\b${escapedWord}\\b[^.?!]*?[.?!])(?![.?!])`,
+    "i"
+  );
+  const match = snippet.match(regex);
+  if (match && !match[1].includes("...")) {
+    return match[1];
+  }
+  return null;
+}
