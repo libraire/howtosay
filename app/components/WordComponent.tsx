@@ -56,7 +56,7 @@ const WordComponent: React.FC<Props> = ({
         return response.json()
       }).then((data) => {
         if (data.results) {
-          setExamples(data.results);
+          setExamples(data.results.map((r: any) => r.snippet));
         }
       });
     }
