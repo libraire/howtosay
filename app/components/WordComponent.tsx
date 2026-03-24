@@ -236,7 +236,7 @@ const WordComponent: React.FC<Props> = ({
       </div>
 
       <div className="max-w-[600px] mx-auto mt-5 px-4 flex flex-col text-lg overflow-y flex-auto">
-        {imageUrl == "" && emoji == "" && <div className="bg-white rounded-lg p-5 text-gray-900">{mask(word, definition)}</div>}
+        {imageUrl == "" && emoji == "" && <div className="bg-white rounded-lg p-5 text-gray-900 whitespace-pre-wrap">{mask(word, definition)}</div>}
         {imageUrl != "" && (
           <div>
             <Image
