@@ -8,4 +8,5 @@ export interface LiteraryPassage {
     year?: number
     accent: string
     isFavorited?: boolean
+    isPersisted?: boolean
 }

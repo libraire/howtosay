@@ -58,6 +58,11 @@ export default function Home() {
       return
     }
 
+    if (!passage.isPersisted) {
+      console.warn("Favorite is disabled for mock homepage passages.")
+      return
+    }
+
     if (!isAuthenticated) {
       login()
       return
@@ -101,6 +106,7 @@ export default function Home() {
                 onToggleSavePassage={handleToggleSavePassage}
                 practiceLoading={isPreparingPractice}
                 passageSaved={!!passage.isFavorited}
+                canSavePassage={!!passage.isPersisted}
               />
             )}
 

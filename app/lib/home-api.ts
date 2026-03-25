@@ -13,6 +13,7 @@ const mockPassage: LiteraryPassage = {
     year: 1847,
     accent: "#dcc38f",
     isFavorited: false,
+    isPersisted: false,
 }
 
 function mapPassage(data: Record<string, unknown>): LiteraryPassage {
@@ -26,6 +27,7 @@ function mapPassage(data: Record<string, unknown>): LiteraryPassage {
         year: typeof data.work_year === "number" ? data.work_year : undefined,
         accent: typeof data.theme_accent === "string" && data.theme_accent.length > 0 ? data.theme_accent : "#dcc38f",
         isFavorited: Boolean(data.is_favorited),
+        isPersisted: true,
     }
 }
 

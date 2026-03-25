@@ -41,6 +41,7 @@ export default function ReadingPassage({
     onToggleSavePassage,
     practiceLoading,
     passageSaved,
+    canSavePassage,
 }: {
     excerpt: string
     accent: string
@@ -51,6 +52,7 @@ export default function ReadingPassage({
     onToggleSavePassage: () => void
     practiceLoading: boolean
     passageSaved: boolean
+    canSavePassage: boolean
 }) {
     const { isAuthenticated, login } = useCustomAuth()
     const [lookup, setLookup] = useState<LookupState | null>(null)
@@ -195,9 +197,18 @@ export default function ReadingPassage({
                             <button
                                 type="button"
                                 onClick={onToggleSavePassage}
-                                aria-label={passageSaved ? "Remove saved passage" : "Save this passage"}
-                                title={passageSaved ? "Remove saved passage" : "Save this passage"}
-                                className="rounded-full bg-white/[0.035] p-2.5 text-white/46 transition hover:bg-white hover:text-black"
+                                disabled={!canSavePassage}
+                                aria-label={
+                                    canSavePassage
+                                        ? (passageSaved ? "Remove saved passage" : "Save this passage")
+                                        : "Save is unavailable for preview passages"
+                                }
+                                title={
+                                    canSavePassage
+                                        ? (passageSaved ? "Remove saved passage" : "Save this passage")
+                                        : "Save is unavailable for preview passages"
+                                }
+                                className="rounded-full bg-white/[0.035] p-2.5 text-white/46 transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:bg-white/[0.025] disabled:text-white/20"
                             >
                                 {passageSaved ? <HeartSolidIcon className="h-5 w-5" /> : <HeartOutlineIcon className="h-5 w-5" />}
                             </button>

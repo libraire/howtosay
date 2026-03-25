@@ -61,15 +61,15 @@ export default function AuthButton() {
             >
                 <Menu.Items className="absolute right-0 z-10 mt-2 w-64 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <div className="py-1">
-                        <UserInfo expire={expire} user={user.email} />
+                        
 
-                        <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-100">
-                            <label htmlFor="level-select" className="block text-xs font-medium text-gray-500 mb-1">
-                                Your Level
+                        <div className="flex items-center gap-3 border-b border-gray-100 px-4 py-2 text-sm text-gray-700">
+                            <label htmlFor="level-select" className="shrink-0 text-sm text-gray-700">
+                                Level
                             </label>
                             <select
                                 id="level-select"
-                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
+                                className="block min-w-0 flex-1 rounded-md border-0 py-1.5 text-sm text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600"
                                 value={level}
                                 onChange={(e) => setUserLevel(e.target.value).catch((error) => console.error(error))}
                             >
@@ -96,6 +96,8 @@ export default function AuthButton() {
                             )}
                         </Menu.Item>
 
+                        <UserInfo expire={expire} user={user.email} />
+                        
                         <Menu.Item>
                             {({ active }) => (
                                 <button
