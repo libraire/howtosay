@@ -4,7 +4,7 @@ import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { BookmarkSquareIcon, AcademicCapIcon, FireIcon, PhotoIcon, PuzzlePieceIcon } from '@heroicons/react/24/outline'
 import { StarIcon } from '@heroicons/react/20/solid'
 import UserInfo from "@/app/components/UserInfo"
-import { useSession } from "next-auth/react"
+import { useCustomAuth } from "@/app/context/CustomAuthProvider"
 
 const selectItems = [
     { value: '21', label: 'Oxford3000' },
@@ -36,22 +36,17 @@ export default function MyDropDown({ expire }: { expire: string }) {
     const [myexpire, setExpire] = useState('')
     const [level, setLevel] = useState<string>('0');
 
-    const { data: session, update } = useSession({
-        required: false,
-        onUnauthenticated() {
-            // redirect("/api/auth/signin")
-        }
-    })
+    const { user } = useCustomAuth()
 
     useEffect(() => {
-        if (session?.user) {
+        if (user) {
             fetch("/hts/api/v1/user").then(res => res.json()).then(data => {
                 if (data.level !== undefined) {
                     setLevel(String(data.level));
                 }
             }).catch(e => console.error(e));
         }
-    }, [session]);
+    }, [user]);
 
     const handleLevelChange = (newLevel: string) => {
         setLevel(newLevel);
@@ -100,7 +95,7 @@ export default function MyDropDown({ expire }: { expire: string }) {
                 <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <div className="py-1">
 
-                        {session && <UserInfo expire={myexpire} user={session?.user?.email ?? ""} />}
+                        {user && <UserInfo expire={myexpire} user={user.email} />}
 
                         <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-100">
                             <label htmlFor="level-select" className="block text-xs font-medium text-gray-500 mb-1">

@@ -1,25 +1,33 @@
 "use client"
 import { useState } from "react";
-import { useSession } from "next-auth/react"
+import { useCustomAuth } from "@/app/context/CustomAuthProvider";
 import { Word } from "@/app/components/types";
 import Navbar from "@/app/components/Navbar";
 import AudioComponent from "@/app/components/AudioComponent";
 import PractiseComponent from "@/app/components/PractiseComponent"
-import { redirect } from "next/navigation"
+import { useEffect } from "react";
 
 export default function Home() {
-
-    const { data: session, update } = useSession({
-        required: true,
-        onUnauthenticated() {
-            // redirect("/api/auth/signin")
-        }
-    })
+    const { isAuthenticated, isLoading, login } = useCustomAuth();
 
     const [message, setMessage] = useState('');
     const [isButtonDisabled, setButtonDisabled] = useState(false);
     const [wordList, setWordList] = useState<Word[]>([]);
     const [practise, setPractise] = useState(false)
+
+    useEffect(() => {
+        if (!isLoading && !isAuthenticated) {
+            login()
+        }
+    }, [isAuthenticated, isLoading, login]);
+
+    if (isLoading || !isAuthenticated) {
+        return (
+            <main className="flex min-h-screen flex-col items-center bg-[#101010]">
+                <Navbar />
+            </main>
+        );
+    }
 
     const handleSending = () => {
         if (!message) {

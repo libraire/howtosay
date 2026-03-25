@@ -4,8 +4,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./ComponentStyle.module.css";
 import WordComponent from "./WordComponent";
 import KeyBoardComponent from "./KeyBoardComponent";
-import { useSession } from "next-auth/react"
-import { useRouter } from 'next/navigation'
+import { useCustomAuth } from "@/app/context/CustomAuthProvider";
 import HelpSlideOver from "./HelpSlideOver";
 import ToolBoxComponent from "./ToolBoxComponent";
 import StarComponent from "./StarComponent";
@@ -18,11 +17,7 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: (() => void) | undefi
     const [marked, setMarked] = useState<boolean>(false);
     const [isOpen, setIsOpen] = useState(false);
     const handleOnClose = () => setIsOpen(false);
-    const router = useRouter()
-
-    const { data: session, update } = useSession({
-        required: false,
-    })
+    const { isAuthenticated, login } = useCustomAuth();
 
     function shuffleList(list: Word[]) {
         for (let i = list.length - 1; i > 0; i--) {
@@ -88,12 +83,10 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: (() => void) | undefi
 
 
     function markWord() {
-
-        // TODO
-        // if (!session?.user) {
-        //     console.log("333333333")
-        //     router.push('/api/auth/signin')
-        // }
+        if (!isAuthenticated) {
+            login()
+            return
+        }
 
         if (word) {
             fetch("/hts/api/v1/mark?word=" + word.word, { method: 'POST', }).then((response: Response) => {
@@ -104,9 +97,9 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: (() => void) | undefi
     }
 
     function unmarkWord() {
-        if (!session?.user) {
-            console.log("44444444444444")
-            router.push('/api/auth/signin')
+        if (!isAuthenticated) {
+            login()
+            return
         }
 
         if (word) {

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
-import AuthProvider from "./context/AuthProvider";
 import { CustomAuthProvider } from "./context/CustomAuthProvider";
 import CsrfProvider from "./components/CsrfProvider";
 
@@ -26,17 +25,15 @@ export default function RootLayout({
         {/* CSRF meta tag will be added dynamically by CsrfProvider */}
       </head>
       <body className={inter.className}>
-        <AuthProvider>
-          <CustomAuthProvider>
-            <CsrfProvider>
-              <div className="bg-[#101010]">
-                {children}
-              </div>
+        <CustomAuthProvider>
+          <CsrfProvider>
+            <div className="bg-[#101010]">
+              {children}
+            </div>
 
-              <Analytics />
-            </CsrfProvider>
-          </CustomAuthProvider>
-        </AuthProvider>
+            <Analytics />
+          </CsrfProvider>
+        </CustomAuthProvider>
       </body>
 
     </html>

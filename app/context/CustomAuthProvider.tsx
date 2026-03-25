@@ -3,9 +3,11 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
 
 interface User {
+    name?: string
     email: string
     isPro?: boolean
     expire?: string
+    level?: number
 }
 
 interface CustomAuthContextType {
@@ -23,15 +25,6 @@ export function CustomAuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null)
     const [isLoading, setIsLoading] = useState(true)
 
-    // Get cookie helper
-    const getCookie = (name: string): string | undefined => {
-        if (typeof document === 'undefined') return undefined
-        const value = `; ${document.cookie}`
-        const parts = value.split(`; ${name}=`)
-        if (parts.length === 2) return parts.pop()?.split(';').shift()
-        return undefined
-    }
-
     // Check authentication status
     const checkAuth = async () => {
         try {
@@ -46,9 +39,11 @@ export function CustomAuthProvider({ children }: { children: ReactNode }) {
                 const data = await response.json()
                 if (data && data.email) {
                     setUser({
+                        name: data.name,
                         email: data.email,
-                        isPro: data.isPro,
-                        expire: data.expire
+                        isPro: data.isPro ?? data.is_pro,
+                        expire: data.expire,
+                        level: data.level,
                     })
                 } else {
                     setUser(null)
@@ -81,20 +76,13 @@ export function CustomAuthProvider({ children }: { children: ReactNode }) {
     // Logout
     const logout = async () => {
         try {
-            const sessionValue = getCookie('bytegush_session')
-            if (sessionValue) {
-                await fetch('/hts/api/v1/auth/logout', {
-                    method: 'POST',
-                    headers: {
-                        'bytegush_session': sessionValue
-                    },
-                    credentials: 'include',
-                })
-            }
+            await fetch('/hts/api/v1/auth/logout', {
+                method: 'POST',
+                credentials: 'include',
+            })
 
-            // Clear cookie
-            document.cookie = 'bytegush_session=; path=/; domain=.bytegush.com; expires=Thu, 01 Jan 1970 00:00:00 GMT'
             setUser(null)
+            localStorage.setItem('auth_changed', Date.now().toString())
         } catch (error) {
             console.error('Logout failed:', error)
         }

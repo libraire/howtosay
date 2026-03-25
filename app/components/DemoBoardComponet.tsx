@@ -10,12 +10,11 @@ const BoardComponent: React.FC<{}> = () => {
     const [word, setWord] = useState<Word>();;
     const [wordList, setWordList] = useState<Word[]>([]);
     const [completed, setCompleted] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     useEffect(() => {
-        if (wordList.length == 0) {
-            fetchData();
-        }
-    }, [word, wordList]);
+        fetchData();
+    }, []);
 
     function shuffleList(list: Word[]) {
         for (let i = list.length - 1; i > 0; i--) {
@@ -26,15 +25,22 @@ const BoardComponent: React.FC<{}> = () => {
     }
 
     const fetchData = async () => {
+        if (isLoading) {
+            return;
+        }
+
+        setIsLoading(true);
         try {
-            const response = await fetch("hts/api/v1/dict/daily");
+            const response = await fetch("/hts/api/v1/dict/daily");
             const jsonData = await response.json();
-            let list = shuffleList(jsonData.wordlist);
-            var wd = list[0]
+            const list = shuffleList([...(jsonData.wordlist ?? [])]);
+            const wd = list[0];
             setWord(wd);
             setWordList(list);
         } catch (error) {
             console.error("Error fetching data:", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 

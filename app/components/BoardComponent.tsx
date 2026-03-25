@@ -5,8 +5,7 @@ import styles from "./ComponentStyle.module.css";
 import WordComponent from "./WordComponent";
 import KeyBoardComponent from "./KeyBoardComponent";
 import ToolBoxComponent from "./ToolBoxComponent";
-import { useSession } from "next-auth/react"
-import { useRouter } from 'next/navigation'
+import { useCustomAuth } from "@/app/context/CustomAuthProvider";
 import StarComponent from "./StarComponent";
 
 const selectItems = [
@@ -31,11 +30,7 @@ const BoardComponent: React.FC<{}> = () => {
   const [marked, setMarked] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter()
-
-  const { data: session, update } = useSession({
-    required: false,
-  })
+  const { isAuthenticated, login } = useCustomAuth();
 
   useEffect(() => {
     if (wordList.length == 0 && !isLoading) {
@@ -109,7 +104,7 @@ const BoardComponent: React.FC<{}> = () => {
 
   function fetchMarkList(wordList: Word[]) {
 
-    if (!session?.user) {
+    if (!isAuthenticated) {
       return wordList
     }
 
@@ -141,10 +136,9 @@ const BoardComponent: React.FC<{}> = () => {
   }
 
   function markWord() {
-
-    if (!session?.user) {
-      console.log("22222222222")
-      router.push('/api/auth/signin')
+    if (!isAuthenticated) {
+      login()
+      return
     }
 
     if (word) {
@@ -157,9 +151,9 @@ const BoardComponent: React.FC<{}> = () => {
   }
 
   function unmarkWord() {
-    if (!session?.user) {
-      console.log("111111111")
-      router.push('/api/auth/signin')
+    if (!isAuthenticated) {
+      login()
+      return
     }
 
     if (word) {

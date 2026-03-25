@@ -1,6 +1,6 @@
 "use client"
-import { useEffect, useRef, useState } from "react";
-import { useSession } from "next-auth/react"
+import { useEffect, useState } from "react";
+import { useCustomAuth } from "@/app/context/CustomAuthProvider";
 import WordBook from "@/app/components/WordBook";
 import { Word } from "@/app/components/types";
 import Navbar from "@/app/components/Navbar";
@@ -9,16 +9,9 @@ import ListMenu from '@/app/components/ListMenu'
 import InputModal from '@/app/components/InputModal'
 import AudioComponent from "@/app/components/AudioComponent";
 import PractiseComponent from "@/app/components/PractiseComponent"
-import { redirect } from "next/navigation"
 
 export default function Home() {
-
-    const { data: session, update } = useSession({
-        required: true,
-        onUnauthenticated() {
-            // redirect("/api/auth/signin")
-        }
-    })
+    const { isAuthenticated, isLoading, login } = useCustomAuth();
 
     const [wordList, setWordList] = useState<Word[]>([]);
     const [page, setPage] = useState<number>(1);
@@ -77,8 +70,21 @@ export default function Home() {
     }
 
     useEffect(() => {
+        if (!isLoading && !isAuthenticated) {
+            login()
+            return
+        }
+
         fetchCollection(page, level)
-    }, [])
+    }, [isAuthenticated, isLoading, level, login, page])
+
+    if (isLoading || !isAuthenticated) {
+        return (
+            <main className="flex min-h-screen flex-col items-center bg-[#101010] pb-10">
+                <Navbar />
+            </main>
+        );
+    }
 
     return (
         <main className="flex min-h-screen flex-col items-center bg-[#101010] pb-10">
