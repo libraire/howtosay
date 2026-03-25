@@ -9,7 +9,7 @@ export default function StartComponent({ word }: Props) {
     const [currentLevel, setCurrentLevel] = useState(0);
 
     function updateLevel(word: string, level: number) {
-        updateWordLevel(word, level).then(() => {
+        updateWordLevel(word, level, "familiarity-stars").then(() => {
             setCurrentLevel(level)
         });
     }

@@ -131,7 +131,7 @@ export default function ReadingPassage({
             return
         }
 
-        await addWords(lookup.word)
+        await addWords(lookup.word, "reading-passage")
         setAddedWords((prev) => ({ ...prev, [lookup.word]: true }))
         setLookup((prev) => prev ? { ...prev, added: true } : prev)
     }

@@ -1,9 +1,10 @@
 "use client"
 import { Fragment, useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Menu, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import { AcademicCapIcon, ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
+import { AcademicCapIcon, ArrowPathIcon, ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import { useCustomAuth } from "@/app/context/CustomAuthProvider";
 import WordBook from "@/app/components/WordBook";
 import { Word } from "@/app/components/types";
@@ -22,6 +23,8 @@ function classNames(...classes: string[]) {
 
 export default function Home() {
     const { isAuthenticated, isLoading, login } = useCustomAuth();
+    const router = useRouter();
+    const searchParams = useSearchParams();
 
     const [wordList, setWordList] = useState<Word[]>([]);
     const [page, setPage] = useState<number>(1);
@@ -30,10 +33,12 @@ export default function Home() {
     const [total, setTotal] = useState<number>(0);
     const [importOpen, setImportOpen] = useState<boolean>(false);
     const [practise, setPractise] = useState(false)
+    const statusFilter = searchParams?.get("status") ?? ""
+    const memoryLabel = getMemoryLabel(statusFilter)
 
 
-    function fetchCollection(currentPage: number, level: number) {
-        fetchWordBook(currentPage, level).then((data) => {
+    function fetchCollection(currentPage: number, level: number, status = statusFilter) {
+        fetchWordBook(currentPage, level, status || undefined).then((data) => {
             setWordList(data.words as Word[])
             setTotal(data.total)
             let n = Math.floor(data.total / 20) + (data.total % 20 == 0 ? 0 : 1)
@@ -66,8 +71,8 @@ export default function Home() {
             return
         }
 
-        fetchCollection(page, level)
-    }, [isAuthenticated, isLoading, level, login, page])
+        fetchCollection(page, level, statusFilter)
+    }, [isAuthenticated, isLoading, level, login, page, statusFilter])
 
     if (isLoading || !isAuthenticated) {
         return (
@@ -100,6 +105,15 @@ export default function Home() {
                                 <div className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-white/70">
                                     Filter: {level === 0 ? "Default" : getLevelLabel(level)}
                                 </div>
+                                {memoryLabel && (
+                                    <button
+                                        type="button"
+                                        onClick={() => router.push("/wordbook")}
+                                        className="rounded-full border border-[#9bb7d4]/25 bg-[#9bb7d4]/10 px-4 py-2 text-sm text-[#dce8f6] transition hover:bg-[#9bb7d4]/15"
+                                    >
+                                        Memory: {memoryLabel} ×
+                                    </button>
+                                )}
                             </div>
                         </div>
 
@@ -108,7 +122,7 @@ export default function Home() {
                                 <ListMenu onChange={(e) => {
                                     setPage(1)
                                     setLevel(e.id)
-                                    fetchCollection(1, e.id)
+                                    fetchCollection(1, e.id, statusFilter)
                                 }}></ListMenu>
                             </div>
 
@@ -156,6 +170,21 @@ export default function Home() {
                                             <Menu.Item>
                                                 {({ active }) => (
                                                     <Link
+                                                        href="/review"
+                                                        className={classNames(
+                                                            active ? "bg-white/10 text-white" : "text-white/75",
+                                                            "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition"
+                                                        )}
+                                                    >
+                                                        <ArrowPathIcon className="h-5 w-5 text-white/45" />
+                                                        Open review queue
+                                                    </Link>
+                                                )}
+                                            </Menu.Item>
+
+                                            <Menu.Item>
+                                                {({ active }) => (
+                                                    <Link
                                                         href="/practise"
                                                         className={classNames(
                                                             active ? "bg-white/10 text-white" : "text-white/75",
@@ -187,7 +216,7 @@ export default function Home() {
                                         fetchCollection(p, level)
                                         setPage(p)
                                     } else {
-                                        fetchCollection(page + offset, level)
+                                        fetchCollection(page + offset, level, statusFilter)
                                         setPage(page + offset)
                                     }
                                 }}
@@ -198,7 +227,7 @@ export default function Home() {
                             <WordBook wordList={wordList} onCollectionChange={(e) => {
                                 setPage(1)
                                 setLevel(e.id)
-                                fetchCollection(page, level)
+                                fetchCollection(page, level, statusFilter)
                             }}></WordBook>
                         </div>
                     </div>
@@ -213,4 +242,19 @@ export default function Home() {
 
         </main>
     );
+}
+
+function getMemoryLabel(status: string) {
+    switch (status) {
+        case "fragile":
+            return "Fragile"
+        case "building":
+            return "Building"
+        case "stable":
+            return "Stable"
+        case "mastered":
+            return "Mastered"
+        default:
+            return ""
+    }
 }

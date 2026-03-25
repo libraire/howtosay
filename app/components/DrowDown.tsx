@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
-import { BookmarkSquareIcon, FireIcon, PhotoIcon, PuzzlePieceIcon, RocketLaunchIcon, BoltIcon, Squares2X2Icon, InformationCircleIcon } from '@heroicons/react/24/outline'
+import { BookmarkSquareIcon, FireIcon, PhotoIcon, PuzzlePieceIcon, RocketLaunchIcon, BoltIcon, Squares2X2Icon, InformationCircleIcon, ArrowPathIcon, ChartBarSquareIcon } from '@heroicons/react/24/outline'
 
 function classNames(...classes: string[]): string {
     return classes.filter(Boolean).join(' ')
@@ -31,19 +31,47 @@ export default function MyDropDown() {
                     <div className="py-1">
                         <div className="border-b border-gray-100 py-1">
 
-                            <Menu.Item>
-                                {({ active }) => (
-                                    <a
-                                        href='/wordbook'
+                        <Menu.Item>
+                            {({ active }) => (
+                                <a
+                                    href='/wordbook'
                                         className={classNames(
                                             active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                                             'block px-4 py-2 text-sm'
                                         )}
-                                    >
-                                        <BookmarkSquareIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> Word Book
-                                    </a>
-                                )}
-                            </Menu.Item>
+                                >
+                                    <BookmarkSquareIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> Word Book
+                                </a>
+                            )}
+                        </Menu.Item>
+
+                        <Menu.Item>
+                            {({ active }) => (
+                                <a
+                                    href='/dashboard'
+                                    className={classNames(
+                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                                        'block px-4 py-2 text-sm'
+                                    )}
+                                >
+                                    <ChartBarSquareIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> Dashboard
+                                </a>
+                            )}
+                        </Menu.Item>
+
+                        <Menu.Item>
+                            {({ active }) => (
+                                <a
+                                    href='/review'
+                                    className={classNames(
+                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                                        'block px-4 py-2 text-sm'
+                                    )}
+                                >
+                                    <ArrowPathIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> Review Queue
+                                </a>
+                            )}
+                        </Menu.Item>
 
                         </div>
 

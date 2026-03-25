@@ -5,6 +5,8 @@ import styles from "./ComponentStyle.module.css";
 import WordComponent from "./WordComponent";
 import KeyBoardComponent from "./KeyBoardComponent";
 import { fetchDailyWords } from "@/app/lib/dict-api";
+import { useCustomAuth } from "@/app/context/CustomAuthProvider";
+import { submitReviewResult } from "@/app/lib/practice-api";
 
 
 const BoardComponent: React.FC<{}> = () => {
@@ -12,6 +14,7 @@ const BoardComponent: React.FC<{}> = () => {
     const [wordList, setWordList] = useState<Word[]>([]);
     const [completed, setCompleted] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const { isAuthenticated } = useCustomAuth();
 
     useEffect(() => {
         fetchData();
@@ -68,12 +71,34 @@ const BoardComponent: React.FC<{}> = () => {
         }
     }
 
+    function handleSolved(result: "correct" | "hinted") {
+        if (!isAuthenticated || !word?.word) {
+            return
+        }
+
+        submitReviewResult(word.word, result, "daily").catch((error) => {
+            console.error("Failed to submit review result:", error)
+        })
+    }
+
+    function handleSkipped() {
+        if (!isAuthenticated || !word?.word) {
+            return
+        }
+
+        submitReviewResult(word.word, "skipped", "daily").catch((error) => {
+            console.error("Failed to submit skipped result:", error)
+        })
+    }
+
     return (
         <div className={styles.boardContainer}>
             <WordComponent
                 word={word?.word ?? ""}
                 next={() => nextWord()}
                 complete={() => setCompleted(true)}
+                onSolved={handleSolved}
+                onSkip={handleSkipped}
                 definition={word?.definition ?? ""}
                 imgurl={word?.imgurl ?? ""}
                 emoji={word?.emoji ?? ""}

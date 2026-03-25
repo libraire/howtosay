@@ -6,6 +6,11 @@ export interface WordBankPage {
     total: number
 }
 
+export interface ReviewQueueResponse {
+    words: WordModel[]
+    totalDue: number
+}
+
 export interface LicenseVerificationResult {
     status: string
     reason?: string

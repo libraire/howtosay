@@ -11,6 +11,8 @@ type Props = {
   next: () => void;
   prev: () => void;
   complete: () => void;
+  onSolved?: (result: "correct" | "hinted") => void;
+  onSkip?: () => void;
   definition: string;
   imgurl: string;
   emoji: string;
@@ -22,6 +24,8 @@ const WordComponent: React.FC<Props> = ({
   next,
   prev,
   complete,
+  onSolved,
+  onSkip,
   definition,
   imgurl,
   emoji,
@@ -29,6 +33,7 @@ const WordComponent: React.FC<Props> = ({
 }) => {
   const [chars, setChars] = useState<Char[]>([]);
   const [completed, setCompleted] = useState<boolean>(false);
+  const [usedHint, setUsedHint] = useState<boolean>(false);
   const [imageUrl, setImageUrl] = useState(imgurl);
   const [examples, setExamples] = useState<string[]>([]);
   const charsRef = useRef<Char[]>([]);
@@ -60,6 +65,9 @@ const WordComponent: React.FC<Props> = ({
   function handleKeyDown(event: KeyboardEvent) {
     const key = event.key;
     if (key == "ArrowRight") {
+      if (!completedRef.current && !checkComplete(charsRef.current) && charsRef.current.length > 0) {
+        onSkip?.();
+      }
       playSound("press");
       nextRef.current();
     } else if (key == "ArrowLeft") {
@@ -140,6 +148,7 @@ const WordComponent: React.FC<Props> = ({
       setImageUrl(imgurl);
     }
     setCompleted(false);
+    setUsedHint(false);
   }, [word]);
 
   useEffect(() => {
@@ -153,9 +162,10 @@ const WordComponent: React.FC<Props> = ({
     if (!completed && checkComplete(chars)) {
       playSound("complete");
       setCompleted(true);
+      onSolved?.(usedHint ? "hinted" : "correct");
       completeRef.current();
     }
-  }, [chars, completed]);
+  }, [chars, completed, onSolved, usedHint]);
   function checkComplete(chars: Char[]) {
     let hasPlayableChar = false;
 
@@ -173,6 +183,7 @@ const WordComponent: React.FC<Props> = ({
   }
 
   function hint(all: boolean) {
+    setUsedHint(true);
     setChars((prevChars) => {
       const newChars = [...prevChars];
       for (var c of newChars) {

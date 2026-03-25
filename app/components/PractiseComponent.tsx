@@ -9,7 +9,7 @@ import HelpSlideOver from "./HelpSlideOver";
 import ToolBoxComponent from "./ToolBoxComponent";
 import StarComponent from "./StarComponent";
 import { fetchDefinitions as fetchDefinitionsApi } from "@/app/lib/dict-api";
-import { markWord as markWordApi, unmarkWord as unmarkWordApi } from "@/app/lib/practice-api";
+import { markWord as markWordApi, submitReviewResult, unmarkWord as unmarkWordApi } from "@/app/lib/practice-api";
 
 const PractiseComponent: React.FC<{ list: Word[], onClose: (() => void) | undefined }> = ({ list, onClose }) => {
     const [word, setWord] = useState<Word>();
@@ -109,6 +109,26 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: (() => void) | undefi
         }
     }
 
+    function handleSolved(result: "correct" | "hinted") {
+        if (!isAuthenticated || !word?.word) {
+            return
+        }
+
+        submitReviewResult(word.word, result, "practice").catch((error) => {
+            console.error("Failed to submit review result:", error)
+        })
+    }
+
+    function handleSkipped() {
+        if (!isAuthenticated || !word?.word) {
+            return
+        }
+
+        submitReviewResult(word.word, "skipped", "practice").catch((error) => {
+            console.error("Failed to submit skipped result:", error)
+        })
+    }
+
     return (
         <div className={styles.boardContainer}>
 
@@ -135,6 +155,8 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: (() => void) | undefi
                 word={word?.word ?? ""}
                 next={() => nextWord()}
                 complete={() => setCompleted(true)}
+                onSolved={handleSolved}
+                onSkip={handleSkipped}
                 definition={definition}
                 imgurl={word?.imgurl ?? ""}
                 emoji={word?.emoji ?? ""}

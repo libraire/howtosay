@@ -8,7 +8,7 @@ import ToolBoxComponent from "./ToolBoxComponent";
 import { useCustomAuth } from "@/app/context/CustomAuthProvider";
 import StarComponent from "./StarComponent";
 import { fetchImageWords, fetchMarkedWords, fetchNextWords } from "@/app/lib/dict-api";
-import { markWord as markWordApi, unmarkWord as unmarkWordApi } from "@/app/lib/practice-api";
+import { markWord as markWordApi, submitReviewResult, unmarkWord as unmarkWordApi } from "@/app/lib/practice-api";
 
 const selectItems = [
   { label: "Fruit", value: "fruit" },
@@ -164,6 +164,26 @@ const BoardComponent: React.FC<{}> = () => {
     setIsOpen(!isOpen);
   }
 
+  function handleSolved(result: "correct" | "hinted") {
+    if (!isAuthenticated || !word?.word) {
+      return
+    }
+
+    submitReviewResult(word.word, result, "image-mode").catch((error) => {
+      console.error("Failed to submit review result:", error)
+    })
+  }
+
+  function handleSkipped() {
+    if (!isAuthenticated || !word?.word) {
+      return
+    }
+
+    submitReviewResult(word.word, "skipped", "image-mode").catch((error) => {
+      console.error("Failed to submit skipped result:", error)
+    })
+  }
+
   return (
     <div className={styles.boardContainer}>
 
@@ -194,6 +214,8 @@ const BoardComponent: React.FC<{}> = () => {
         word={word?.word ?? ""}
         next={() => nextWord()}
         complete={() => setCompleted(true)}
+        onSolved={handleSolved}
+        onSkip={handleSkipped}
         definition={word?.definition ?? ""}
         imgurl={word?.imgurl ?? ""}
         emoji={word?.emoji ?? ""}
