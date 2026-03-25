@@ -220,10 +220,12 @@ const WordComponent: React.FC<Props> = ({
 
   return (
     <>
-      <div className={styles.wordContainer}>
-        {chars?.map((char, index) => (
-          <CharComponent key={index} char={char} />
-        ))}
+      <div className={`${styles.wordSuccessWrap} ${completed ? styles.wordSuccessActive : ""}`}>
+        <div className={styles.wordContainer}>
+          {chars?.map((char, index) => (
+            <CharComponent key={index} char={char} />
+          ))}
+        </div>
       </div>
 
       <div className="max-w-[600px] mx-auto mt-5 px-4 flex flex-col text-lg overflow-y flex-auto">

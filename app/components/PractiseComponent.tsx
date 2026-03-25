@@ -129,7 +129,6 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: (() => void) | undefi
                 playable={true}
             />
 
-
             {completed && <StarComponent word={word?.word ?? ""}></StarComponent>}
 
             <WordComponent
