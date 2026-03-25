@@ -3,14 +3,14 @@
 import { useEffect, useState } from "react"
 import { Manrope } from "next/font/google"
 import AudioComponent from "./components/AudioComponent";
-import ModalDialog from "./components/ModalDialog";
 import Navbar from "./components/Navbar";
 import PractiseComponent from "./components/PractiseComponent";
-import { fetchHomepagePassages } from "./lib/home-api";
+import { favoriteHomepagePassage, fetchHomepagePassage, unfavoriteHomepagePassage } from "./lib/home-api";
 import type { LiteraryPassage } from "./lib/home-models";
 import type { Word } from "./components/types";
 import ReadingPassage from "./components/ReadingPassage";
 import { filterWordsFromContent } from "./lib/material-api";
+import { useCustomAuth } from "./context/CustomAuthProvider";
 
 const uiSans = Manrope({
   subsets: ["latin"],
@@ -18,19 +18,18 @@ const uiSans = Manrope({
 })
 
 export default function Home() {
-  const [passages, setPassages] = useState<LiteraryPassage[]>([])
+  const { isAuthenticated, login } = useCustomAuth()
+  const [passage, setPassage] = useState<LiteraryPassage | null>(null)
   const [practiceWords, setPracticeWords] = useState<Word[]>([])
   const [isPracticeOpen, setIsPracticeOpen] = useState(false)
   const [isPreparingPractice, setIsPreparingPractice] = useState(false)
-  const [isSaveNoticeOpen, setIsSaveNoticeOpen] = useState(false)
-  const passage = passages[0]
   const visiblePracticeWords = practiceWords.filter((word) => !word.in_bank)
 
   useEffect(() => {
-    fetchHomepagePassages()
-      .then(setPassages)
+    fetchHomepagePassage()
+      .then(setPassage)
       .catch((error) => {
-        console.error("Failed to load homepage passages:", error)
+        console.error("Failed to load homepage passage:", error)
       })
   }, [])
 
@@ -51,6 +50,29 @@ export default function Home() {
       console.error("Failed to prepare practice words:", error)
     } finally {
       setIsPreparingPractice(false)
+    }
+  }
+
+  async function handleToggleSavePassage() {
+    if (!passage) {
+      return
+    }
+
+    if (!isAuthenticated) {
+      login()
+      return
+    }
+
+    try {
+      if (passage.isFavorited) {
+        await unfavoriteHomepagePassage(passage.id)
+        setPassage((prev) => prev ? { ...prev, isFavorited: false } : prev)
+      } else {
+        await favoriteHomepagePassage(passage.id)
+        setPassage((prev) => prev ? { ...prev, isFavorited: true } : prev)
+      }
+    } catch (error) {
+      console.error("Failed to toggle passage favorite:", error)
     }
   }
 
@@ -76,8 +98,9 @@ export default function Home() {
                 work={passage.work}
                 year={passage.year}
                 onPractice={handleStartPractice}
-                onSavePassage={() => setIsSaveNoticeOpen(true)}
+                onToggleSavePassage={handleToggleSavePassage}
                 practiceLoading={isPreparingPractice}
+                passageSaved={!!passage.isFavorited}
               />
             )}
 
@@ -110,13 +133,6 @@ export default function Home() {
         </div>
       )}
 
-      <ModalDialog
-        open={isSaveNoticeOpen}
-        onClose={() => setIsSaveNoticeOpen(false)}
-        title="Passage Save Coming Soon"
-        content="Article and passage bookmarking will be added after the corresponding collection API is ready."
-        confirm="Close"
-      />
     </main>
   );
 }

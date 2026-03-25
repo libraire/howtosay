@@ -1,8 +1,11 @@
 export interface LiteraryPassage {
-    id: string
+    id: number | string
+    slug?: string
+    title?: string
     excerpt: string
     author: string
     work: string
-    year: number
+    year?: number
     accent: string
+    isFavorited?: boolean
 }

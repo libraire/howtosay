@@ -38,17 +38,19 @@ export default function ReadingPassage({
     work,
     year,
     onPractice,
-    onSavePassage,
+    onToggleSavePassage,
     practiceLoading,
+    passageSaved,
 }: {
     excerpt: string
     accent: string
     author: string
     work: string
-    year: number
+    year?: number
     onPractice: () => void
-    onSavePassage: () => void
+    onToggleSavePassage: () => void
     practiceLoading: boolean
+    passageSaved: boolean
 }) {
     const { isAuthenticated, login } = useCustomAuth()
     const [lookup, setLookup] = useState<LookupState | null>(null)
@@ -176,7 +178,7 @@ export default function ReadingPassage({
                             <p className="text-sm uppercase tracking-[0.28em] text-white/38">Author</p>
                             <p className="mt-3 text-base font-semibold text-white/84">{author}</p>
                             <p className="mt-2 text-base italic text-white/64">
-                                {work} · {year}
+                                {year ? `${work} · ${year}` : work}
                             </p>
                         </div>
 
@@ -192,12 +194,12 @@ export default function ReadingPassage({
                             </button>
                             <button
                                 type="button"
-                                onClick={onSavePassage}
-                                aria-label="Save this passage"
-                                title="Save this passage"
+                                onClick={onToggleSavePassage}
+                                aria-label={passageSaved ? "Remove saved passage" : "Save this passage"}
+                                title={passageSaved ? "Remove saved passage" : "Save this passage"}
                                 className="rounded-full bg-white/[0.035] p-2.5 text-white/46 transition hover:bg-white hover:text-black"
                             >
-                                <HeartOutlineIcon className="h-5 w-5" />
+                                {passageSaved ? <HeartSolidIcon className="h-5 w-5" /> : <HeartOutlineIcon className="h-5 w-5" />}
                             </button>
                         </div>
                     </div>
