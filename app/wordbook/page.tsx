@@ -1,5 +1,9 @@
 "use client"
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
+import Link from "next/link";
+import { Menu, Transition } from "@headlessui/react";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import { AcademicCapIcon, ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import { useCustomAuth } from "@/app/context/CustomAuthProvider";
 import WordBook from "@/app/components/WordBook";
 import { Word } from "@/app/components/types";
@@ -10,6 +14,11 @@ import InputModal from '@/app/components/InputModal'
 import AudioComponent from "@/app/components/AudioComponent";
 import PractiseComponent from "@/app/components/PractiseComponent"
 import { addWords, fetchWordBook } from "@/app/lib/practice-api";
+import { getLevelLabel } from "@/app/lib/level-options";
+
+function classNames(...classes: string[]) {
+    return classes.filter(Boolean).join(" ")
+}
 
 export default function Home() {
     const { isAuthenticated, isLoading, login } = useCustomAuth();
@@ -73,76 +82,127 @@ export default function Home() {
 
             <Navbar />
             {!practise && <>
-                <div className="flex justify-start mt-4 bg-white w-[600px] px-4 py-4 ">
+                <section className="w-full max-w-5xl px-6 pb-12 pt-8">
+                    <div className="rounded-[32px] border border-white/10 bg-white/[0.04] p-6 shadow-[0_32px_100px_rgba(0,0,0,0.24)] backdrop-blur-sm">
+                        <div className="flex flex-col gap-6 border-b border-white/10 pb-6 lg:flex-row lg:items-start lg:justify-between">
+                            <div>
+                                <p className="text-xs uppercase tracking-[0.28em] text-white/35">Library</p>
+                                <h1 className="mt-3 text-3xl font-medium tracking-tight text-white">Word Book</h1>
+                                <p className="mt-3 max-w-2xl text-sm leading-7 text-white/58">
+                                    Review the words you have saved, adjust their difficulty band, and launch targeted practice from the same workspace.
+                                </p>
+                            </div>
 
-                    <div className="sm:flex sm:items-center">
-                        <label className="block text-xl font-medium leading-6 text-gray-900 ">
-                            Word Book
-                        </label>
+                            <div className="flex flex-wrap items-center gap-3">
+                                <div className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-white/70">
+                                    {total} saved words
+                                </div>
+                                <div className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-white/70">
+                                    Filter: {level === 0 ? "Default" : getLevelLabel(level)}
+                                </div>
+                            </div>
+                        </div>
 
+                        <div className="mt-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                            <div className="w-full max-w-[220px]">
+                                <ListMenu onChange={(e) => {
+                                    setPage(1)
+                                    setLevel(e.id)
+                                    fetchCollection(1, e.id)
+                                }}></ListMenu>
+                            </div>
+
+                            <div className="flex flex-wrap items-center gap-3">
+                                <button
+                                    type="button"
+                                    onClick={() => setImportOpen(true)}
+                                    className="h-10 rounded-xl border border-white/10 bg-white/[0.04] px-4 text-sm font-medium text-white transition hover:bg-white/10"
+                                >
+                                    Import words
+                                </button>
+
+                                <Menu as="div" className="relative inline-block text-left">
+                                    <Menu.Button className="inline-flex h-10 items-center gap-2 rounded-xl bg-white px-4 text-sm font-medium text-black transition hover:bg-white/90">
+                                        Practise
+                                        <ChevronDownIcon className="h-4 w-4 text-black/60" />
+                                    </Menu.Button>
+
+                                    <Transition
+                                        as={Fragment}
+                                        enter="transition ease-out duration-100"
+                                        enterFrom="transform opacity-0 scale-95"
+                                        enterTo="transform opacity-100 scale-100"
+                                        leave="transition ease-in duration-75"
+                                        leaveFrom="transform opacity-100 scale-100"
+                                        leaveTo="transform opacity-0 scale-95"
+                                    >
+                                        <Menu.Items className="absolute right-0 z-20 mt-2 w-60 origin-top-right rounded-2xl border border-white/10 bg-[#161616] p-2 shadow-[0_20px_60px_rgba(0,0,0,0.28)] focus:outline-none">
+                                            <Menu.Item>
+                                                {({ active }) => (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setPractise(true)}
+                                                        className={classNames(
+                                                            active ? "bg-white/10 text-white" : "text-white/75",
+                                                            "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm transition"
+                                                        )}
+                                                    >
+                                                        <AcademicCapIcon className="h-5 w-5 text-white/45" />
+                                                        Practise saved words
+                                                    </button>
+                                                )}
+                                            </Menu.Item>
+
+                                            <Menu.Item>
+                                                {({ active }) => (
+                                                    <Link
+                                                        href="/practise"
+                                                        className={classNames(
+                                                            active ? "bg-white/10 text-white" : "text-white/75",
+                                                            "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition"
+                                                        )}
+                                                    >
+                                                        <ArrowTopRightOnSquareIcon className="h-5 w-5 text-white/45" />
+                                                        Open Custom Practise
+                                                    </Link>
+                                                )}
+                                            </Menu.Item>
+                                        </Menu.Items>
+                                    </Transition>
+                                </Menu>
+                            </div>
+                        </div>
+
+                        <div className="mt-6">
+                            <Pagination
+                                total={total}
+                                pages={pages}
+                                currentPage={page}
+                                nextPage={(p, offset) => {
+                                    if (p == -1) {
+                                        return
+                                    }
+
+                                    if (offset == 0) {
+                                        fetchCollection(p, level)
+                                        setPage(p)
+                                    } else {
+                                        fetchCollection(page + offset, level)
+                                        setPage(page + offset)
+                                    }
+                                }}
+                            ></Pagination>
+                        </div>
+
+                        <div className="mt-6">
+                            <WordBook wordList={wordList} onCollectionChange={(e) => {
+                                setPage(1)
+                                setLevel(e.id)
+                                fetchCollection(page, level)
+                            }}></WordBook>
+                        </div>
                     </div>
-                    <div className="flex-1"></div>
-                    <ListMenu onChange={(e) => {
-                        setPage(1)
-                        setLevel(e.id)
-                        fetchCollection(page, e.id)
-                    }}></ListMenu>
-
-                    <button
-                        type="button"
-                        onClick={() =>
-                            setImportOpen(true)
-                        }
-                        className="h-10 ml-4 block rounded-md bg-indigo-500 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-                    >
-                        Import
-                    </button>
-
-                    <button
-                        type="button"
-                        onClick={() => {
-                            setPractise(true)
-                        }}
-                        className="ml-4 h-10 block rounded-md bg-indigo-500 px-3 text-center text-sm font-semibold text-white hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
-                    >
-                        Practise
-                    </button>
-
-
-                </div>
-
-                <Pagination
-                    total={
-                        total
-                    }
-                    pages={
-                        pages
-                    }
-                    currentPage={
-                        page
-                    }
-                    nextPage={
-                        (p, offset) => {
-                            if (p == -1) {
-                                return
-                            }
-
-                            if (offset == 0) {
-                                fetchCollection(p, level)
-                                setPage(p)
-                            } else {
-                                fetchCollection(page + offset, level)
-                                setPage(page + offset)
-                            }
-
-                        }
-                    }></Pagination>
-
-                <WordBook wordList={wordList} onCollectionChange={(e) => {
-                    setPage(1)
-                    setLevel(e.id)
-                    fetchCollection(page, level)
-                }}></WordBook>
+                </section>
             </>}
             {practise && <>
                 <AudioComponent str={"xxxx"} />
