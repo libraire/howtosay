@@ -1,64 +1,19 @@
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
-import { BookmarkSquareIcon, AcademicCapIcon, FireIcon, PhotoIcon, PuzzlePieceIcon, RocketLaunchIcon, BoltIcon } from '@heroicons/react/24/outline'
-import { StarIcon } from '@heroicons/react/20/solid'
-import UserInfo from "@/app/components/UserInfo"
-import { useCustomAuth } from "@/app/context/CustomAuthProvider"
-
-const selectItems = [
-    { value: '21', label: 'Oxford3000' },
-    { value: '16', label: 'Scene' },
-    { value: '15', label: 'IELT' },
-    { value: '14', label: 'TOEFL' },
-    { value: '13', label: 'SAT' },
-    { value: '12', label: '12th' },
-    { value: '11', label: '11th' },
-    { value: '10', label: '10th' },
-    { value: '9', label: '9th' },
-    { value: '8', label: '8th' },
-    { value: '7', label: '7th' },
-    { value: '6', label: '6th' },
-    { value: '5', label: '5th' },
-    { value: '4', label: '4th' },
-    { value: '3', label: '3th' },
-    { value: '2', label: '2th' },
-    { value: '1', label: '1th' },
-    { value: '0', label: 'Kindergarten' },
-]
+import { BookmarkSquareIcon, AcademicCapIcon, FireIcon, PhotoIcon, PuzzlePieceIcon, RocketLaunchIcon, BoltIcon, Squares2X2Icon, InformationCircleIcon } from '@heroicons/react/24/outline'
 
 function classNames(...classes: string[]): string {
     return classes.filter(Boolean).join(' ')
 }
 
-export default function MyDropDown({ expire }: { expire: string }) {
-
-    const [myexpire, setExpire] = useState('')
-
-    const { user, setUserLevel } = useCustomAuth()
-    const level = String(user?.level ?? 0)
-
-    const handleLevelChange = (newLevel: string) => {
-        setUserLevel(newLevel).catch(e => console.error(e));
-    }
-
-
-
-    useEffect(() => {
-
-        if (expire) {
-            setExpire(expire.substring(0, 10))
-        }
-
-    }, [expire])
-
-
+export default function MyDropDown() {
     return (
         <Menu as="div" className="relative inline-block text-left">
             <div>
                 <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                    <StarIcon className="-ml-0.5 h-5 w-5 text-amber-400" aria-hidden="true" />
-                    Pro
+                    <Squares2X2Icon className="-ml-0.5 h-5 w-5 text-gray-500" aria-hidden="true" />
+                    Explore
                     <ChevronDownIcon className="-mr-1 h-5 w-5 text-gray-400" aria-hidden="true" />
                 </Menu.Button>
             </div>
@@ -74,27 +29,6 @@ export default function MyDropDown({ expire }: { expire: string }) {
             >
                 <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <div className="py-1">
-
-                        {user && <UserInfo expire={myexpire} user={user.email} />}
-
-                        <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-100">
-                            <label htmlFor="level-select" className="block text-xs font-medium text-gray-500 mb-1">
-                                Your Level
-                            </label>
-                            <select
-                                id="level-select"
-                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
-                                value={level}
-                                onChange={(e) => handleLevelChange(e.target.value)}
-                            >
-                                {selectItems.map((item) => (
-                                    <option key={item.value} value={item.value}>
-                                        {item.label}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-
                         <div className="border-b border-gray-100 py-1">
                             <Menu.Item>
                                 {({ active }) => (
@@ -206,13 +140,13 @@ export default function MyDropDown({ expire }: { expire: string }) {
                         <Menu.Item>
                             {({ active }) => (
                                 <a
-                                    href="https://www.bytegush.com/about/feedback"
+                                    href='/about'
                                     className={classNames(
                                         active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                                         'block px-4 py-2 text-sm'
                                     )}
                                 >
-                                    Feedback
+                                    <InformationCircleIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> About
                                 </a>
                             )}
                         </Menu.Item>

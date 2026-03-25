@@ -9,7 +9,6 @@ import { useCustomAuth } from "@/app/context/CustomAuthProvider";
 export default function Navbar({ check = true }: { check?: boolean }) {
     const { user } = useCustomAuth()
     const isPro = check ? !!user?.isPro : true
-    const expire = user?.expire ?? ''
 
     return (
         <>
@@ -32,7 +31,7 @@ export default function Navbar({ check = true }: { check?: boolean }) {
                 <div className="flex-1 "> </div>
                 <div className="flex items-center gap-2">
                     <AuthButton />
-                    <MyDropDown expire={expire} />
+                    <MyDropDown />
                 </div>
                 {!isPro && <ActivateComponent />}
             </div>

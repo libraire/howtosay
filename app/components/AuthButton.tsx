@@ -1,16 +1,20 @@
 "use client"
 
 import { useCustomAuth } from "@/app/context/CustomAuthProvider"
+import Link from "next/link"
 import { Menu, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
+import { ClipboardDocumentCheckIcon } from '@heroicons/react/24/outline'
+import UserInfo from "@/app/components/UserInfo"
+import { levelOptions } from "@/app/lib/level-options"
 
 function classNames(...classes: string[]): string {
     return classes.filter(Boolean).join(' ')
 }
 
 export default function AuthButton() {
-    const { user, isLoading, login, logout } = useCustomAuth()
+    const { user, isLoading, login, logout, setUserLevel } = useCustomAuth()
 
     if (isLoading) {
         // Loading state
@@ -33,6 +37,9 @@ export default function AuthButton() {
         )
     }
 
+    const expire = user.expire ? user.expire.substring(0, 10) : ''
+    const level = String(user.level ?? 0)
+
     // Logged in - show email with dropdown for Sign Out
     return (
         <Menu as="div" className="relative inline-block text-left">
@@ -52,8 +59,43 @@ export default function AuthButton() {
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
             >
-                <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <Menu.Items className="absolute right-0 z-10 mt-2 w-64 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <div className="py-1">
+                        <UserInfo expire={expire} user={user.email} />
+
+                        <div className="px-4 py-2 text-sm text-gray-700 border-b border-gray-100">
+                            <label htmlFor="level-select" className="block text-xs font-medium text-gray-500 mb-1">
+                                Your Level
+                            </label>
+                            <select
+                                id="level-select"
+                                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-xs sm:leading-6"
+                                value={level}
+                                onChange={(e) => setUserLevel(e.target.value).catch((error) => console.error(error))}
+                            >
+                                {levelOptions.map((item) => (
+                                    <option key={item.value} value={item.value}>
+                                        {item.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <Menu.Item>
+                            {({ active }) => (
+                                <Link
+                                    href="/level-assessment"
+                                    className={classNames(
+                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                                        'flex items-center gap-2 border-b border-gray-100 px-4 py-2 text-sm'
+                                    )}
+                                >
+                                    <ClipboardDocumentCheckIcon className="h-5 w-5 text-gray-500" />
+                                    Assess your level
+                                </Link>
+                            )}
+                        </Menu.Item>
+
                         <Menu.Item>
                             {({ active }) => (
                                 <button
