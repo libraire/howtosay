@@ -70,10 +70,6 @@ const BoardComponent: React.FC<{}> = () => {
 
     return (
         <div className={styles.boardContainer}>
-
-            <h2 className="text-indigo-600 mt-10 font-medium">20 new words everyday for free</h2>
-            <div className="text-4xl font-medium"> Guess and type the word</div>
-            <div className="text-gray-200 mb-10">Press &lt;Enter&gt; to prompt and to continue</div>
             <WordComponent
                 word={word?.word ?? ""}
                 next={() => nextWord()}
