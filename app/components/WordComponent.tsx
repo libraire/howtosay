@@ -1,6 +1,6 @@
 "use client";
 import { Char } from "./types";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "./ComponentStyle.module.css";
 import CharComponent from "./Charcomponent";
 import Image from "next/image";
@@ -31,6 +31,83 @@ const WordComponent: React.FC<Props> = ({
   const [completed, setCompleted] = useState<boolean>(false);
   const [imageUrl, setImageUrl] = useState(imgurl);
   const [examples, setExamples] = useState<string[]>([]);
+  const charsRef = useRef<Char[]>([]);
+  const completedRef = useRef(false);
+  const nextRef = useRef(next);
+  const prevRef = useRef(prev);
+  const completeRef = useRef(complete);
+
+  useEffect(() => {
+    charsRef.current = chars;
+  }, [chars]);
+
+  useEffect(() => {
+    completedRef.current = completed;
+  }, [completed]);
+
+  useEffect(() => {
+    nextRef.current = next;
+  }, [next]);
+
+  useEffect(() => {
+    prevRef.current = prev;
+  }, [prev]);
+
+  useEffect(() => {
+    completeRef.current = complete;
+  }, [complete]);
+
+  function handleKeyDown(event: KeyboardEvent) {
+    const key = event.key;
+    if (key == "ArrowRight") {
+      playSound("press");
+      nextRef.current();
+    } else if (key == "ArrowLeft") {
+      playSound("press");
+      prevRef.current();
+    } else if (key === "Backspace") {
+      playSound("press");
+      setChars((prevChars) => {
+        const newChars = [...prevChars];
+        const char = curChar(prevChars);
+        if (char != null) {
+          char.state = 0;
+        }
+        return newChars;
+      });
+    } else if (key === "1") {
+      playSound("press");
+      hint(false);
+    } else if (key === "Enter") {
+      playSound("press");
+      if (completedRef.current || checkComplete(charsRef.current)) {
+        nextRef.current();
+      } else {
+        hint(true);
+      }
+
+    } else if (/^[a-zA-Z]$/.test(key)) {
+      setChars((prevChars) => {
+        if (checkComplete(prevChars)) {
+          return prevChars;
+        }
+        const newChars = [...prevChars];
+        const char = nextChar(prevChars);
+        if (char !== null) {
+          if (char.char == key) {
+            playSound("press");
+            char.state = 1;
+          } else {
+            playSound("alert");
+            char.state = 2;
+          }
+          char.inputChar = key;
+        }
+
+        return newChars;
+      });
+    }
+  }
 
   useEffect(() => {
     setChars(
@@ -63,91 +140,36 @@ const WordComponent: React.FC<Props> = ({
       setImageUrl(imgurl);
     }
     setCompleted(false);
+  }, [word]);
+
+  useEffect(() => {
     document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
+  }, []);
 
-  }, [word]);
-
-
-
-  function handleKeyDown(event: KeyboardEvent) {
-    const key = event.key;
-    if (key == "ArrowRight") {
-      playSound("press");
-      next();
-    } else if (key == "ArrowLeft") {
-      playSound("press");
-      prev();
-    } else if (key === "Backspace") {
-      playSound("press");
-      setChars((prevChars) => {
-        const newChars = [...prevChars];
-        const char = curChar(prevChars);
-        if (char != null) {
-          char.state = 0;
-        }
-        return newChars;
-      });
-    } else if (key === "1") {
-      playSound("press");
-      hint(false);
-    } else if (key === "Enter") {
-      playSound("press");
-      setChars((prevChars) => {
-        const newChars = [...prevChars];
-        if (checkComplete(newChars)) {
-          next();
-        } else {
-          hint(true);
-        }
-        return newChars;
-      });
-
-    } else if (/^[a-zA-Z]$/.test(key)) {
-      setChars((prevChars) => {
-        if (checkComplete(prevChars)) {
-          // next();
-          return prevChars;
-        }
-        const newChars = [...prevChars];
-        const char = nextChar(prevChars);
-        if (char !== null) {
-          if (char.char == key) {
-            playSound("press");
-            char.state = 1;
-          } else {
-            playSound("alert");
-            char.state = 2;
-          }
-          char.inputChar = key;
-        }
-
-        if (checkComplete(newChars)) {
-          playSound("complete");
-          setCompleted((pre) => {
-            complete();
-            return true;
-          });
-        }
-
-        return newChars;
-      });
+  useEffect(() => {
+    if (!completed && checkComplete(chars)) {
+      playSound("complete");
+      setCompleted(true);
+      completeRef.current();
     }
-  }
-
+  }, [chars, completed]);
   function checkComplete(chars: Char[]) {
+    let hasPlayableChar = false;
+
     for (var c of chars) {
       if (c.state == 3) {
         continue;
       }
 
+      hasPlayableChar = true;
       if (c.state != 1) {
         return false;
       }
     }
-    return true;
+    return hasPlayableChar;
   }
 
   function hint(all: boolean) {
@@ -160,14 +182,6 @@ const WordComponent: React.FC<Props> = ({
             break;
           }
         }
-      }
-
-      if (checkComplete(newChars)) {
-        playSound("complete");
-        setCompleted((pre) => {
-          complete();
-          return true;
-        });
       }
       return newChars;
     });
