@@ -34,32 +34,12 @@ function classNames(...classes: string[]): string {
 export default function MyDropDown({ expire }: { expire: string }) {
 
     const [myexpire, setExpire] = useState('')
-    const [level, setLevel] = useState<string>('0');
 
-    const { user } = useCustomAuth()
-
-    useEffect(() => {
-        if (user) {
-            fetch("/hts/api/v1/user").then(res => res.json()).then(data => {
-                if (data.level !== undefined) {
-                    setLevel(String(data.level));
-                }
-            }).catch(e => console.error(e));
-        }
-    }, [user]);
+    const { user, setUserLevel } = useCustomAuth()
+    const level = String(user?.level ?? 0)
 
     const handleLevelChange = (newLevel: string) => {
-        setLevel(newLevel);
-        fetch("/hts/api/v1/user/level", {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ level: newLevel })
-        }).then(res => res.json())
-            .then(data => {
-                if (data.status === 'ok') {
-                    console.log("Level updated");
-                }
-            });
+        setUserLevel(newLevel).catch(e => console.error(e));
     }
 
 

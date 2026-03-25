@@ -1,45 +1,15 @@
-
-
 import styles from "@/app/components/ComponentStyle.module.css";
 import MyDropDown from "@/app/components/DrowDown";
 import AuthButton from "@/app/components/AuthButton";
 import Link from 'next/link';
 import ActivateComponent from "./ ActivateComponent";
-import { useEffect, useState } from "react";
+import { useCustomAuth } from "@/app/context/CustomAuthProvider";
 
 
 export default function Navbar({ check = true }: { check?: boolean }) {
-
-    const [isPro, setIsPro] = useState(true)
-    const [expire, setExpire] = useState('')
-
-    useEffect(() => {
-        var getCookie = function (name: string): string | undefined {
-            const value = `; ${document.cookie}`;
-            console.log(`get cookie ${document.cookie}`);
-            const parts = value.split(`; ${name}=`);
-            if (parts.length === 2) return parts.pop()?.split(';').shift();
-            return undefined;
-        }
-
-        const sessionValue = getCookie('bytegush_session');
-        fetch("/hts/api/v1/user", {
-            method: 'GET', headers: {
-                'bytegush_session': sessionValue ?? '',
-                'Accept': 'application/json'
-            },
-            credentials: 'include',
-        }).then((response: Response) => {
-            return response.json()
-        }).then((data) => {
-            if (check) {
-                // Use is_pro from user profile
-                setIsPro(!!data.is_pro)
-            }
-            // Use expire from user profile
-            setExpire(data.expire ?? '')
-        })
-    })
+    const { user } = useCustomAuth()
+    const isPro = check ? !!user?.isPro : true
+    const expire = user?.expire ?? ''
 
     return (
         <>
