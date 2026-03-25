@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./ComponentStyle.module.css";
 import CharComponent from "./Charcomponent";
 import Image from "next/image";
+import { fetchWordExamples } from "@/app/lib/word-api";
 
 type Props = {
   word: string;
@@ -44,20 +45,10 @@ const WordComponent: React.FC<Props> = ({
     );
 
     if (showExample) {
-      // const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-
-      fetch("/hts/api/v1/search?word=" + word, {
-        method: 'POST',
-        headers: {
-          // 'X-CSRF-Token': token || '',
-        },
-        credentials: 'include',
-      }).then((response: Response) => {
-        return response.json()
-      }).then((data) => {
-        if (data.results) {
+      fetchWordExamples(word).then((results) => {
+        if (results.length > 0) {
           setExamples(
-            data.results
+            results
               .map((r: any) => extractSentence(r.snippet, word))
               .filter((s: string | null): s is string => !!s)
           );

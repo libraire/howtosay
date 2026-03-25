@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { updateWordLevel } from "@/app/lib/word-api";
 
 type Props = {
     word: string,
@@ -8,17 +9,8 @@ export default function StartComponent({ word }: Props) {
     const [currentLevel, setCurrentLevel] = useState(0);
 
     function updateLevel(word: string, level: number) {
-        fetch("/hts/api/v1/level?word=" + word + "&level=" + level, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }).then((response: Response) => {
-            return response.json()
-        }).then((data) => {
-            if (data.status == 'ok') {
-                setCurrentLevel(level)
-            }
+        updateWordLevel(word, level).then(() => {
+            setCurrentLevel(level)
         });
     }
 

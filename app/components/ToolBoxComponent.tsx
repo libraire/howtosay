@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { QuestionMarkCircleIcon, EyeSlashIcon, WrenchScrewdriverIcon } from '@heroicons/react/24/outline'
 import AudioPlayer from './AudioPlayer';
 import ReportDialog from './ReportDialog';
+import { ignoreWord as ignoreWordApi, reportWordIssue } from '@/app/lib/word-api';
 
 type Props = {
     selectLevel: ((lv: string) => void) | undefined;
@@ -23,35 +24,15 @@ type Props = {
 export default function ToolBoxComponent({ selectLevel, selectItems, marked, mark, unmark, onClose, word, random, playable, showIgnore, next }: Props) {
 
     function ignoreWord(word: string) {
-        fetch("/hts/api/v1/ignore", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ body: word }),
-        }).then((response: Response) => {
-            return response.json()
-        }).then((data) => {
-            if (data.status == 'ok') {
-                next()
-            }
+        ignoreWordApi(word).then(() => {
+            next()
         });
     }
 
 
     function report(content: string) {
-        fetch("/api/report", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ body: word + ":" + content, app: 'howtosay' }),
-        }).then((response: Response) => {
-            return response.json()
-        }).then((data) => {
-            if (data.status == 'ok') {
-                next()
-            }
+        reportWordIssue(word, content).then(() => {
+            next()
         });
     }
 

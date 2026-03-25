@@ -9,6 +9,7 @@ import ListMenu from '@/app/components/ListMenu'
 import InputModal from '@/app/components/InputModal'
 import AudioComponent from "@/app/components/AudioComponent";
 import PractiseComponent from "@/app/components/PractiseComponent"
+import { addWords, fetchWordBook } from "@/app/lib/word-api";
 
 export default function Home() {
     const { isAuthenticated, isLoading, login } = useCustomAuth();
@@ -23,49 +24,30 @@ export default function Home() {
 
 
     function fetchCollection(currentPage: number, level: number) {
+        fetchWordBook(currentPage, level).then((data) => {
+            setWordList(data.words as Word[])
+            setTotal(data.total)
+            let n = Math.floor(data.total / 20) + (data.total % 20 == 0 ? 0 : 1)
 
-        var url = "/hts/api/v1/word?&page=" + currentPage
-        if (level != 0) {
-            url = url + "&level=" + level
-        }
-
-        fetch(url).then((response: Response) => {
-            response.json().then((data) => {
-                setWordList(data.words)
-                setTotal(data.total)
-                let n = Math.floor(data.total / 20) + (data.total % 20 == 0 ? 0 : 1)
-
-                if (n > 7) {
-                    let arr = []
-                    arr.push(...[1, 2, 3])
-                    arr.push(-1)
-                    arr.push(...[n - 2, n - 1, n])
-                    setPages(arr)
-                } else {
-                    let arr = []
-                    for (let i = 1; i <= n; i++) {
-                        arr.push(i);
-                    }
-                    setPages(arr)
+            if (n > 7) {
+                let arr = []
+                arr.push(...[1, 2, 3])
+                arr.push(-1)
+                arr.push(...[n - 2, n - 1, n])
+                setPages(arr)
+            } else {
+                let arr = []
+                for (let i = 1; i <= n; i++) {
+                    arr.push(i);
                 }
-
-            })
+                setPages(arr)
+            }
         })
     }
 
     function importWords(words: string) {
-        fetch("/hts/api/v1/add", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ body: words }),
-        }).then((response: Response) => {
-            return response.json()
-        }).then((data) => {
-            if (data.status == 'ok') {
-                console.log("done")
-            }
+        addWords(words).then(() => {
+            console.log("done")
         });
     }
 

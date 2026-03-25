@@ -1,12 +1,4 @@
-export interface Word {
-    word: string;
-    definition: string;
-    imgurl: string;
-    emoji: string;
-    marked: boolean;
-    level: number;
-    query_count: number;
-}
+export type { WordModel as Word } from "@/app/lib/models"
 
 export interface Char {
     char: string

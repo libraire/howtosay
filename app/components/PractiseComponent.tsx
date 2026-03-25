@@ -8,6 +8,7 @@ import { useCustomAuth } from "@/app/context/CustomAuthProvider";
 import HelpSlideOver from "./HelpSlideOver";
 import ToolBoxComponent from "./ToolBoxComponent";
 import StarComponent from "./StarComponent";
+import { fetchDefinitions as fetchDefinitionsApi, markWord as markWordApi, unmarkWord as unmarkWordApi } from "@/app/lib/word-api";
 
 const PractiseComponent: React.FC<{ list: Word[], onClose: (() => void) | undefined }> = ({ list, onClose }) => {
     const [word, setWord] = useState<Word>();
@@ -62,11 +63,8 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: (() => void) | undefi
 
     function fetchDefinitions(list: Word[]) {
         list = [...list]
-        let words = list.map((w) => w.word).join(',')
-        fetch("/hts/api/v1/definitions?words=" + words).then((response: Response) => {
-            return response.json()
-        }).then((data) => {
-            data.words.forEach((w: Word) => {
+        fetchDefinitionsApi(list.map((w) => w.word)).then((words) => {
+            words.forEach((w: Word) => {
                 const wd = list.find(x => x.word == w.word)
                 if (wd) {
                     wd.definition = w.definition
@@ -89,7 +87,7 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: (() => void) | undefi
         }
 
         if (word) {
-            fetch("/hts/api/v1/mark?word=" + word.word, { method: 'POST', }).then((response: Response) => {
+            markWordApi(word.word).then(() => {
                 word.marked = true;
                 setMarked(true);
             });
@@ -103,7 +101,7 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: (() => void) | undefi
         }
 
         if (word) {
-            fetch("/hts/api/v1/mark?word=" + word.word, { method: 'DELETE', }).then((response: Response) => {
+            unmarkWordApi(word.word).then(() => {
                 word.marked = false;
                 setMarked(false);
             });

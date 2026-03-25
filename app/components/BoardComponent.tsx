@@ -7,6 +7,7 @@ import KeyBoardComponent from "./KeyBoardComponent";
 import ToolBoxComponent from "./ToolBoxComponent";
 import { useCustomAuth } from "@/app/context/CustomAuthProvider";
 import StarComponent from "./StarComponent";
+import { fetchMarkedWords, markWord as markWordApi, unmarkWord as unmarkWordApi } from "@/app/lib/word-api";
 
 const selectItems = [
   { label: "Fruit", value: "fruit" },
@@ -108,26 +109,24 @@ const BoardComponent: React.FC<{}> = () => {
       return wordList
     }
 
-    const words = wordList.map(word => word.word).join(",")
-    fetch("/hts/api/v1/mark?words=" + words, { method: 'GET', })
-      .then((response) => response.json())
-      .then((jsonData) => {
-        if (!jsonData['words']) {
+    fetchMarkedWords(wordList.map(word => word.word))
+      .then((markedWords) => {
+        if (!markedWords) {
           return
         }
 
-        const map = jsonData['words'].reduce((res: { [key: string]: number }, n: { word: string; mark: number }) => {
+        const map = markedWords.reduce((res: { [key: string]: number }, n: { word: string; mark: number }) => {
           res[n['word']] = n['mark'];
           return res;
         }, {});
 
         const newList = wordList.map(word => {
-          word.marked = map[word.word] ?? false
+          word.marked = Boolean(map[word.word])
           return word
         })
 
         if (newList.length > 0) {
-          setMarked(newList[0].marked);
+          setMarked(Boolean(newList[0].marked));
           newList.shift()
           setWordList(newList)
         }
@@ -142,8 +141,7 @@ const BoardComponent: React.FC<{}> = () => {
     }
 
     if (word) {
-      fetch("/hts/api/v1/mark?word=" + word.word, { method: 'POST', }).then((response: Response) => {
-        console.log(response.body)
+      markWordApi(word.word).then(() => {
         word.marked = true;
         setMarked(true);
       });
@@ -157,7 +155,7 @@ const BoardComponent: React.FC<{}> = () => {
     }
 
     if (word) {
-      fetch("/hts/api/v1/mark?word=" + word.word, { method: 'DELETE', }).then((response: Response) => {
+      unmarkWordApi(word.word).then(() => {
         word.marked = false;
         setMarked(false);
       });

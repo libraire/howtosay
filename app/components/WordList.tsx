@@ -1,69 +1,38 @@
 import { useEffect, useState } from "react";
 import Link from 'next/link';
 import { BookmarkIcon, EyeSlashIcon, PlayCircleIcon } from '@heroicons/react/24/outline'
+import type { WordModel } from "@/app/lib/models";
+import { addWords, ignoreWord, markWord } from "@/app/lib/word-api";
 
+const WordList: React.FC<{ wordList: WordModel[], practise: () => void; }> = ({ wordList, practise }) => {
 
-export interface Word {
-    word: string;
-    level: number;
-    query_count: number;
-}
-
-const WordList: React.FC<{ wordList: Word[], practise: () => void; }> = ({ wordList, practise }) => {
-
-    const [mylist, setWordList] = useState<Word[]>(wordList ?? []);
-    function ignoreWord(word: Word, index: number) {
-        fetch("/hts/api/v1/ignore", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ body: word.word }),
-        }).then((response: Response) => {
-            return response.json()
-        }).then((data) => {
-            if (data.status == 'ok') {
+    const [mylist, setWordList] = useState<WordModel[]>(wordList ?? []);
+    function handleIgnoreWord(word: WordModel, index: number) {
+        ignoreWord(word.word).then(() => {
                 setWordList((prevList) => {
                     const newList = [...prevList];
                     newList.splice(index, 1);
                     return newList;
                 });
-
-            }
         });
     }
 
-    function markWord(word: string, index: number) {
-        fetch("/hts/api/v1/mark?word=" + word, { method: 'POST', })
-            .then((response: Response) => {
-                return response.json()
-            }).then((data) => {
-                if (data.status == 'ok') {
+    function handleMarkWord(word: string, index: number) {
+        markWord(word).then(() => {
                     setWordList((prevList) => {
                         const newList = [...prevList];
                         newList.splice(index, 1);
                         return newList;
                     });
-                }
             });
     }
 
 
-    function addWord() {
+    function handleAddWord() {
 
         const body = mylist?.map(w => w.word).join(' ')
-        fetch("/hts/api/v1/add", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ body: body }),
-        }).then((response: Response) => {
-            return response.json()
-        }).then((data) => {
-            if (data.status == 'ok') {
-                console.log("done")
-            }
+        addWords(body).then(() => {
+            console.log("done")
         });
 
     }
@@ -88,7 +57,7 @@ const WordList: React.FC<{ wordList: Word[], practise: () => void; }> = ({ wordL
                                 <button
                                     type="button"
                                     onClick={() =>
-                                        addWord()
+                                        handleAddWord()
                                     }
                                     className="block rounded-md bg-indigo-500 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
                                 >
@@ -129,7 +98,7 @@ const WordList: React.FC<{ wordList: Word[], practise: () => void; }> = ({ wordL
                                                     <td className="flex justify-around relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
 
                                                         <BookmarkIcon className="cursor-pointer h-4 w-4 text-gray-900" onClick={() => {
-                                                            markWord(item.word, index)
+                                                            handleMarkWord(item.word, index)
                                                         }}> </BookmarkIcon>
 
                                                         <Link target="_blank" href={'https://youglish.com/pronounce/' + item.word + '/english?'} >
@@ -137,7 +106,7 @@ const WordList: React.FC<{ wordList: Word[], practise: () => void; }> = ({ wordL
                                                         </Link>
 
                                                         <EyeSlashIcon className="cursor-pointer h-4 w-4 text-gray-900" onClick={() => {
-                                                            ignoreWord(item, index)
+                                                            handleIgnoreWord(item, index)
                                                         }}> </EyeSlashIcon>
 
 

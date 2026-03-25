@@ -2,76 +2,39 @@ import { useEffect, useState } from "react";
 import Link from 'next/link';
 import { TrashIcon, PlayCircleIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
 import LevelComponent from "./LevelComponent"
+import type { WordModel } from "@/app/lib/models";
+import { ignoreWord, removeWord, updateWordLevel } from "@/app/lib/word-api";
 
+const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: number, name: string }) => void }> = ({ wordList, onCollectionChange }) => {
 
+    const [mylist, setWordList] = useState<WordModel[]>(wordList ?? []);
 
-export interface Word {
-    word: string;
-    level: number;
-    query_count: number;
-}
-
-const WordBook: React.FC<{ wordList: Word[], onCollectionChange: (e: { id: number, name: string }) => void }> = ({ wordList, onCollectionChange }) => {
-
-    const [mylist, setWordList] = useState<Word[]>(wordList ?? []);
-
-    function removeWord(word: Word, index: number) {
-        fetch("/hts/api/v1/word?word=" + word.word, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }).then((response: Response) => {
-            return response.json()
-        }).then((data) => {
-            if (data.status == 'ok') {
+    function handleRemoveWord(word: WordModel, index: number) {
+        removeWord(word.word).then(() => {
                 setWordList((prevList) => {
                     const newList = [...prevList];
                     newList.splice(index, 1);
                     return newList;
                 });
-
-            }
         });
     }
 
-    function updateLevel(word: Word, level: number) {
-        fetch("/hts/api/v1/level?word=" + word.word + "&level=" + level, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }).then((response: Response) => {
-            return response.json()
-        }).then((data) => {
-            if (data.status == 'ok') {
+    function handleUpdateLevel(word: WordModel, level: number) {
+        updateWordLevel(word.word, level).then(() => {
                 word.level = level
                 setWordList((prevList) => {
                     return [...prevList];
                 });
-
-            }
         });
     }
 
-    function ignoreWord(word: Word, index: number) {
-        fetch("/hts/api/v1/ignore", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ body: word.word }),
-        }).then((response: Response) => {
-            return response.json()
-        }).then((data) => {
-            if (data.status == 'ok') {
+    function handleIgnoreWord(word: WordModel, index: number) {
+        ignoreWord(word.word).then(() => {
                 setWordList((prevList) => {
                     const newList = [...prevList];
                     newList.splice(index, 1);
                     return newList;
                 });
-
-            }
         });
     }
 
@@ -114,15 +77,15 @@ const WordBook: React.FC<{ wordList: Word[], onCollectionChange: (e: { id: numbe
                                                     <td className="whitespace-nowrap py-4 text-sm text-gray-500">
 
                                                         <LevelComponent updateLevel={(level) => {
-                                                            updateLevel(item, level == item.level ? 0 : level)
-                                                        }} currentLevel={item.level} pages={[1, 2, 3, 4, 5]} />
+                                                            handleUpdateLevel(item, level == item.level ? 0 : level)
+                                                        }} currentLevel={item.level ?? 0} pages={[1, 2, 3, 4, 5]} />
 
                                                     </td>
                                                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{item.query_count}</td>
                                                     <td className="flex justify-start relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
 
                                                         <EyeSlashIcon className="cursor-pointer h-5 w-5 text-gray-900" onClick={() => {
-                                                            ignoreWord(item, index)
+                                                            handleIgnoreWord(item, index)
                                                         }}> </EyeSlashIcon>
 
                                                         <Link target="_blank" href={'https://youglish.com/pronounce/' + item.word + '/english?'} >
@@ -130,7 +93,7 @@ const WordBook: React.FC<{ wordList: Word[], onCollectionChange: (e: { id: numbe
                                                         </Link>
 
                                                         <TrashIcon className="cursor-pointer ml-4 h-5 w-5 text-gray-900" onClick={() => {
-                                                            removeWord(item, index)
+                                                            handleRemoveWord(item, index)
                                                         }}> </TrashIcon>
                                                     </td>
                                                 </tr>
