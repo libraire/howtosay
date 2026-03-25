@@ -42,6 +42,36 @@ const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: 
         setWordList(wordList)
     }, [wordList])
 
+    function memoryBadgeClass(badge?: string | null) {
+        switch (badge) {
+            case "fragile":
+                return "border-[#f0b38a]/20 bg-[#f0b38a]/10 text-[#f8d8c1]"
+            case "building":
+                return "border-[#9bb7d4]/20 bg-[#9bb7d4]/10 text-[#d7e4f1]"
+            case "stable":
+                return "border-[#8fbf9f]/20 bg-[#8fbf9f]/10 text-[#d6ebdd]"
+            case "mastered":
+                return "border-[#c7b4e6]/20 bg-[#c7b4e6]/10 text-[#eadff8]"
+            default:
+                return "border-white/10 bg-white/[0.03] text-white/45"
+        }
+    }
+
+    function memoryBadgeLabel(badge?: string | null) {
+        switch (badge) {
+            case "fragile":
+                return "Fragile"
+            case "building":
+                return "Building"
+            case "stable":
+                return "Stable"
+            case "mastered":
+                return "Mastered"
+            default:
+                return "Untracked"
+        }
+    }
+
     return (
         <div className="w-full">
             <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-[0_24px_80px_rgba(0,0,0,0.18)]">
@@ -57,6 +87,9 @@ const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: 
                                 </th>
                                 <th scope="col" className="px-3 py-4 text-left text-xs font-medium uppercase tracking-[0.22em] text-white/45">
                                     Query
+                                </th>
+                                <th scope="col" className="px-3 py-4 text-left text-xs font-medium uppercase tracking-[0.22em] text-white/45">
+                                    Memory
                                 </th>
                                 <th scope="col" className="px-6 py-4 text-left text-xs font-medium uppercase tracking-[0.22em] text-white/45">
                                     Actions
@@ -75,6 +108,11 @@ const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: 
                                         }} currentLevel={item.level ?? 0} pages={[1, 2, 3, 4, 5]} />
                                     </td>
                                     <td className="whitespace-nowrap px-3 py-4 text-sm text-white/55">{item.query_count ?? 0}</td>
+                                    <td className="whitespace-nowrap px-3 py-4 text-sm">
+                                        <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-medium ${memoryBadgeClass(item.memory_badge)}`}>
+                                            {memoryBadgeLabel(item.memory_badge)}
+                                        </span>
+                                    </td>
                                     <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">
                                         <div className="flex items-center gap-4 text-white/55">
                                             <button
@@ -103,7 +141,7 @@ const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: 
                                 </tr>
                             )) : (
                                 <tr>
-                                    <td colSpan={4} className="px-6 py-12 text-center text-sm text-white/45">
+                                    <td colSpan={5} className="px-6 py-12 text-center text-sm text-white/45">
                                         No saved words in this view yet.
                                     </td>
                                 </tr>

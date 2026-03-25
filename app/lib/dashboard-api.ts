@@ -44,7 +44,8 @@ export async function fetchDashboard(): Promise<DashboardData> {
     const data = await fetchJson<{
         summary?: Record<string, unknown>;
         activity?: Record<string, unknown>[];
-        weak_words?: Record<string, unknown>[];
+        often_wrong_words?: Record<string, unknown>[];
+        needs_hints_words?: Record<string, unknown>[];
         most_skipped_words?: Record<string, unknown>[];
     }>(
         "/hts/api/v1/dashboard",
@@ -54,7 +55,8 @@ export async function fetchDashboard(): Promise<DashboardData> {
     return {
         summary: mapSummary(data.summary ?? {}),
         activity: mapActivity(data.activity ?? []),
-        weakWords: mapInsights(data.weak_words ?? []),
+        oftenWrongWords: mapInsights(data.often_wrong_words ?? []),
+        needsHintsWords: mapInsights(data.needs_hints_words ?? []),
         mostSkippedWords: mapInsights(data.most_skipped_words ?? []),
     }
 }

@@ -10,6 +10,10 @@ export interface WordModel {
     cn?: string
     in_bank?: boolean
     canonical?: string
+    memory_badge?: string | null
+    memory_status?: string | null
+    difficulty?: number | null
+    stability?: number | null
 }
 
 export interface MarkedWord {

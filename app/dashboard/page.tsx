@@ -46,7 +46,8 @@ export default function DashboardPage() {
 
     const summary = dashboard?.summary
     const activity = dashboard?.activity ?? []
-    const weakWords = dashboard?.weakWords ?? []
+    const oftenWrongWords = dashboard?.oftenWrongWords ?? []
+    const needsHintsWords = dashboard?.needsHintsWords ?? []
     const mostSkippedWords = dashboard?.mostSkippedWords ?? []
     const maxBar = Math.max(1, ...activity.map((item) => Math.max(item.reviews, item.added)))
 
@@ -197,14 +198,14 @@ export default function DashboardPage() {
                                 </div>
                             </div>
 
-                            <div className="mt-6 grid gap-6 lg:grid-cols-2">
+                            <div className="mt-6 grid gap-6 lg:grid-cols-3">
                                 <div className="rounded-3xl border border-white/10 bg-black/20 p-6">
-                                    <h2 className="text-lg font-medium text-white">Weak words</h2>
+                                    <h2 className="text-lg font-medium text-white">Often wrong</h2>
                                     <p className="mt-2 text-sm leading-7 text-white/58">
-                                        Words with repeated misses, heavy hint usage, or high difficulty.
+                                        Words with repeated wrong answers and rising difficulty.
                                     </p>
                                     <div className="mt-5 space-y-3">
-                                        {weakWords.length > 0 ? weakWords.map((item) => (
+                                        {oftenWrongWords.length > 0 ? oftenWrongWords.map((item) => (
                                             <Link
                                                 key={item.word}
                                                 href={`/wordbook?status=fragile`}
@@ -213,7 +214,7 @@ export default function DashboardPage() {
                                                 <div>
                                                     <div className="text-sm font-medium text-white">{item.word}</div>
                                                     <div className="mt-1 text-xs text-white/45">
-                                                        {item.wrongCount ?? 0} wrong · {item.hintedCount ?? 0} hinted
+                                                        {item.wrongCount ?? 0} wrong answers
                                                     </div>
                                                 </div>
                                                 <div className="text-right text-xs text-white/45">
@@ -223,7 +224,38 @@ export default function DashboardPage() {
                                             </Link>
                                         )) : (
                                             <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/45">
-                                                No weak words yet.
+                                                No repeated wrong-answer words yet.
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="rounded-3xl border border-white/10 bg-black/20 p-6">
+                                    <h2 className="text-lg font-medium text-white">Needs hints</h2>
+                                    <p className="mt-2 text-sm leading-7 text-white/58">
+                                        Words you usually reach with support, but have not fully internalized yet.
+                                    </p>
+                                    <div className="mt-5 space-y-3">
+                                        {needsHintsWords.length > 0 ? needsHintsWords.map((item) => (
+                                            <Link
+                                                key={item.word}
+                                                href={`/wordbook?status=fragile`}
+                                                className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 transition hover:bg-white/[0.07]"
+                                            >
+                                                <div>
+                                                    <div className="text-sm font-medium text-white">{item.word}</div>
+                                                    <div className="mt-1 text-xs text-white/45">
+                                                        {item.hintedCount ?? 0} hinted completions
+                                                    </div>
+                                                </div>
+                                                <div className="text-right text-xs text-white/45">
+                                                    <div>Difficulty {item.difficulty ?? 0}</div>
+                                                    <div>Stability {item.stability ?? 0}</div>
+                                                </div>
+                                            </Link>
+                                        )) : (
+                                            <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/45">
+                                                No hint-heavy words yet.
                                             </div>
                                         )}
                                     </div>

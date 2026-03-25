@@ -32,6 +32,7 @@ export interface DashboardWordInsight {
 export interface DashboardData {
     summary: DashboardSummary
     activity: DashboardActivityPoint[]
-    weakWords: DashboardWordInsight[]
+    oftenWrongWords: DashboardWordInsight[]
+    needsHintsWords: DashboardWordInsight[]
     mostSkippedWords: DashboardWordInsight[]
 }
