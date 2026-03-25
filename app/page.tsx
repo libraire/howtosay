@@ -24,6 +24,7 @@ export default function Home() {
   const [isPreparingPractice, setIsPreparingPractice] = useState(false)
   const [isSaveNoticeOpen, setIsSaveNoticeOpen] = useState(false)
   const passage = passages[0]
+  const visiblePracticeWords = practiceWords.filter((word) => !word.in_bank)
 
   useEffect(() => {
     fetchHomepagePassages()
@@ -91,10 +92,19 @@ export default function Home() {
         >
           <div className="mx-auto flex min-h-full max-w-5xl items-start justify-center pb-12 pt-[12vh]">
             <div onClick={(event) => event.stopPropagation()}>
-              <PractiseComponent
-                list={practiceWords}
-                onClose={() => setIsPracticeOpen(false)}
-              />
+              {visiblePracticeWords.length > 0 ? (
+                <PractiseComponent
+                  list={visiblePracticeWords}
+                  onClose={() => setIsPracticeOpen(false)}
+                />
+              ) : (
+                <div className="w-[min(92vw,720px)] rounded-[28px] bg-[#111111] px-8 py-10 text-center text-white shadow-[0_24px_80px_rgba(0,0,0,0.35)]">
+                  <p className="text-lg font-semibold text-white">No practice words left</p>
+                  <p className="mt-3 text-sm text-white/60">
+                    All words in this passage are already marked as familiar, so there is nothing left to practise here.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>
