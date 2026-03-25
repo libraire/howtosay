@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
-import { BookmarkSquareIcon, AcademicCapIcon, FireIcon, PhotoIcon, PuzzlePieceIcon } from '@heroicons/react/24/outline'
+import { BookmarkSquareIcon, AcademicCapIcon, FireIcon, PhotoIcon, PuzzlePieceIcon, RocketLaunchIcon, BoltIcon } from '@heroicons/react/24/outline'
 import { StarIcon } from '@heroicons/react/20/solid'
 import UserInfo from "@/app/components/UserInfo"
 import { useCustomAuth } from "@/app/context/CustomAuthProvider"
@@ -95,6 +95,24 @@ export default function MyDropDown({ expire }: { expire: string }) {
                             </select>
                         </div>
 
+                        <div className="border-b border-gray-100 py-1">
+                            <Menu.Item>
+                                {({ active }) => (
+                                    <a
+                                        href='/daily'
+                                        className={classNames(
+                                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                                            'block px-4 py-2 text-sm'
+                                        )}
+                                    >
+                                        <BoltIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> Daily Guess
+                                    </a>
+                                )}
+                            </Menu.Item>
+
+
+                        </div>
+
                         <Menu.Item>
                             {({ active }) => (
                                 <a
@@ -153,6 +171,8 @@ export default function MyDropDown({ expire }: { expire: string }) {
                             )}
                         </Menu.Item>
 
+
+
                         <Menu.Item>
                             {({ active }) => (
                                 <a
@@ -168,6 +188,21 @@ export default function MyDropDown({ expire }: { expire: string }) {
                                 </a>
                             )}
                         </Menu.Item>
+
+                                                <Menu.Item>
+                            {({ active }) => (
+                                <a
+                                    href='/features'
+                                    className={classNames(
+                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                                        'block px-4 py-2 text-sm'
+                                    )}
+                                >
+                                    <RocketLaunchIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> Features & Pricing
+                                </a>
+                            )}
+                        </Menu.Item>
+                        
                         <Menu.Item>
                             {({ active }) => (
                                 <a

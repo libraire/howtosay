@@ -9,7 +9,7 @@ import ListMenu from '@/app/components/ListMenu'
 import InputModal from '@/app/components/InputModal'
 import AudioComponent from "@/app/components/AudioComponent";
 import PractiseComponent from "@/app/components/PractiseComponent"
-import { addWords, fetchWordBook } from "@/app/lib/word-api";
+import { addWords, fetchWordBook } from "@/app/lib/practice-api";
 
 export default function Home() {
     const { isAuthenticated, isLoading, login } = useCustomAuth();

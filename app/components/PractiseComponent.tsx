@@ -8,7 +8,8 @@ import { useCustomAuth } from "@/app/context/CustomAuthProvider";
 import HelpSlideOver from "./HelpSlideOver";
 import ToolBoxComponent from "./ToolBoxComponent";
 import StarComponent from "./StarComponent";
-import { fetchDefinitions as fetchDefinitionsApi, markWord as markWordApi, unmarkWord as unmarkWordApi } from "@/app/lib/word-api";
+import { fetchDefinitions as fetchDefinitionsApi } from "@/app/lib/dict-api";
+import { markWord as markWordApi, unmarkWord as unmarkWordApi } from "@/app/lib/practice-api";
 
 const PractiseComponent: React.FC<{ list: Word[], onClose: (() => void) | undefined }> = ({ list, onClose }) => {
     const [word, setWord] = useState<Word>();

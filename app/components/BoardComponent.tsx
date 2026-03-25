@@ -7,7 +7,8 @@ import KeyBoardComponent from "./KeyBoardComponent";
 import ToolBoxComponent from "./ToolBoxComponent";
 import { useCustomAuth } from "@/app/context/CustomAuthProvider";
 import StarComponent from "./StarComponent";
-import { fetchMarkedWords, markWord as markWordApi, unmarkWord as unmarkWordApi } from "@/app/lib/word-api";
+import { fetchImageWords, fetchMarkedWords, fetchNextWords } from "@/app/lib/dict-api";
+import { markWord as markWordApi, unmarkWord as unmarkWordApi } from "@/app/lib/practice-api";
 
 const selectItems = [
   { label: "Fruit", value: "fruit" },
@@ -51,16 +52,13 @@ const BoardComponent: React.FC<{}> = () => {
     if (isLoading) return;
     setIsLoading(true);
     try {
-
-      var response
+      let wordlist: Word[]
       if (lv.includes("emoji")) {
-        response = await fetch("api/next/words?level=" + lv);
+        wordlist = await fetchNextWords(lv) as Word[];
       } else {
-        response = await fetch("/hts/api/v1/dict/image?category=" + lv);
+        wordlist = await fetchImageWords(lv) as Word[];
       }
-
-      const jsonData = await response.json();
-      let list = shuffleList(jsonData.wordlist);
+      let list = shuffleList(wordlist);
       fetchMarkList(list)
       var wd = list.shift()
       setWord(wd);

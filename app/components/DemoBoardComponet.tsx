@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./ComponentStyle.module.css";
 import WordComponent from "./WordComponent";
 import KeyBoardComponent from "./KeyBoardComponent";
+import { fetchDailyWords } from "@/app/lib/dict-api";
 
 
 const BoardComponent: React.FC<{}> = () => {
@@ -31,9 +32,7 @@ const BoardComponent: React.FC<{}> = () => {
 
         setIsLoading(true);
         try {
-            const response = await fetch("/hts/api/v1/dict/daily");
-            const jsonData = await response.json();
-            const list = shuffleList([...(jsonData.wordlist ?? [])]);
+            const list = shuffleList([...(await fetchDailyWords())]);
             const wd = list[0];
             setWord(wd);
             setWordList(list);

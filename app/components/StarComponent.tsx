@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { updateWordLevel } from "@/app/lib/word-api";
+import { updateWordLevel } from "@/app/lib/practice-api";
 
 type Props = {
     word: string,

@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import Link from 'next/link';
 import { TrashIcon, PlayCircleIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
 import LevelComponent from "./LevelComponent"
-import type { WordModel } from "@/app/lib/models";
-import { ignoreWord, removeWord, updateWordLevel } from "@/app/lib/word-api";
+import type { WordModel } from "@/app/lib/dict-models";
+import { ignoreWord, removeWord, updateWordLevel } from "@/app/lib/practice-api";
 
 const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: number, name: string }) => void }> = ({ wordList, onCollectionChange }) => {
 

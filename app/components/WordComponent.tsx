@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import styles from "./ComponentStyle.module.css";
 import CharComponent from "./Charcomponent";
 import Image from "next/image";
-import { fetchWordExamples } from "@/app/lib/word-api";
+import { fetchWordExamples } from "@/app/lib/dict-api";
 
 type Props = {
   word: string;

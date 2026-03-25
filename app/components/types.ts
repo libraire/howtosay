@@ -1,4 +1,4 @@
-export type { WordModel as Word } from "@/app/lib/models"
+export type { WordModel as Word } from "@/app/lib/dict-models"
 
 export interface Char {
     char: string

@@ -7,7 +7,8 @@ import KeyBoardComponent from "./KeyBoardComponent";
 import ToolBoxComponent from "./ToolBoxComponent";
 import { useCustomAuth } from "@/app/context/CustomAuthProvider";
 import StarComponent from "./StarComponent";
-import { fetchMarkedWords, markWord as markWordApi, unmarkWord as unmarkWordApi } from "@/app/lib/word-api";
+import { fetchMarkedWords, fetchNextWords } from "@/app/lib/dict-api";
+import { markWord as markWordApi, unmarkWord as unmarkWordApi } from "@/app/lib/practice-api";
 
 const selectItems = [
     { value: '21', label: 'Oxford3000' },
@@ -59,9 +60,7 @@ const BoardComponent: React.FC<{}> = () => {
 
         setIsLoading(true);
         try {
-            const response = await fetch("api/next/words?level=" + lv);
-            const jsonData = await response.json();
-            let list = shuffleList(jsonData.wordlist);
+            let list = shuffleList(await fetchNextWords(lv) as Word[]);
             fetchMarkList(list)
             var wd = list.shift()
             setWord(wd);

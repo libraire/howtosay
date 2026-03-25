@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { useState } from 'react'
+import { verifyLicense } from "@/app/lib/practice-api";
 
 export default function Component() {
 
@@ -9,14 +10,12 @@ export default function Component() {
     const [isPro, setIsPro] = useState(false);
     const [isValid, setIsValid] = useState(true);
     async function activate() {
-        fetch("/hts/api/v1/license/verify?license=" + license, { method: 'POST', }).then((response: Response) => {
-            return response.json()
-        }).then((data) => {
+        verifyLicense(license).then((data) => {
             if (data.status == 'ok') {
                 setIsPro(true)
             } else {
                 setIsValid(false)
-                setReason(data.reason)
+                setReason(data.reason ?? '')
             }
         })
     }

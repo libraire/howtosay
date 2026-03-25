@@ -6,7 +6,8 @@ import Link from 'next/link';
 import { QuestionMarkCircleIcon, EyeSlashIcon, WrenchScrewdriverIcon } from '@heroicons/react/24/outline'
 import AudioPlayer from './AudioPlayer';
 import ReportDialog from './ReportDialog';
-import { ignoreWord as ignoreWordApi, reportWordIssue } from '@/app/lib/word-api';
+import { reportWordIssue } from '@/app/lib/practice-api';
+import { ignoreWord as ignoreWordApi } from '@/app/lib/practice-api';
 
 type Props = {
     selectLevel: ((lv: string) => void) | undefined;

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import Link from 'next/link';
 import { BookmarkIcon, EyeSlashIcon, PlayCircleIcon } from '@heroicons/react/24/outline'
-import type { WordModel } from "@/app/lib/models";
-import { addWords, ignoreWord, markWord } from "@/app/lib/word-api";
+import type { WordModel } from "@/app/lib/dict-models";
+import { addWords, ignoreWord, markWord } from "@/app/lib/practice-api";
 
 const WordList: React.FC<{ wordList: WordModel[], practise: () => void; }> = ({ wordList, practise }) => {
 
