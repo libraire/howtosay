@@ -1,13 +1,34 @@
-import { Fragment } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
-import { BookmarkSquareIcon, FireIcon, PhotoIcon, PuzzlePieceIcon, RocketLaunchIcon, BoltIcon, Squares2X2Icon, InformationCircleIcon, ArrowPathIcon, ChartBarSquareIcon } from '@heroicons/react/24/outline'
+import { BookmarkSquareIcon, FireIcon, PhotoIcon, PuzzlePieceIcon, RocketLaunchIcon, BoltIcon, Squares2X2Icon, InformationCircleIcon, ArrowPathIcon, ChartBarSquareIcon, BookOpenIcon } from '@heroicons/react/24/outline'
 
 function classNames(...classes: string[]): string {
     return classes.filter(Boolean).join(' ')
 }
 
 export default function MyDropDown() {
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
+
+    if (!mounted) {
+        return (
+            <div className="relative inline-block text-left">
+                <button
+                    type="button"
+                    className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"
+                >
+                    <Squares2X2Icon className="-ml-0.5 h-5 w-5 text-gray-500" aria-hidden="true" />
+                    Explore
+                    <ChevronDownIcon className="-mr-1 h-5 w-5 text-gray-400" aria-hidden="true" />
+                </button>
+            </div>
+        )
+    }
+
     return (
         <Menu as="div" className="relative inline-block text-left">
             <div>
@@ -114,6 +135,20 @@ export default function MyDropDown() {
                                     )}
                                 >
                                     <FireIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> Grading exercise
+                                </a>
+                            )}
+                        </Menu.Item>
+
+                        <Menu.Item>
+                            {({ active }) => (
+                                <a
+                                    href='/literature'
+                                    className={classNames(
+                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                                        'block px-4 py-2 text-sm'
+                                    )}
+                                >
+                                    <BookOpenIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> Literature Timeline
                                 </a>
                             )}
                         </Menu.Item>

@@ -1,5 +1,3 @@
-"use client"
-
 export async function fetchJson<T>(input: RequestInfo | URL, init?: RequestInit): Promise<T> {
     const response = await fetch(input, {
         credentials: 'include',

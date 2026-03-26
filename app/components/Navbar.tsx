@@ -1,3 +1,5 @@
+"use client";
+
 import styles from "@/app/components/ComponentStyle.module.css";
 import MyDropDown from "@/app/components/DrowDown";
 import AuthButton from "@/app/components/AuthButton";
