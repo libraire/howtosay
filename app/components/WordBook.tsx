@@ -7,10 +7,9 @@ import { ignoreWord, removeWord, updateWordLevel } from "@/app/lib/practice-api"
 import { fetchDefinitions } from "@/app/lib/dict-api";
 
 type HoverCardState = {
+    index: number
     word: string
     definition: string
-    top: number
-    left: number
 }
 
 type DefinitionLookup = {
@@ -150,26 +149,11 @@ const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: 
         }
     }
 
-    function showHoverCard(item: WordModel, target: HTMLElement) {
-        const rect = target.getBoundingClientRect()
-        const cardWidth = 320
-        const cardHeight = 180
-        const gap = 6
-        const preferredLeft = rect.right + gap
-        const fallbackLeft = Math.max(12, rect.left - cardWidth - gap)
-        const left = preferredLeft + cardWidth <= window.innerWidth - 12
-            ? preferredLeft
-            : fallbackLeft
-        const centerY = rect.top + rect.height / 2
-        const minTop = cardHeight / 2 + 12
-        const maxTop = window.innerHeight - cardHeight / 2 - 12
-        const top = Math.min(Math.max(centerY, minTop), maxTop)
-
+    function showHoverCard(item: WordModel, index: number) {
         setHoverCard({
+            index,
             word: item.canonical || item.word,
             definition: item.definition || "Loading definition...",
-            top,
-            left,
         })
     }
 
@@ -201,13 +185,27 @@ const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: 
                             {mylist?.length > 0 ? mylist.map((item, index) => (
                                 <tr key={index} className="transition hover:bg-white/[0.025]">
                                     <td className="whitespace-nowrap py-4 pl-6 pr-3 text-sm font-medium text-white">
-                                        <span
-                                            className="cursor-help decoration-white/20 underline-offset-4 hover:text-[#fff0c8]"
-                                            onMouseEnter={(event) => showHoverCard(item, event.currentTarget)}
-                                            onMouseLeave={() => setHoverCard(null)}
-                                        >
-                                            {item.word}
-                                        </span>
+                                        <div className="relative inline-flex items-center">
+                                            <button
+                                                type="button"
+                                                className="inline-flex w-fit cursor-help items-center rounded-md text-left decoration-white/20 underline-offset-4 transition hover:text-[#fff0c8]"
+                                                onMouseEnter={() => showHoverCard(item, index)}
+                                                onMouseLeave={() => setHoverCard(null)}
+                                            >
+                                                {item.word}
+                                            </button>
+                                            {hoverCard?.index === index && (
+                                                <div
+                                                    className="pointer-events-none absolute left-full top-1/2 z-20 ml-2 w-[320px] -translate-y-1/2 rounded-2xl border border-white/10 bg-[#161311]/95 p-4 text-sm text-white shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur"
+                                                >
+                                                    <div className="text-xs uppercase tracking-[0.28em] text-white/35">Definition</div>
+                                                    <div className="mt-2 text-base font-semibold text-[#fff0c8]">{hoverCard.word}</div>
+                                                    <div className="mt-3 whitespace-pre-line leading-6 text-white/72">
+                                                        {hoverCard.definition}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
                                     </td>
                                     <td className="whitespace-nowrap px-3 py-4 text-sm text-white/70">
                                         <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-medium ${memoryBadgeClass(getDisplayMemoryBadge(item))}`}>
@@ -257,18 +255,6 @@ const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: 
                     </table>
                 </div>
             </div>
-            {hoverCard && (
-                <div
-                    className="pointer-events-none fixed z-50 w-[320px] -translate-y-1/2 rounded-2xl border border-white/10 bg-[#161311]/95 p-4 text-sm text-white shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur"
-                    style={{ top: hoverCard.top, left: hoverCard.left }}
-                >
-                    <div className="text-xs uppercase tracking-[0.28em] text-white/35">Definition</div>
-                    <div className="mt-2 text-base font-semibold text-[#fff0c8]">{hoverCard.word}</div>
-                    <div className="mt-3 whitespace-pre-line leading-6 text-white/72">
-                        {hoverCard.definition}
-                    </div>
-                </div>
-            )}
         </div>
     )
 };
