@@ -103,7 +103,7 @@ export default function Home() {
                                     {total} saved words
                                 </div>
                                 <div className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-white/70">
-                                    Filter: {level === 0 ? "Default" : getLevelLabel(level)}
+                                    Familiarity: {level === 0 ? "All words" : getLevelLabel(level)}
                                 </div>
                                 {memoryLabel && (
                                     <button
@@ -164,21 +164,6 @@ export default function Home() {
                                                         <AcademicCapIcon className="h-5 w-5 text-white/45" />
                                                         Practise saved words
                                                     </button>
-                                                )}
-                                            </Menu.Item>
-
-                                            <Menu.Item>
-                                                {({ active }) => (
-                                                    <Link
-                                                        href="/review"
-                                                        className={classNames(
-                                                            active ? "bg-white/10 text-white" : "text-white/75",
-                                                            "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition"
-                                                        )}
-                                                    >
-                                                        <ArrowPathIcon className="h-5 w-5 text-white/45" />
-                                                        Open review queue
-                                                    </Link>
                                                 )}
                                             </Menu.Item>
 

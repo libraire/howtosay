@@ -27,8 +27,12 @@ export default function Component() {
     return (
         <div className="flex max-w-4xl flex-col items-center py-24">
             <div className="flex max-w-xl flex-col text-center">
-                <h2 className="font-medium text-indigo-600">Pricing</h2>
-                <h1 className="text-4xl font-medium tracking-tight">Get unlimited access.</h1>
+                <h2 className="font-medium text-indigo-600">Plans</h2>
+                <h1 className="text-4xl font-medium tracking-tight">Access the complete learning workflow.</h1>
+                <p className="mt-4 text-sm leading-7 text-default-500">
+                    Start free to evaluate the product, or upgrade for full access to advanced modes,
+                    deeper vocabulary coverage, and personal learning tools.
+                </p>
                 <Spacer y={4} />
             </div>
             <Spacer y={8} />
@@ -76,7 +80,7 @@ export default function Component() {
             <Spacer y={12} />
             <ModalDialog
                 title="Request Pro"
-                content="Please send an email to bytegush@hotmail.com with your reason."
+                content="Please email bytegush@hotmail.com with your learning use case and expected usage."
                 confirm="Go Back"
                 open={isOpen}
                 onClose={() => {

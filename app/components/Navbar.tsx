@@ -43,7 +43,7 @@ export default function Navbar({ check = true }: { check?: boolean }) {
                             REVIEW
                         </Link>
                         <Link
-                            href="/features"
+                            href="/pricing"
                             className="text-sm font-medium tracking-[0.18em] text-gray-300 transition hover:text-black"
                         >
                             PRICING

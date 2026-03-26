@@ -3,12 +3,12 @@ import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 
 const people = [
-    { id: 0, name: 'Default' },
-    { id: 1, name: 'Level 1' },
-    { id: 2, name: 'Level 2' },
-    { id: 3, name: 'Level 3' },
-    { id: 4, name: 'Level 4' },
-    { id: 5, name: 'Level 5' },
+    { id: 0, name: 'All words' },
+    { id: 1, name: 'Familiarity 1' },
+    { id: 2, name: 'Familiarity 2' },
+    { id: 3, name: 'Familiarity 3' },
+    { id: 4, name: 'Familiarity 4' },
+    { id: 5, name: 'Familiarity 5' },
     { id: 99, name: 'Ignored' },
 ]
 
@@ -17,7 +17,7 @@ function classNames(...classes: string[]): string {
 }
 
 export default function ListMenu({ onChange }: { onChange: (e: { id: number, name: string }) => void }) {
-    const [selected, setSelected] = useState({ id: 1, name: 'Proficiency' })
+    const [selected, setSelected] = useState({ id: 0, name: 'All words' })
 
     return (
         <Listbox value={selected} onChange={(e) => {

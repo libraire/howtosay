@@ -1,20 +1,40 @@
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
-import { useEffect, useState } from "react";
-
 export default function LevelComponent({ updateLevel, pages, currentLevel }: { updateLevel: (p: number) => void, pages: number[], currentLevel: number }) {
+    const labels: Record<number, string> = {
+        1: "Unfamiliar",
+        2: "Emerging",
+        3: "Recognized",
+        4: "Comfortable",
+        5: "Solid",
+    }
+    const activeClasses: Record<number, string> = {
+        1: "bg-gradient-to-r from-[#d96b6b] to-[#b94f4f] shadow-[0_0_0_1px_rgba(217,107,107,0.16),0_0_14px_rgba(217,107,107,0.12)]",
+        2: "bg-gradient-to-r from-[#d69362] to-[#bf7541] shadow-[0_0_0_1px_rgba(214,147,98,0.16),0_0_14px_rgba(214,147,98,0.12)]",
+        3: "bg-gradient-to-r from-[#d8c06f] to-[#c0a44d] shadow-[0_0_0_1px_rgba(216,192,111,0.16),0_0_14px_rgba(216,192,111,0.12)]",
+        4: "bg-gradient-to-r from-[#8fbe7a] to-[#6d9f59] shadow-[0_0_0_1px_rgba(143,190,122,0.16),0_0_14px_rgba(143,190,122,0.12)]",
+        5: "bg-gradient-to-r from-[#57b27f] to-[#3b8f61] shadow-[0_0_0_1px_rgba(87,178,127,0.16),0_0_14px_rgba(87,178,127,0.12)]",
+    }
 
     return (
-        <div>
+        <div className="inline-flex items-center gap-1.5">
             {pages.map((pageNumber) => (
-                <a
+                <button
+                    type="button"
                     key={pageNumber}
                     onClick={() => { updateLevel(pageNumber) }}
-                    className={`h-3 hover:bg-indigo-500 hover:text-indigo-500 relative  inline-flex cursor-pointer items-center px-2  text-sm ${pageNumber <= currentLevel ? 'border-l border-white bg-indigo-600 text-indigo-600 focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600' : 'hover:bg-indigo-600 hover:text-indigo-600 text-white ring-1 ring-inset ring-gray-300  focus:z-20 focus:outline-offset-0'}`}
+                    title={labels[pageNumber] ?? `Familiarity ${pageNumber}`}
+                    aria-label={labels[pageNumber] ?? `Familiarity ${pageNumber}`}
+                    className={`relative h-2 w-6 rounded-full transition focus:outline-none focus:ring-2 focus:ring-[#dcc38f]/35 ${
+                        pageNumber <= currentLevel
+                            ? activeClasses[currentLevel] ?? activeClasses[3]
+                            : "bg-white/8 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)] hover:bg-white/15"
+                    }`}
                 >
-                    {'-'}
-                </a>
+                    {pageNumber <= currentLevel && (
+                        <span className="pointer-events-none absolute inset-y-[2px] left-[3px] w-2 rounded-full bg-white/35 blur-[1px]" />
+                    )}
+                    <span className="sr-only">{labels[pageNumber] ?? `Familiarity ${pageNumber}`}</span>
+                </button>
             ))}
-
         </div>
     )
 }

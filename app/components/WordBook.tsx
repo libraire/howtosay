@@ -42,6 +42,22 @@ const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: 
         setWordList(wordList)
     }, [wordList])
 
+    function getDisplayMemoryBadge(item: WordModel): string | null {
+        if ((!item.memory_badge || item.memory_badge === "untracked") && (item.level ?? 0) >= 5) {
+            return "mastered"
+        }
+
+        return item.memory_badge ?? null
+    }
+
+    function getDisplayFamiliarityLevel(item: WordModel): number {
+        if (getDisplayMemoryBadge(item) === "mastered") {
+            return 5
+        }
+
+        return item.level ?? 0
+    }
+
     function memoryBadgeClass(badge?: string | null) {
         switch (badge) {
             case "fragile":
@@ -51,6 +67,7 @@ const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: 
             case "stable":
                 return "border-[#8fbf9f]/20 bg-[#8fbf9f]/10 text-[#d6ebdd]"
             case "mastered":
+            case "ignored":
                 return "border-[#c7b4e6]/20 bg-[#c7b4e6]/10 text-[#eadff8]"
             default:
                 return "border-white/10 bg-white/[0.03] text-white/45"
@@ -66,6 +83,7 @@ const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: 
             case "stable":
                 return "Stable"
             case "mastered":
+            case "ignored":
                 return "Mastered"
             default:
                 return "Untracked"
@@ -83,13 +101,13 @@ const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: 
                                     Word
                                 </th>
                                 <th scope="col" className="px-3 py-4 text-left text-xs font-medium uppercase tracking-[0.22em] text-white/45">
-                                    Level
+                                    Memory
+                                </th>
+                                <th scope="col" className="px-3 py-4 text-left text-xs font-medium uppercase tracking-[0.22em] text-white/45">
+                                    Familiarity
                                 </th>
                                 <th scope="col" className="px-3 py-4 text-left text-xs font-medium uppercase tracking-[0.22em] text-white/45">
                                     Query
-                                </th>
-                                <th scope="col" className="px-3 py-4 text-left text-xs font-medium uppercase tracking-[0.22em] text-white/45">
-                                    Memory
                                 </th>
                                 <th scope="col" className="px-6 py-4 text-left text-xs font-medium uppercase tracking-[0.22em] text-white/45">
                                     Actions
@@ -103,16 +121,16 @@ const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: 
                                         {item.word}
                                     </td>
                                     <td className="whitespace-nowrap px-3 py-4 text-sm text-white/70">
-                                        <LevelComponent updateLevel={(level) => {
-                                            handleUpdateLevel(item, level == item.level ? 0 : level)
-                                        }} currentLevel={item.level ?? 0} pages={[1, 2, 3, 4, 5]} />
-                                    </td>
-                                    <td className="whitespace-nowrap px-3 py-4 text-sm text-white/55">{item.query_count ?? 0}</td>
-                                    <td className="whitespace-nowrap px-3 py-4 text-sm">
-                                        <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-medium ${memoryBadgeClass(item.memory_badge)}`}>
-                                            {memoryBadgeLabel(item.memory_badge)}
+                                        <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-medium ${memoryBadgeClass(getDisplayMemoryBadge(item))}`}>
+                                            {memoryBadgeLabel(getDisplayMemoryBadge(item))}
                                         </span>
                                     </td>
+                                    <td className="whitespace-nowrap px-3 py-4 text-sm text-white/70">
+                                        <LevelComponent updateLevel={(level) => {
+                                            handleUpdateLevel(item, level == item.level ? 0 : level)
+                                        }} currentLevel={getDisplayFamiliarityLevel(item)} pages={[1, 2, 3, 4, 5]} />
+                                    </td>
+                                    <td className="whitespace-nowrap px-3 py-4 text-sm text-white/55">{item.query_count ?? 0}</td>
                                     <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">
                                         <div className="flex items-center gap-4 text-white/55">
                                             <button
