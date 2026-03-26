@@ -16,21 +16,21 @@ export type CountryHighlight = CountryMeta & {
 }
 
 const countryMeta: Record<CountryCode, CountryMeta> = {
-    CN: { code: "CN", name: "China", x: 70, y: 40, color: "#d6b06a" },
+    CN: { code: "CN", name: "China", x: 74, y: 40, color: "#d6b06a" },
     GB: { code: "GB", name: "United Kingdom", x: 46, y: 28, color: "#92a4cf" },
     DE: { code: "DE", name: "Germany", x: 49, y: 30, color: "#9d8e74" },
     RU: { code: "RU", name: "Russia", x: 63, y: 26, color: "#8fa1c8" },
-    IN: { code: "IN", name: "India", x: 64, y: 50, color: "#9d9a60" },
-    AR: { code: "AR", name: "Argentina", x: 29, y: 82, color: "#8f81b3" },
-    US: { code: "US", name: "United States", x: 21, y: 34, color: "#7592aa" },
+    IN: { code: "IN", name: "India", x: 66, y: 50, color: "#9d9a60" },
+    AR: { code: "AR", name: "Argentina", x: 28, y: 84, color: "#8f81b3" },
+    US: { code: "US", name: "United States", x: 22, y: 35, color: "#7592aa" },
     FR: { code: "FR", name: "France", x: 46, y: 33, color: "#8f7cba" },
     IT: { code: "IT", name: "Italy", x: 50, y: 36, color: "#86a06b" },
     ES: { code: "ES", name: "Spain", x: 43, y: 35, color: "#b78f5e" },
-    JP: { code: "JP", name: "Japan", x: 79, y: 40, color: "#b77474" },
-    NG: { code: "NG", name: "Nigeria", x: 46, y: 58, color: "#6ca288" },
+    JP: { code: "JP", name: "Japan", x: 86, y: 41, color: "#b77474" },
+    NG: { code: "NG", name: "Nigeria", x: 49, y: 62, color: "#6ca288" },
     EG: { code: "EG", name: "Egypt", x: 54, y: 50, color: "#b0a061" },
-    BR: { code: "BR", name: "Brazil", x: 30, y: 66, color: "#6fa27e" },
-    MX: { code: "MX", name: "Mexico", x: 16, y: 42, color: "#88a46c" },
+    BR: { code: "BR", name: "Brazil", x: 29, y: 66, color: "#6fa27e" },
+    MX: { code: "MX", name: "Mexico", x: 18, y: 42, color: "#88a46c" },
 }
 
 const authorCountryMap: Record<string, CountryCode> = {
