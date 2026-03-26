@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { Cormorant_Garamond } from "next/font/google"
 import { HeartIcon as HeartOutlineIcon, PlayIcon } from "@heroicons/react/24/outline"
 import { HeartIcon as HeartSolidIcon } from "@heroicons/react/24/solid"
@@ -29,6 +29,25 @@ function tokenizeExcerpt(excerpt: string) {
 
 function normalizeWord(token: string) {
     return token.replace(/^[^A-Za-z]+|[^A-Za-z]+$/g, "").toLowerCase()
+}
+
+function extractUniqueWords(tokens: string[]) {
+    return Array.from(
+        new Set(
+            tokens
+                .map((token) => normalizeWord(token))
+                .filter(Boolean)
+        )
+    )
+}
+
+function isUnauthenticatedError(error: unknown) {
+    if (!(error instanceof Error)) {
+        return false
+    }
+
+    const message = error.message.toLowerCase()
+    return message.includes("unauthenticated") || message.includes("unauthorized") || message.includes("status 401")
 }
 
 export default function ReadingPassage({
@@ -61,6 +80,47 @@ export default function ReadingPassage({
     const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
     const tokens = useMemo(() => tokenizeExcerpt(excerpt), [excerpt])
+    const uniqueWords = useMemo(() => extractUniqueWords(tokens), [tokens])
+
+    useEffect(() => {
+        let cancelled = false
+
+        async function preloadDefinitions() {
+            if (uniqueWords.length === 0) {
+                setDefinitionCache({})
+                return
+            }
+
+            try {
+                const definitions = await fetchDefinitions(uniqueWords)
+                if (cancelled) {
+                    return
+                }
+
+                const definitionMap = new Map(
+                    definitions.map((item) => [item.word.toLowerCase(), item.definition ?? "No definition available yet."])
+                )
+
+                const nextCache = uniqueWords.reduce<Record<string, string>>((accumulator, word) => {
+                    accumulator[word] = definitionMap.get(word) ?? "No definition available yet."
+                    return accumulator
+                }, {})
+
+                setDefinitionCache(nextCache)
+            } catch (error) {
+                if (!cancelled) {
+                    console.error("Failed to preload homepage definitions:", error)
+                    setDefinitionCache({})
+                }
+            }
+        }
+
+        preloadDefinitions()
+
+        return () => {
+            cancelled = true
+        }
+    }, [uniqueWords])
 
     function clearHideTimer() {
         if (hideTimerRef.current) {
@@ -115,8 +175,12 @@ export default function ReadingPassage({
                 ? { ...prev, definition, loading: false }
                 : prev)
         } catch (error) {
+            const definition = isUnauthenticatedError(error)
+                ? "Login to view definitions."
+                : "Failed to load definition."
+
             setLookup((prev) => prev && prev.tokenId === tokenId
-                ? { ...prev, definition: "Failed to load definition.", loading: false }
+                ? { ...prev, definition, loading: false }
                 : prev)
         }
     }
@@ -185,33 +249,47 @@ export default function ReadingPassage({
                         </div>
 
                         <div className="flex items-center gap-2">
-                            <button
-                                type="button"
-                                onClick={onPractice}
-                                aria-label={practiceLoading ? "Preparing practice" : "Start practice"}
-                                title={practiceLoading ? "Preparing practice" : "Start practice"}
-                                className="rounded-full bg-white/[0.035] p-2.5 text-white/46 transition hover:bg-white hover:text-black"
-                            >
-                                <PlayIcon className="h-5 w-5" />
-                            </button>
-                            <button
-                                type="button"
-                                onClick={onToggleSavePassage}
-                                disabled={!canSavePassage}
-                                aria-label={
-                                    canSavePassage
-                                        ? (passageSaved ? "Remove saved passage" : "Save this passage")
-                                        : "Save is unavailable for preview passages"
-                                }
-                                title={
-                                    canSavePassage
-                                        ? (passageSaved ? "Remove saved passage" : "Save this passage")
-                                        : "Save is unavailable for preview passages"
-                                }
-                                className="rounded-full bg-white/[0.035] p-2.5 text-white/46 transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:bg-white/[0.025] disabled:text-white/20"
-                            >
-                                {passageSaved ? <HeartSolidIcon className="h-5 w-5" /> : <HeartOutlineIcon className="h-5 w-5" />}
-                            </button>
+                            <div className="group relative">
+                                <button
+                                    type="button"
+                                    onClick={onPractice}
+                                    aria-label={practiceLoading ? "Preparing practice" : "Start practice"}
+                                    title={practiceLoading ? "Preparing practice" : "Start practice"}
+                                    className="rounded-full bg-white/[0.035] p-2.5 text-white/46 transition hover:bg-white hover:text-black"
+                                >
+                                    <PlayIcon className="h-5 w-5" />
+                                </button>
+                                {!isAuthenticated && (
+                                    <span className="pointer-events-none absolute bottom-full left-1/2 mb-2 hidden -translate-x-1/2 whitespace-nowrap rounded-full border border-white/10 bg-[#161311] px-3 py-1 text-[11px] font-medium text-white/78 shadow-[0_12px_30px_rgba(0,0,0,0.35)] group-hover:block group-focus-within:block">
+                                        Login to start practice
+                                    </span>
+                                )}
+                            </div>
+                            <div className="group relative">
+                                <button
+                                    type="button"
+                                    onClick={onToggleSavePassage}
+                                    disabled={!canSavePassage}
+                                    aria-label={
+                                        canSavePassage
+                                            ? (passageSaved ? "Remove saved passage" : "Save this passage")
+                                            : "Save is unavailable for preview passages"
+                                    }
+                                    title={
+                                        canSavePassage
+                                            ? (passageSaved ? "Remove saved passage" : "Save this passage")
+                                            : "Save is unavailable for preview passages"
+                                    }
+                                    className="rounded-full bg-white/[0.035] p-2.5 text-white/46 transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:bg-white/[0.025] disabled:text-white/20"
+                                >
+                                    {passageSaved ? <HeartSolidIcon className="h-5 w-5" /> : <HeartOutlineIcon className="h-5 w-5" />}
+                                </button>
+                                {!isAuthenticated && canSavePassage && (
+                                    <span className="pointer-events-none absolute bottom-full left-1/2 mb-2 hidden -translate-x-1/2 whitespace-nowrap rounded-full border border-white/10 bg-[#161311] px-3 py-1 text-[11px] font-medium text-white/78 shadow-[0_12px_30px_rgba(0,0,0,0.35)] group-hover:block group-focus-within:block">
+                                        Login to save passages
+                                    </span>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </footer>
@@ -229,15 +307,22 @@ export default function ReadingPassage({
                             <p className="text-xs uppercase tracking-[0.28em] text-white/35">Lookup</p>
                             <p className="mt-2 text-lg font-semibold capitalize text-[#fff0c8]">{lookup.word}</p>
                         </div>
-                        <button
-                            type="button"
-                            onClick={handleAddWord}
-                            aria-label={lookup.added ? "Added to word list" : "Add to word list"}
-                            title={lookup.added ? "Added to word list" : "Add to word list"}
-                            className={`rounded-full p-2 transition ${lookup.added ? "bg-[#3c5f45] text-white" : "bg-[#e2c48f] text-[#1a1713] hover:bg-[#edd3a2]"}`}
-                        >
-                            {lookup.added ? <HeartSolidIcon className="h-4 w-4" /> : <HeartOutlineIcon className="h-4 w-4" />}
-                        </button>
+                        <div className="group relative">
+                            <button
+                                type="button"
+                                onClick={handleAddWord}
+                                aria-label={lookup.added ? "Added to word list" : "Add to word list"}
+                                title={lookup.added ? "Added to word list" : "Add to word list"}
+                                className={`rounded-full p-2 transition ${lookup.added ? "bg-[#3c5f45] text-white" : "bg-[#e2c48f] text-[#1a1713] hover:bg-[#edd3a2]"}`}
+                            >
+                                {lookup.added ? <HeartSolidIcon className="h-4 w-4" /> : <HeartOutlineIcon className="h-4 w-4" />}
+                            </button>
+                            {!isAuthenticated && !lookup.added && (
+                                <span className="pointer-events-none absolute bottom-full right-0 mb-2 hidden whitespace-nowrap rounded-full border border-white/10 bg-[#161311] px-3 py-1 text-[11px] font-medium text-white/78 shadow-[0_12px_30px_rgba(0,0,0,0.35)] group-hover:block group-focus-within:block">
+                                    Login to add words
+                                </span>
+                            )}
+                        </div>
                     </div>
                     <p className="mt-4 leading-6 text-white/72">
                         {lookup.loading ? "Loading definition..." : lookup.definition}

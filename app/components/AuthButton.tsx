@@ -30,7 +30,7 @@ export default function AuthButton() {
         return (
             <button
                 onClick={() => login()}
-                className="inline-flex h-10 w-[132px] items-center justify-center rounded-full bg-black px-4 text-sm font-medium text-white transition hover:bg-black/88 sm:w-[168px]"
+                className="inline-flex h-10 w-[72px] items-center justify-center rounded-full bg-black px-0 text-sm font-medium text-white transition hover:bg-black/88"
             >
                 Sign In
             </button>

@@ -38,6 +38,11 @@ export default function Home() {
       return
     }
 
+    if (!isAuthenticated) {
+      login()
+      return
+    }
+
     setIsPreparingPractice(true)
     try {
       const words = await filterWordsFromContent(passage.excerpt)
