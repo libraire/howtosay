@@ -13,6 +13,8 @@ export const metadata = {
     description: "Browse literary passages by author and work across a timeline.",
 }
 
+export const dynamic = "force-dynamic"
+
 async function fetchInitialLiteratureTimeline(): Promise<LiteraryTimelinePage> {
     const apiHost = process.env.NEXT_PUBLIC_API_HOST
 
