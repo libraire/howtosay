@@ -4,9 +4,10 @@ import styles from "./ComponentStyle.module.css";
 
 interface AudioPlayerProps {
     word: string;
+    showLabel?: boolean;
 }
 
-const AudioPlayer: React.FC<AudioPlayerProps> = ({ word }) => {
+const AudioPlayer: React.FC<AudioPlayerProps> = ({ word, showLabel = false }) => {
     const [isPlaying, setIsPlaying] = useState(false);
     const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -53,10 +54,17 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ word }) => {
     };
 
     return (
-        <div className='mt-2'>
-            <button className={styles.star_button} onClick={handlePlayPause}>
-                {!isPlaying && <PlayIcon className="h-[24px] w-[24px]"></PlayIcon>}
-                {isPlaying && <PauseIcon className="h-[24px] w-[24px]"></PauseIcon>}
+        <div className={showLabel ? '' : 'mt-2'}>
+            <button
+                className={showLabel
+                    ? "inline-flex h-8 items-center gap-1.5 rounded-full border border-white/12 bg-white/[0.08] px-2.5 text-[13px] font-semibold text-white/88 shadow-[0_1px_6px_rgba(0,0,0,0.16)] backdrop-blur transition hover:bg-white/[0.14]"
+                    : styles.star_button}
+                onClick={handlePlayPause}
+                title={isPlaying ? "Pause audio" : "Play audio"}
+            >
+                {!isPlaying && <PlayIcon className="h-[18px] w-[18px]"></PlayIcon>}
+                {isPlaying && <PauseIcon className="h-[18px] w-[18px]"></PauseIcon>}
+                {showLabel && <span>{isPlaying ? "Pause" : "Speak"}</span>}
             </button>
             <audio ref={audioRef} />
         </div>

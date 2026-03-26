@@ -261,7 +261,19 @@
 }
 
 .selectComponent {
-  margin-left: 10px;
+  margin-left: 0;
+  height: 32px;
+  min-width: 96px;
+  padding: 0 28px 0 12px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background-color: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 13px;
+  font-weight: 600;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.16);
+  backdrop-filter: blur(8px);
+  appearance: none;
 }
 
 .boardContainer {
