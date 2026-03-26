@@ -4,9 +4,9 @@ import { fetchJson } from "@/app/lib/api-client"
 import type { WordModel } from "@/app/lib/dict-models"
 import type { LicenseVerificationResult, ReviewQueueResponse, WordBankPage } from "@/app/lib/practice-models"
 
-export async function fetchWordBook(page: number, level?: number, status?: string, word?: string): Promise<WordBankPage> {
+export async function fetchWordBook(page: number, level?: number | null, status?: string, word?: string): Promise<WordBankPage> {
     const params = new URLSearchParams({ page: String(page) })
-    if (level && level !== 0) {
+    if (level !== undefined && level !== null) {
         params.set('level', String(level))
     }
     if (status) {

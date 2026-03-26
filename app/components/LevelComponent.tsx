@@ -23,10 +23,10 @@ export default function LevelComponent({ updateLevel, pages, currentLevel }: { u
                     onClick={() => { updateLevel(pageNumber) }}
                     title={labels[pageNumber] ?? `Familiarity ${pageNumber}`}
                     aria-label={labels[pageNumber] ?? `Familiarity ${pageNumber}`}
-                    className={`relative h-2 w-6 rounded-full transition focus:outline-none focus:ring-2 focus:ring-[#dcc38f]/35 ${
+                    className={`relative h-2.5 w-6 rounded-full transition focus:outline-none focus:ring-2 focus:ring-[#dcc38f]/35 ${
                         pageNumber <= currentLevel
                             ? activeClasses[currentLevel] ?? activeClasses[3]
-                            : "bg-white/8 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.06)] hover:bg-white/15"
+                            : "bg-white/85 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.55),0_1px_6px_rgba(255,255,255,0.12)] hover:bg-white"
                     }`}
                 >
                     {pageNumber <= currentLevel && (

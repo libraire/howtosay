@@ -17,7 +17,7 @@ type DefinitionLookup = {
     definition: string
 }
 
-const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: number, name: string }) => void }> = ({ wordList, onCollectionChange }) => {
+const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: number | null, name: string }) => void }> = ({ wordList, onCollectionChange }) => {
 
     const [mylist, setWordList] = useState<WordModel[]>(wordList ?? []);
     const [hoverCard, setHoverCard] = useState<HoverCardState | null>(null)

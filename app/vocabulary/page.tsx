@@ -28,7 +28,7 @@ function VocabularyPageContent() {
     const [wordList, setWordList] = useState<Word[]>([]);
     const [page, setPage] = useState<number>(1);
     const [pages, setPages] = useState<number[]>([]);
-    const [level, setLevel] = useState<number>(0);
+    const [level, setLevel] = useState<number | null>(null);
     const [total, setTotal] = useState<number>(0);
     const [importOpen, setImportOpen] = useState<boolean>(false);
     const [practise, setPractise] = useState(false)
@@ -37,7 +37,7 @@ function VocabularyPageContent() {
     const statusFilter = searchParams?.get("status") ?? ""
     const memoryLabel = getMemoryLabel(statusFilter)
 
-    function fetchCollection(currentPage: number, level: number, status = statusFilter, keyword = searchKeyword) {
+    function fetchCollection(currentPage: number, level: number | null, status = statusFilter, keyword = searchKeyword) {
         fetchWordBook(currentPage, level, status || undefined, keyword || undefined).then((data) => {
             setWordList(data.words as Word[])
             setTotal(data.total)
@@ -229,7 +229,7 @@ function VocabularyPageContent() {
                             <WordBook wordList={wordList} onCollectionChange={(e) => {
                                 setPage(1)
                                 setLevel(e.id)
-                                fetchCollection(page, level, statusFilter, searchKeyword)
+                                fetchCollection(1, e.id, statusFilter, searchKeyword)
                             }}></WordBook>
                         </div>
                     </div>
