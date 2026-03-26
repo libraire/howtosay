@@ -1,19 +1,22 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState, type RefObject } from "react"
 import { LoaderCircle } from "lucide-react"
 import { fetchLiteraryPassageDetail, fetchLiteratureTimeline } from "@/app/lib/literature-api"
 import type { LiteraryPassageDetail, LiteraryTimelineItem, LiteraryTimelinePage } from "@/app/lib/literature-models"
 
 type Props = {
     initialData: LiteraryTimelinePage
+    scrollContainerRef: RefObject<HTMLDivElement | null>
+    onActiveAuthorChange?: (author: string | null) => void
+    onItemsChange?: (items: LiteraryTimelineItem[]) => void
 }
 
 function yearLabel(year: number | null): string {
     return year ? String(year) : "未知年代"
 }
 
-export default function LiteratureTimeline({ initialData }: Props) {
+export default function LiteratureTimeline({ initialData, scrollContainerRef, onActiveAuthorChange, onItemsChange }: Props) {
     const [items, setItems] = useState<LiteraryTimelineItem[]>(initialData.data)
     const [page, setPage] = useState(initialData.current_page)
     const [lastPage, setLastPage] = useState(initialData.last_page)
@@ -22,6 +25,7 @@ export default function LiteratureTimeline({ initialData }: Props) {
     const [workFilter, setWorkFilter] = useState("")
     const [selectedId, setSelectedId] = useState<number | null>(null)
     const [selectedPassage, setSelectedPassage] = useState<LiteraryPassageDetail | null>(null)
+    const [hoveredAuthor, setHoveredAuthor] = useState<string | null>(null)
     const [listError, setListError] = useState("")
     const [detailError, setDetailError] = useState("")
     const [loadingList, setLoadingList] = useState(false)
@@ -41,6 +45,14 @@ export default function LiteratureTimeline({ initialData }: Props) {
 
         return "全部文学内容"
     }, [authorFilter, workFilter])
+
+    useEffect(() => {
+        onItemsChange?.(items)
+    }, [items, onItemsChange])
+
+    useEffect(() => {
+        onActiveAuthorChange?.(hoveredAuthor)
+    }, [hoveredAuthor, onActiveAuthorChange])
 
     useEffect(() => {
         if (!selectedId) {
@@ -143,6 +155,7 @@ export default function LiteratureTimeline({ initialData }: Props) {
                 }
             },
             {
+                root: scrollContainerRef.current,
                 rootMargin: "160px 0px",
             }
         )
@@ -152,12 +165,12 @@ export default function LiteratureTimeline({ initialData }: Props) {
         return () => {
             observer.disconnect()
         }
-    }, [hasMore, loadingList, page])
+    }, [hasMore, loadingList, page, scrollContainerRef])
 
     return (
         <div className="mx-auto max-w-4xl">
             {(authorFilter || workFilter) && (
-                <div className="mb-8 text-sm text-white/45">
+                <div className="relative z-10 mb-8 text-sm text-white/45">
                     <span>{activeLabel}</span>
                     <button
                         onClick={showAll}
@@ -168,7 +181,7 @@ export default function LiteratureTimeline({ initialData }: Props) {
                 </div>
             )}
 
-            <section>
+            <section className="relative z-10">
                 <div className="relative">
                     <div className="absolute left-6 top-0 h-full w-px bg-white/10 md:left-1/2 md:-ml-px" />
 
@@ -177,9 +190,12 @@ export default function LiteratureTimeline({ initialData }: Props) {
                             const isRight = index % 2 === 1
 
                             return (
-                                <article key={item.id} className="relative grid gap-2 md:grid-cols-2 md:gap-12">
+                                <article
+                                    key={item.id}
+                                    className="relative grid gap-2 md:grid-cols-2 md:gap-12"
+                                >
                                     <div className={`hidden md:block ${isRight ? "" : "order-2"}`} />
-                                    <div className={`relative ml-14 md:ml-0 ${isRight ? "md:order-2 md:pl-10" : "md:pr-10 text-left md:text-right"}`}>
+                                    <div className={`relative ml-14 rounded-2xl bg-black/10 px-4 py-3 backdrop-blur-[1px] md:ml-0 ${isRight ? "md:order-2 md:pl-10" : "md:pr-10 text-left md:text-right"}`}>
                                         <div className="text-xs tracking-[0.25em] text-white/35">
                                             {yearLabel(item.work_year)}
                                         </div>
@@ -196,16 +212,13 @@ export default function LiteratureTimeline({ initialData }: Props) {
                                             </button>
                                         </div>
                                         <div className="mt-1 text-sm text-white/55">
-                                            <button
-                                                onClick={() => {
-                                                    setSelectedId(null)
-                                                    setAuthorFilter(item.author_name)
-                                                    setWorkFilter("")
-                                                }}
+                                            <span
+                                                onMouseEnter={() => setHoveredAuthor(item.author_name)}
+                                                onMouseLeave={() => setHoveredAuthor(null)}
                                                 className="transition hover:text-white"
                                             >
                                                 {item.author_name}
-                                            </button>
+                                            </span>
                                         </div>
                                     </div>
                                 </article>
@@ -235,7 +248,7 @@ export default function LiteratureTimeline({ initialData }: Props) {
                 >
                     <div className="mx-auto flex min-h-full max-w-3xl items-center justify-center">
                         <div
-                            className="w-full max-h-[80vh] overflow-y-auto bg-[#111111] px-8 py-8 text-white"
+                            className="scrollbar-hidden w-full max-h-[80vh] overflow-y-auto bg-[#111111] px-8 py-8 text-white"
                             onClick={(event) => event.stopPropagation()}
                         >
                             {loadingDetail && (
