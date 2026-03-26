@@ -30,12 +30,13 @@ export default function LiteratureShell({ initialData, className }: Props) {
                 </div>
 
                 <div className="pointer-events-none absolute inset-x-[2%] top-1/2 z-0 hidden h-[80%] -translate-y-1/2 md:block">
-                    <div className="h-full w-full">
+                    <div className="relative h-full w-full">
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.16)_0%,rgba(0,0,0,0.34)_52%,rgba(0,0,0,0.5)_100%)]" />
                         <LiteratureWorldMap
                             highlights={highlights}
                             activeAuthor={activeAuthor}
                             activeAuthorCountryCode={activeAuthorCountryCode}
-                            className="translate-x-[8%] scale-[1.12] opacity-70"
+                            className="translate-x-[8%] scale-[1.12] opacity-55"
                         />
                     </div>
                 </div>
