@@ -107,19 +107,9 @@ function WordbookPageContent() {
                         <div className="flex flex-col gap-6 border-b border-white/10 pb-6 lg:flex-row lg:items-start lg:justify-between">
                             <div>
                                 <p className="text-xs uppercase tracking-[0.28em] text-white/35">Library</p>
-                                <h1 className="mt-3 text-3xl font-medium tracking-tight text-white">Word Book</h1>
-                                <p className="mt-3 max-w-2xl text-sm leading-7 text-white/58">
-                                    Review the words you have saved, adjust their difficulty band, and launch targeted practice from the same workspace.
-                                </p>
                             </div>
 
                             <div className="flex flex-wrap items-center gap-3">
-                                <div className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-white/70">
-                                    {total} saved words
-                                </div>
-                                <div className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-white/70">
-                                    Familiarity: {level === 0 ? "All words" : getLevelLabel(level)}
-                                </div>
                                 {memoryLabel && (
                                     <button
                                         type="button"

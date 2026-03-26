@@ -152,11 +152,18 @@ const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: 
 
     function showHoverCard(item: WordModel, target: HTMLElement) {
         const rect = target.getBoundingClientRect()
+        const cardWidth = 320
+        const preferredLeft = rect.right + 12
+        const fallbackLeft = Math.max(12, rect.left - cardWidth - 12)
+        const left = preferredLeft + cardWidth <= window.innerWidth - 12
+            ? preferredLeft
+            : fallbackLeft
+
         setHoverCard({
             word: item.canonical || item.word,
             definition: item.definition || "Loading definition...",
-            top: rect.bottom + 10,
-            left: Math.min(rect.left, window.innerWidth - 340),
+            top: Math.max(12, rect.top - 8),
+            left,
         })
     }
 
