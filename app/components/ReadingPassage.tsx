@@ -23,6 +23,11 @@ type LookupState = {
     left: number
 }
 
+type DefinitionLookup = {
+    word: string
+    definition: string
+}
+
 function tokenizeExcerpt(excerpt: string) {
     return excerpt.split(/([A-Za-z][A-Za-z'-]*)/g).filter(Boolean)
 }
@@ -75,7 +80,7 @@ export default function ReadingPassage({
 }) {
     const { isAuthenticated, login } = useCustomAuth()
     const [lookup, setLookup] = useState<LookupState | null>(null)
-    const [definitionCache, setDefinitionCache] = useState<Record<string, string>>({})
+    const [definitionCache, setDefinitionCache] = useState<Record<string, DefinitionLookup>>({})
     const [addedWords, setAddedWords] = useState<Record<string, boolean>>({})
     const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -97,12 +102,21 @@ export default function ReadingPassage({
                     return
                 }
 
-                const definitionMap = new Map(
-                    definitions.map((item) => [item.word.toLowerCase(), item.definition ?? "No definition available yet."])
+                const definitionMap = new Map<string, DefinitionLookup>(
+                    definitions.map((item) => [
+                        (item.query_word || item.word).toLowerCase(),
+                        {
+                            word: item.word,
+                            definition: item.definition ?? "No definition available yet.",
+                        },
+                    ])
                 )
 
-                const nextCache = uniqueWords.reduce<Record<string, string>>((accumulator, word) => {
-                    accumulator[word] = definitionMap.get(word) ?? "No definition available yet."
+                const nextCache = uniqueWords.reduce<Record<string, DefinitionLookup>>((accumulator, word) => {
+                    accumulator[word] = definitionMap.get(word) ?? {
+                        word,
+                        definition: "No definition available yet.",
+                    }
                     return accumulator
                 }, {})
 
@@ -156,10 +170,10 @@ export default function ReadingPassage({
 
         setLookup({
             tokenId,
-            word,
-            definition: cachedDefinition ?? "",
+            word: cachedDefinition?.word ?? word,
+            definition: cachedDefinition?.definition ?? "",
             loading: !cachedDefinition,
-            added: !!addedWords[word],
+            added: !!addedWords[cachedDefinition?.word ?? word],
             ...position,
         })
 
@@ -169,10 +183,17 @@ export default function ReadingPassage({
 
         try {
             const words = await fetchDefinitions([word])
+            const resolvedWord = words[0]?.word ?? word
             const definition = words[0]?.definition ?? "No definition available yet."
-            setDefinitionCache((prev) => ({ ...prev, [word]: definition }))
+            setDefinitionCache((prev) => ({
+                ...prev,
+                [word]: {
+                    word: resolvedWord,
+                    definition,
+                },
+            }))
             setLookup((prev) => prev && prev.tokenId === tokenId
-                ? { ...prev, definition, loading: false }
+                ? { ...prev, word: resolvedWord, definition, added: !!addedWords[resolvedWord], loading: false }
                 : prev)
         } catch (error) {
             const definition = isUnauthenticatedError(error)

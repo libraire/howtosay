@@ -1,5 +1,5 @@
 "use client"
-import { Fragment, Suspense, useEffect, useMemo, useState } from "react";
+import { Fragment, Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Menu, Transition } from "@headlessui/react";
@@ -37,21 +37,18 @@ function WordbookPageContent() {
     const [searchKeyword, setSearchKeyword] = useState("")
     const statusFilter = searchParams?.get("status") ?? ""
     const memoryLabel = getMemoryLabel(statusFilter)
-    const normalizedSearchWord = searchWord.trim().toLowerCase()
-    const normalizedSearchKeyword = searchKeyword.trim().toLowerCase()
-    const filteredWordList = useMemo(() => {
-        if (!normalizedSearchWord) {
-            return wordList
-        }
-
-        return wordList.filter((item) => item.word.toLowerCase().includes(normalizedSearchWord))
-    }, [normalizedSearchWord, wordList])
 
 
     function fetchCollection(currentPage: number, level: number, status = statusFilter, keyword = searchKeyword) {
         fetchWordBook(currentPage, level, status || undefined, keyword || undefined).then((data) => {
             setWordList(data.words as Word[])
             setTotal(data.total)
+
+            if (keyword.trim().length > 0) {
+                setPages([1])
+                return
+            }
+
             let n = Math.floor(data.total / 20) + (data.total % 20 == 0 ? 0 : 1)
 
             if (n > 7) {
@@ -241,12 +238,7 @@ function WordbookPageContent() {
                         </div>
 
                         <div className="mt-6">
-                            {normalizedSearchWord && filteredWordList.length === 0 && normalizedSearchKeyword !== normalizedSearchWord && (
-                                <div className="mb-6 rounded-2xl border border-white/10 bg-black/20 px-5 py-4 text-sm text-white/60">
-                                    No matches on this page. Press Enter to search your full word bank.
-                                </div>
-                            )}
-                            <WordBook wordList={filteredWordList} onCollectionChange={(e) => {
+                            <WordBook wordList={wordList} onCollectionChange={(e) => {
                                 setPage(1)
                                 setLevel(e.id)
                                 fetchCollection(page, level, statusFilter, searchKeyword)
@@ -257,7 +249,7 @@ function WordbookPageContent() {
             </>}
             {practise && <>
                 <AudioComponent str={"xxxx"} />
-                <PractiseComponent list={filteredWordList} onClose={() => { setPractise(false) }} />
+                <PractiseComponent list={wordList} onClose={() => { setPractise(false) }} />
             </>}
 
             <InputModal open={importOpen} onClose={() => { setImportOpen(false) }} importWords={importWords} ></InputModal>

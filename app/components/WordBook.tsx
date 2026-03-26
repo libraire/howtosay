@@ -4,10 +4,24 @@ import { TrashIcon, PlayCircleIcon, EyeSlashIcon } from '@heroicons/react/24/out
 import LevelComponent from "./LevelComponent"
 import type { WordModel } from "@/app/lib/dict-models";
 import { ignoreWord, removeWord, updateWordLevel } from "@/app/lib/practice-api";
+import { fetchDefinitions } from "@/app/lib/dict-api";
+
+type HoverCardState = {
+    word: string
+    definition: string
+    top: number
+    left: number
+}
+
+type DefinitionLookup = {
+    word: string
+    definition: string
+}
 
 const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: number, name: string }) => void }> = ({ wordList, onCollectionChange }) => {
 
     const [mylist, setWordList] = useState<WordModel[]>(wordList ?? []);
+    const [hoverCard, setHoverCard] = useState<HoverCardState | null>(null)
 
     function handleRemoveWord(word: WordModel, index: number) {
         removeWord(word.word).then(() => {
@@ -40,6 +54,52 @@ const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: 
 
     useEffect(() => {
         setWordList(wordList)
+    }, [wordList])
+
+    useEffect(() => {
+        if (!wordList?.length) {
+            return
+        }
+
+        const wordsToLookup = wordList
+            .filter((item) => !item.definition)
+            .map((item) => item.word)
+
+        if (!wordsToLookup.length) {
+            return
+        }
+
+        let cancelled = false
+
+        fetchDefinitions(wordsToLookup)
+            .then((definitions) => {
+                if (cancelled) {
+                    return
+                }
+
+                const definitionMap = new Map<string, DefinitionLookup>(
+                    definitions.map((item) => [
+                        (item.query_word || item.word).toLowerCase(),
+                        {
+                            word: item.word,
+                            definition: item.definition ?? "",
+                        },
+                    ])
+                )
+
+                setWordList((prevList) => prevList.map((item) => ({
+                    ...item,
+                    canonical: item.canonical || definitionMap.get(item.word.toLowerCase())?.word || item.word,
+                    definition: item.definition || definitionMap.get(item.word.toLowerCase())?.definition || "",
+                })))
+            })
+            .catch((error) => {
+                console.error("Failed to load word definitions:", error)
+            })
+
+        return () => {
+            cancelled = true
+        }
     }, [wordList])
 
     function getDisplayMemoryBadge(item: WordModel): string | null {
@@ -90,6 +150,16 @@ const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: 
         }
     }
 
+    function showHoverCard(item: WordModel, target: HTMLElement) {
+        const rect = target.getBoundingClientRect()
+        setHoverCard({
+            word: item.canonical || item.word,
+            definition: item.definition || "Loading definition...",
+            top: rect.bottom + 10,
+            left: Math.min(rect.left, window.innerWidth - 340),
+        })
+    }
+
     return (
         <div className="w-full">
             <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-[0_24px_80px_rgba(0,0,0,0.18)]">
@@ -118,7 +188,13 @@ const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: 
                             {mylist?.length > 0 ? mylist.map((item, index) => (
                                 <tr key={index} className="transition hover:bg-white/[0.025]">
                                     <td className="whitespace-nowrap py-4 pl-6 pr-3 text-sm font-medium text-white">
-                                        {item.word}
+                                        <span
+                                            className="cursor-help decoration-white/20 underline-offset-4 hover:text-[#fff0c8]"
+                                            onMouseEnter={(event) => showHoverCard(item, event.currentTarget)}
+                                            onMouseLeave={() => setHoverCard(null)}
+                                        >
+                                            {item.word}
+                                        </span>
                                     </td>
                                     <td className="whitespace-nowrap px-3 py-4 text-sm text-white/70">
                                         <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-medium ${memoryBadgeClass(getDisplayMemoryBadge(item))}`}>
@@ -168,6 +244,18 @@ const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: 
                     </table>
                 </div>
             </div>
+            {hoverCard && (
+                <div
+                    className="pointer-events-none fixed z-50 w-[320px] rounded-2xl border border-white/10 bg-[#161311]/95 p-4 text-sm text-white shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur"
+                    style={{ top: hoverCard.top, left: hoverCard.left }}
+                >
+                    <div className="text-xs uppercase tracking-[0.28em] text-white/35">Definition</div>
+                    <div className="mt-2 text-base font-semibold text-[#fff0c8]">{hoverCard.word}</div>
+                    <div className="mt-3 whitespace-pre-line leading-6 text-white/72">
+                        {hoverCard.definition}
+                    </div>
+                </div>
+            )}
         </div>
     )
 };

@@ -66,9 +66,11 @@ const PractiseComponent: React.FC<{ list: Word[], onClose: (() => void) | undefi
         list = [...list]
         fetchDefinitionsApi(list.map((w) => w.word)).then((words) => {
             words.forEach((w: Word) => {
-                const wd = list.find(x => x.word == w.word)
+                const lookupWord = w.query_word || w.word
+                const wd = list.find(x => x.word == lookupWord)
                 if (wd) {
                     wd.definition = w.definition
+                    wd.word = w.word || wd.word
                 }
             })
             var wd = list[0];

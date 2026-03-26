@@ -1,5 +1,6 @@
 export interface WordModel {
     word: string
+    query_word?: string
     definition?: string
     imgurl?: string
     emoji?: string
