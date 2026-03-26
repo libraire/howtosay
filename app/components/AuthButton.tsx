@@ -19,7 +19,7 @@ export default function AuthButton() {
     if (isLoading) {
         // Loading state
         return (
-            <div className="inline-flex items-center justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-400 shadow-sm ring-1 ring-inset ring-gray-300">
+            <div className="inline-flex h-10 w-[132px] items-center justify-center rounded-full border border-black/10 bg-black/[0.03] px-4 text-sm font-medium text-black/45 sm:w-[168px]">
                 Loading...
             </div>
         )
@@ -30,7 +30,7 @@ export default function AuthButton() {
         return (
             <button
                 onClick={() => login()}
-                className="inline-flex items-center justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                className="inline-flex h-10 w-[132px] items-center justify-center rounded-full bg-black px-4 text-sm font-medium text-white transition hover:bg-black/88 sm:w-[168px]"
             >
                 Sign In
             </button>
@@ -39,14 +39,14 @@ export default function AuthButton() {
 
     const expire = user.expire ? user.expire.substring(0, 10) : ''
     const level = String(user.level ?? 0)
+    const displayName = user.email.split("@")[0] || user.email
 
     // Logged in - show email with dropdown for Sign Out
     return (
-        <Menu as="div" className="relative inline-block text-left">
+        <Menu as="div" className="relative inline-block max-w-[124px] text-left sm:max-w-[148px]">
             <div>
-                <Menu.Button className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-                    <span className="max-w-[200px] truncate">{user.email}</span>
-                    <ChevronDownIcon className="-mr-1 h-5 w-5 text-gray-400" aria-hidden="true" />
+                <Menu.Button className="inline-flex h-10 max-w-full items-center justify-center rounded-full border border-black/10 bg-black/[0.03] px-2 text-sm font-medium text-black/78 transition hover:bg-black/[0.06]">
+                    <span className="max-w-[86px] truncate sm:max-w-[108px]">{displayName}</span>
                 </Menu.Button>
             </div>
 
