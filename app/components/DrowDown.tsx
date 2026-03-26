@@ -32,7 +32,7 @@ export default function MyDropDown() {
             <div>
                 <Menu.Button
                     aria-label="Open tools menu"
-                    className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-black/10 bg-black text-white shadow-sm transition hover:scale-[1.03] hover:bg-black/90 hover:shadow-md"
+                    className="inline-flex h-11 w-11 items-center justify-center  text-white shadow-sm transition hover:scale-[1.03] hover:bg-black/90 hover:shadow-md"
                 >
                     <Bars3Icon className="h-6 w-6 stroke-[2.4] text-white" aria-hidden="true" />
                 </Menu.Button>

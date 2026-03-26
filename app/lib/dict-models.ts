@@ -1,5 +1,7 @@
 export interface WordModel {
     word: string
+    display_word?: string
+    surface_word?: string | null
     query_word?: string
     definition?: string
     imgurl?: string
@@ -13,6 +15,7 @@ export interface WordModel {
     canonical?: string
     memory_badge?: string | null
     memory_status?: string | null
+    progress_status?: string | null
     difficulty?: number | null
     stability?: number | null
 }

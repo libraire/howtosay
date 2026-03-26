@@ -237,7 +237,7 @@ function VocabularyPageContent() {
             </>}
             {practise && <>
                 <AudioComponent str={"xxxx"} />
-                <PractiseComponent list={wordList} onClose={() => { setPractise(false) }} />
+                <PractiseComponent list={wordList} onClose={() => { setPractise(false) }} mode="custom" />
             </>}
 
             <InputModal open={importOpen} onClose={() => { setImportOpen(false) }} importWords={importWords} ></InputModal>

@@ -28,23 +28,23 @@ export async function fetchWordBook(page: number, level?: number, status?: strin
     }
 }
 
-export async function addWords(body: string, source = 'wordbook'): Promise<void> {
+export async function addWords(body: string, source = 'wordbook', surfaceWord?: string): Promise<void> {
     await fetchJson('/hts/api/v1/add', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ body, source }),
+        body: JSON.stringify({ body, source, surface_word: surfaceWord }),
     })
 }
 
-export async function ignoreWord(word: string, source = 'wordbook'): Promise<void> {
+export async function ignoreWord(word: string, source = 'wordbook', surfaceWord?: string): Promise<void> {
     await fetchJson('/hts/api/v1/ignore', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ body: word, source }),
+        body: JSON.stringify({ body: word, source, surface_word: surfaceWord }),
     })
 }
 
@@ -60,13 +60,13 @@ export async function unmarkWord(word: string): Promise<void> {
     })
 }
 
-export async function updateWordLevel(word: string, level: number, source = 'wordbook'): Promise<void> {
+export async function updateWordLevel(word: string, level: number, source = 'wordbook', surfaceWord?: string): Promise<void> {
     await fetchJson(`/hts/api/v1/level?word=${encodeURIComponent(word)}&level=${level}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ source }),
+        body: JSON.stringify({ source, surface_word: surfaceWord }),
     })
 }
 
@@ -94,14 +94,15 @@ export async function fetchReviewQueue(limit = 20): Promise<ReviewQueueResponse>
 export async function submitReviewResult(
     word: string,
     result: 'correct' | 'hinted' | 'failed' | 'ignored' | 'skipped',
-    source: string
+    source: string,
+    surfaceWord?: string | null
 ): Promise<void> {
     await fetchJson('/hts/api/v1/review/result', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ word, result, source }),
+        body: JSON.stringify({ word, result, source, surface_word: surfaceWord }),
     })
 }
 

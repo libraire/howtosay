@@ -16,6 +16,8 @@ const displaySerif = Cormorant_Garamond({
 type LookupState = {
     tokenId: string
     word: string
+    displayWord: string
+    surfaceWord: string
     definition: string
     loading: boolean
     added: boolean
@@ -25,6 +27,8 @@ type LookupState = {
 
 type DefinitionLookup = {
     word: string
+    displayWord: string
+    surfaceWord: string
     definition: string
 }
 
@@ -91,7 +95,7 @@ export default function ReadingPassage({
         let cancelled = false
 
         async function preloadDefinitions() {
-            if (uniqueWords.length === 0) {
+            if (!isAuthenticated || uniqueWords.length === 0) {
                 setDefinitionCache({})
                 return
             }
@@ -104,9 +108,11 @@ export default function ReadingPassage({
 
                 const definitionMap = new Map<string, DefinitionLookup>(
                     definitions.map((item) => [
-                        (item.query_word || item.word).toLowerCase(),
+                        (item.surface_word || item.query_word || item.word).toLowerCase(),
                         {
                             word: item.word,
+                            displayWord: item.surface_word || item.display_word || item.word,
+                            surfaceWord: item.surface_word || item.query_word || item.word,
                             definition: item.definition ?? "No definition available yet.",
                         },
                     ])
@@ -115,6 +121,8 @@ export default function ReadingPassage({
                 const nextCache = uniqueWords.reduce<Record<string, DefinitionLookup>>((accumulator, word) => {
                     accumulator[word] = definitionMap.get(word) ?? {
                         word,
+                        displayWord: word,
+                        surfaceWord: word,
                         definition: "No definition available yet.",
                     }
                     return accumulator
@@ -134,7 +142,7 @@ export default function ReadingPassage({
         return () => {
             cancelled = true
         }
-    }, [uniqueWords])
+    }, [isAuthenticated, uniqueWords])
 
     function clearHideTimer() {
         if (hideTimerRef.current) {
@@ -171,8 +179,10 @@ export default function ReadingPassage({
         setLookup({
             tokenId,
             word: cachedDefinition?.word ?? word,
+            displayWord: cachedDefinition?.displayWord ?? word,
+            surfaceWord: cachedDefinition?.surfaceWord ?? word,
             definition: cachedDefinition?.definition ?? "",
-            loading: !cachedDefinition,
+            loading: isAuthenticated ? !cachedDefinition : false,
             added: !!addedWords[cachedDefinition?.word ?? word],
             ...position,
         })
@@ -181,19 +191,38 @@ export default function ReadingPassage({
             return
         }
 
+        if (!isAuthenticated) {
+            setLookup((prev) => prev && prev.tokenId === tokenId
+                ? { ...prev, definition: "Login to view definitions.", loading: false }
+                : prev)
+            return
+        }
+
         try {
             const words = await fetchDefinitions([word])
             const resolvedWord = words[0]?.word ?? word
+            const surfaceWord = words[0]?.surface_word ?? word
+            const displayWord = words[0]?.surface_word || words[0]?.display_word || word
             const definition = words[0]?.definition ?? "No definition available yet."
             setDefinitionCache((prev) => ({
                 ...prev,
                 [word]: {
                     word: resolvedWord,
+                    displayWord,
+                    surfaceWord,
                     definition,
                 },
             }))
             setLookup((prev) => prev && prev.tokenId === tokenId
-                ? { ...prev, word: resolvedWord, definition, added: !!addedWords[resolvedWord], loading: false }
+                ? {
+                    ...prev,
+                    word: resolvedWord,
+                    displayWord,
+                    surfaceWord,
+                    definition,
+                    added: !!addedWords[resolvedWord],
+                    loading: false,
+                }
                 : prev)
         } catch (error) {
             const definition = isUnauthenticatedError(error)
@@ -216,7 +245,7 @@ export default function ReadingPassage({
             return
         }
 
-        await addWords(lookup.word, "reading-passage")
+        await addWords(lookup.word, "reading-passage", lookup.surfaceWord)
         setAddedWords((prev) => ({ ...prev, [lookup.word]: true }))
         setLookup((prev) => prev ? { ...prev, added: true } : prev)
     }
@@ -326,7 +355,12 @@ export default function ReadingPassage({
                     <div className="flex items-start justify-between gap-3">
                         <div>
                             <p className="text-xs uppercase tracking-[0.28em] text-white/35">Lookup</p>
-                            <p className="mt-2 text-lg font-semibold capitalize text-[#fff0c8]">{lookup.word}</p>
+                            <p className="mt-2 text-lg font-semibold capitalize text-[#fff0c8]">{lookup.displayWord}</p>
+                            {lookup.word !== lookup.displayWord && (
+                                <p className="mt-1 text-xs uppercase tracking-[0.2em] text-white/38">
+                                    Canonical: {lookup.word}
+                                </p>
+                            )}
                         </div>
                         <div className="group relative">
                             <button

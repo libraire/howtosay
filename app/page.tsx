@@ -23,7 +23,10 @@ export default function Home() {
   const [practiceWords, setPracticeWords] = useState<Word[]>([])
   const [isPracticeOpen, setIsPracticeOpen] = useState(false)
   const [isPreparingPractice, setIsPreparingPractice] = useState(false)
-  const visiblePracticeWords = practiceWords.filter((word) => !word.in_bank)
+  const visiblePracticeWords = practiceWords.filter((word) => {
+    const memoryState = word.memory_badge || word.memory_status
+    return memoryState !== "mastered" && (word.level ?? 0) < 5
+  })
 
   useEffect(() => {
     fetchHomepagePassage()
@@ -130,6 +133,7 @@ export default function Home() {
                 <PractiseComponent
                   list={visiblePracticeWords}
                   onClose={() => setIsPracticeOpen(false)}
+                  mode="reading"
                 />
               ) : (
                 <div className="w-[min(92vw,720px)] rounded-[28px] bg-[#111111] px-8 py-10 text-center text-white shadow-[0_24px_80px_rgba(0,0,0,0.35)]">

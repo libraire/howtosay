@@ -118,6 +118,7 @@ const WordComponent: React.FC<Props> = ({
   }
 
   useEffect(() => {
+    setExamples([]);
     setChars(
       word
         ?.toLowerCase()
@@ -129,7 +130,7 @@ const WordComponent: React.FC<Props> = ({
         })
     );
 
-    if (showExample) {
+    if (showExample && word) {
       fetchWordExamples(word).then((results) => {
         if (results.length > 0) {
           setExamples(

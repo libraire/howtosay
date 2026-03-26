@@ -51,7 +51,7 @@ export default function Practise() {
 
             <Navbar />
             <AudioComponent str={"xxxx"} />
-            <PractiseComponent list={wordList} onClose={undefined} />
+            <PractiseComponent list={wordList} onClose={undefined} mode="reading" />
 
         </main>
     );

@@ -207,7 +207,7 @@ export default function LiteratureTimeline({
                                     className="relative grid gap-2 md:grid-cols-2 md:gap-12"
                                 >
                                     <div className={`hidden md:block ${isRight ? "" : "order-2"}`} />
-                                    <div className={`relative ml-14 rounded-2xl bg-black/10 px-4 py-3 backdrop-blur-[1px] md:ml-0 ${isRight ? "md:order-2 md:pl-10" : "md:pr-10 text-left md:text-right"}`}>
+                                    <div className={`relative ml-14 px-4 py-3 backdrop-blur-[1px] md:ml-0 ${isRight ? "md:order-2 md:pl-10" : "md:pr-10 text-left md:text-right"}`}>
                                         <div className="text-xs tracking-[0.25em] text-white/35">
                                             {yearLabel(item.work_year)}
                                         </div>

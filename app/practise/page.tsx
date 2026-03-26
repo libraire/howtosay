@@ -120,7 +120,7 @@ export default function Home() {
 
             {practise && <>
                 <AudioComponent str={"xxxx"} />
-                <PractiseComponent list={wordList} onClose={togglePractise} />
+                <PractiseComponent list={wordList} onClose={togglePractise} mode="custom" />
             </>}
 
         </main>

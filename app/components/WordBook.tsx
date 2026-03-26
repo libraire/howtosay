@@ -152,7 +152,7 @@ const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: 
     function showHoverCard(item: WordModel, index: number) {
         setHoverCard({
             index,
-            word: item.canonical || item.word,
+            word: item.display_word || item.canonical || item.word,
             definition: item.definition || "Loading definition...",
         })
     }
@@ -192,7 +192,7 @@ const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: 
                                                 onMouseEnter={() => showHoverCard(item, index)}
                                                 onMouseLeave={() => setHoverCard(null)}
                                             >
-                                                {item.word}
+                                                {item.display_word || item.word}
                                             </button>
                                             {hoverCard?.index === index && (
                                                 <div

@@ -8,6 +8,8 @@ type WordDefinitionLookupResponse = {
     reason?: string
     message?: string
     word?: string
+    display_word?: string
+    surface_word?: string | null
     query_word?: string
     definition?: string
     en?: string
@@ -43,6 +45,8 @@ export async function fetchWordDefinition(word: string): Promise<WordModel> {
 
     return {
         word: data.word || word,
+        display_word: data.display_word || data.word || word,
+        surface_word: data.surface_word || null,
         query_word: data.query_word || word,
         definition: data.definition || data.en || '',
         cn: data.cn,

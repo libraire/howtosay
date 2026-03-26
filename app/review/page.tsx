@@ -101,7 +101,7 @@ export default function ReviewPage() {
                     <PractiseComponent list={wordList} onClose={() => {
                         setPractise(false)
                         loadQueue()
-                    }} />
+                    }} mode="review" />
                 </>
             )}
         </main>
