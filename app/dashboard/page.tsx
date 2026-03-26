@@ -86,8 +86,8 @@ export default function DashboardPage() {
                                 </Link>
                             )}
                             {summary?.nextAction === "wordbook" && (
-                                <Link href="/wordbook" className="inline-flex h-10 items-center rounded-xl bg-white px-4 text-sm font-medium text-black transition hover:bg-white/90">
-                                    Open word book
+                                <Link href="/vocabulary" className="inline-flex h-10 items-center rounded-xl bg-white px-4 text-sm font-medium text-black transition hover:bg-white/90">
+                                    Open vocabulary
                                 </Link>
                             )}
                         </div>
@@ -157,19 +157,19 @@ export default function DashboardPage() {
                                     </p>
 
                                     <div className="mt-6 space-y-3 text-sm text-white/70">
-                                        <Link href="/wordbook?status=fragile" className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 transition hover:bg-white/[0.07]">
+                                        <Link href="/vocabulary?status=fragile" className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 transition hover:bg-white/[0.07]">
                                             <span>Fragile</span>
                                             <span className="text-white">{summary.fragileCount}</span>
                                         </Link>
-                                        <Link href="/wordbook?status=building" className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 transition hover:bg-white/[0.07]">
+                                        <Link href="/vocabulary?status=building" className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 transition hover:bg-white/[0.07]">
                                             <span>Building</span>
                                             <span className="text-white">{summary.buildingCount}</span>
                                         </Link>
-                                        <Link href="/wordbook?status=stable" className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 transition hover:bg-white/[0.07]">
+                                        <Link href="/vocabulary?status=stable" className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 transition hover:bg-white/[0.07]">
                                             <span>Stable</span>
                                             <span className="text-white">{summary.stableCount}</span>
                                         </Link>
-                                        <Link href="/wordbook?status=mastered" className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 transition hover:bg-white/[0.07]">
+                                        <Link href="/vocabulary?status=mastered" className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 transition hover:bg-white/[0.07]">
                                             <span>Mastered</span>
                                             <span className="text-white">{summary.masteredCount}</span>
                                         </Link>
@@ -208,7 +208,7 @@ export default function DashboardPage() {
                                         {oftenWrongWords.length > 0 ? oftenWrongWords.map((item) => (
                                             <Link
                                                 key={item.word}
-                                                href={`/wordbook?status=fragile`}
+                                                href={`/vocabulary?status=fragile`}
                                                 className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 transition hover:bg-white/[0.07]"
                                             >
                                                 <div>
@@ -239,7 +239,7 @@ export default function DashboardPage() {
                                         {needsHintsWords.length > 0 ? needsHintsWords.map((item) => (
                                             <Link
                                                 key={item.word}
-                                                href={`/wordbook?status=fragile`}
+                                                href={`/vocabulary?status=fragile`}
                                                 className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 transition hover:bg-white/[0.07]"
                                             >
                                                 <div>

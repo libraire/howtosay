@@ -153,16 +153,22 @@ const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: 
     function showHoverCard(item: WordModel, target: HTMLElement) {
         const rect = target.getBoundingClientRect()
         const cardWidth = 320
-        const preferredLeft = rect.right + 12
-        const fallbackLeft = Math.max(12, rect.left - cardWidth - 12)
+        const cardHeight = 180
+        const gap = 6
+        const preferredLeft = rect.right + gap
+        const fallbackLeft = Math.max(12, rect.left - cardWidth - gap)
         const left = preferredLeft + cardWidth <= window.innerWidth - 12
             ? preferredLeft
             : fallbackLeft
+        const centerY = rect.top + rect.height / 2
+        const minTop = cardHeight / 2 + 12
+        const maxTop = window.innerHeight - cardHeight / 2 - 12
+        const top = Math.min(Math.max(centerY, minTop), maxTop)
 
         setHoverCard({
             word: item.canonical || item.word,
             definition: item.definition || "Loading definition...",
-            top: Math.max(12, rect.top - 8),
+            top,
             left,
         })
     }
@@ -253,7 +259,7 @@ const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: 
             </div>
             {hoverCard && (
                 <div
-                    className="pointer-events-none fixed z-50 w-[320px] rounded-2xl border border-white/10 bg-[#161311]/95 p-4 text-sm text-white shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur"
+                    className="pointer-events-none fixed z-50 w-[320px] -translate-y-1/2 rounded-2xl border border-white/10 bg-[#161311]/95 p-4 text-sm text-white shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur"
                     style={{ top: hoverCard.top, left: hoverCard.left }}
                 >
                     <div className="text-xs uppercase tracking-[0.28em] text-white/35">Definition</div>
