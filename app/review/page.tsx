@@ -54,7 +54,7 @@ export default function ReviewPage() {
             <Navbar />
 
             {!practise && (
-                <section className="w-full max-w-4xl px-6 pb-12 pt-8">
+                <section className="w-full max-w-4xl px-6 pb-12 pt-8 mt-16">
                     <div className="rounded-[32px] border border-white/10 bg-white/[0.04] p-6 shadow-[0_32px_100px_rgba(0,0,0,0.24)] backdrop-blur-sm">
                         <p className="text-xs uppercase tracking-[0.28em] text-white/35">Review</p>
                         <h1 className="mt-3 text-3xl font-medium tracking-tight text-white">Review Queue</h1>
@@ -97,11 +97,13 @@ export default function ReviewPage() {
 
             {practise && (
                 <>
-                    <AudioComponent str={"xxxx"} />
-                    <PractiseComponent list={wordList} onClose={() => {
-                        setPractise(false)
-                        loadQueue()
-                    }} mode="review" />
+                    <div className="mt-16">
+                        <AudioComponent str={"xxxx"} />
+                        <PractiseComponent list={wordList} onClose={() => {
+                            setPractise(false)
+                            loadQueue()
+                        }} mode="review" />
+                    </div>
                 </>
             )}
         </main>
