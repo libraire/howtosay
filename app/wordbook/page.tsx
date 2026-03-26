@@ -1,10 +1,10 @@
 "use client"
-import { Fragment, Suspense, useEffect, useState } from "react";
+import { Fragment, Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Menu, Transition } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import { AcademicCapIcon, ArrowPathIcon, ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
+import { AcademicCapIcon, ArrowTopRightOnSquareIcon } from "@heroicons/react/24/outline";
 import { useCustomAuth } from "@/app/context/CustomAuthProvider";
 import WordBook from "@/app/components/WordBook";
 import { Word } from "@/app/components/types";
@@ -33,12 +33,23 @@ function WordbookPageContent() {
     const [total, setTotal] = useState<number>(0);
     const [importOpen, setImportOpen] = useState<boolean>(false);
     const [practise, setPractise] = useState(false)
+    const [searchWord, setSearchWord] = useState("")
+    const [searchKeyword, setSearchKeyword] = useState("")
     const statusFilter = searchParams?.get("status") ?? ""
     const memoryLabel = getMemoryLabel(statusFilter)
+    const normalizedSearchWord = searchWord.trim().toLowerCase()
+    const normalizedSearchKeyword = searchKeyword.trim().toLowerCase()
+    const filteredWordList = useMemo(() => {
+        if (!normalizedSearchWord) {
+            return wordList
+        }
+
+        return wordList.filter((item) => item.word.toLowerCase().includes(normalizedSearchWord))
+    }, [normalizedSearchWord, wordList])
 
 
-    function fetchCollection(currentPage: number, level: number, status = statusFilter) {
-        fetchWordBook(currentPage, level, status || undefined).then((data) => {
+    function fetchCollection(currentPage: number, level: number, status = statusFilter, keyword = searchKeyword) {
+        fetchWordBook(currentPage, level, status || undefined, keyword || undefined).then((data) => {
             setWordList(data.words as Word[])
             setTotal(data.total)
             let n = Math.floor(data.total / 20) + (data.total % 20 == 0 ? 0 : 1)
@@ -65,14 +76,21 @@ function WordbookPageContent() {
         });
     }
 
+    function handleWordSearch() {
+        const nextKeyword = searchWord.trim()
+        setPage(1)
+        setSearchKeyword(nextKeyword)
+        fetchCollection(1, level, statusFilter, nextKeyword)
+    }
+
     useEffect(() => {
         if (!isLoading && !isAuthenticated) {
             login()
             return
         }
 
-        fetchCollection(page, level, statusFilter)
-    }, [isAuthenticated, isLoading, level, login, page, statusFilter])
+        fetchCollection(page, level, statusFilter, searchKeyword)
+    }, [isAuthenticated, isLoading, level, login, page, searchKeyword, statusFilter])
 
     if (isLoading || !isAuthenticated) {
         return (
@@ -122,11 +140,25 @@ function WordbookPageContent() {
                                 <ListMenu onChange={(e) => {
                                     setPage(1)
                                     setLevel(e.id)
-                                    fetchCollection(1, e.id, statusFilter)
+                                    fetchCollection(1, e.id, statusFilter, searchKeyword)
                                 }}></ListMenu>
                             </div>
 
                             <div className="flex flex-wrap items-center gap-3">
+                                <div className="w-full sm:w-[220px]">
+                                    <input
+                                        type="text"
+                                        value={searchWord}
+                                        onChange={(event) => setSearchWord(event.target.value)}
+                                        onKeyDown={(event) => {
+                                            if (event.key === "Enter") {
+                                                handleWordSearch()
+                                            }
+                                        }}
+                                        placeholder="Search word"
+                                        className="h-10 w-full rounded-xl border border-white/10 bg-white/[0.04] px-4 text-sm text-white placeholder:text-white/30 focus:border-white/20 focus:outline-none"
+                                    />
+                                </div>
                                 <button
                                     type="button"
                                     onClick={() => setImportOpen(true)}
@@ -198,10 +230,10 @@ function WordbookPageContent() {
                                     }
 
                                     if (offset == 0) {
-                                        fetchCollection(p, level)
+                                        fetchCollection(p, level, statusFilter, searchKeyword)
                                         setPage(p)
                                     } else {
-                                        fetchCollection(page + offset, level, statusFilter)
+                                        fetchCollection(page + offset, level, statusFilter, searchKeyword)
                                         setPage(page + offset)
                                     }
                                 }}
@@ -209,10 +241,15 @@ function WordbookPageContent() {
                         </div>
 
                         <div className="mt-6">
-                            <WordBook wordList={wordList} onCollectionChange={(e) => {
+                            {normalizedSearchWord && filteredWordList.length === 0 && normalizedSearchKeyword !== normalizedSearchWord && (
+                                <div className="mb-6 rounded-2xl border border-white/10 bg-black/20 px-5 py-4 text-sm text-white/60">
+                                    No matches on this page. Press Enter to search your full word bank.
+                                </div>
+                            )}
+                            <WordBook wordList={filteredWordList} onCollectionChange={(e) => {
                                 setPage(1)
                                 setLevel(e.id)
-                                fetchCollection(page, level, statusFilter)
+                                fetchCollection(page, level, statusFilter, searchKeyword)
                             }}></WordBook>
                         </div>
                     </div>
@@ -220,7 +257,7 @@ function WordbookPageContent() {
             </>}
             {practise && <>
                 <AudioComponent str={"xxxx"} />
-                <PractiseComponent list={wordList} onClose={() => { setPractise(false) }} />
+                <PractiseComponent list={filteredWordList} onClose={() => { setPractise(false) }} />
             </>}
 
             <InputModal open={importOpen} onClose={() => { setImportOpen(false) }} importWords={importWords} ></InputModal>

@@ -4,13 +4,16 @@ import { fetchJson } from "@/app/lib/api-client"
 import type { WordModel } from "@/app/lib/dict-models"
 import type { LicenseVerificationResult, ReviewQueueResponse, WordBankPage } from "@/app/lib/practice-models"
 
-export async function fetchWordBook(page: number, level?: number, status?: string): Promise<WordBankPage> {
+export async function fetchWordBook(page: number, level?: number, status?: string, word?: string): Promise<WordBankPage> {
     const params = new URLSearchParams({ page: String(page) })
     if (level && level !== 0) {
         params.set('level', String(level))
     }
     if (status) {
         params.set('status', status)
+    }
+    if (word && word.trim().length > 0) {
+        params.set('word', word.trim())
     }
 
     const data = await fetchJson<{ words?: WordModel[]; page?: number; total?: number }>(

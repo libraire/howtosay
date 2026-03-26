@@ -3,6 +3,20 @@
 import { fetchJson } from "@/app/lib/api-client"
 import type { MarkedWord, SearchResult, WordModel } from "@/app/lib/dict-models"
 
+type WordDefinitionLookupResponse = {
+    status?: string
+    reason?: string
+    message?: string
+    word?: string
+    definition?: string
+    en?: string
+    cn?: string
+    phonetic?: string
+    level?: number | null
+    url?: string
+    category?: string
+}
+
 export async function fetchDefinitions(words: string[]): Promise<WordModel[]> {
     if (words.length === 0) {
         return []
@@ -14,6 +28,26 @@ export async function fetchDefinitions(words: string[]): Promise<WordModel[]> {
     )
 
     return data.words ?? []
+}
+
+export async function fetchWordDefinition(word: string): Promise<WordModel> {
+    const data = await fetchJson<WordDefinitionLookupResponse>(
+        `/hts/api/v1/definition?word=${encodeURIComponent(word)}`,
+        { method: 'GET' }
+    )
+
+    if (data.status !== 'ok') {
+        throw new Error(data.reason || data.message || 'Word not found')
+    }
+
+    return {
+        word: data.word || word,
+        definition: data.definition || data.en || '',
+        cn: data.cn,
+        phonetic: data.phonetic,
+        level: typeof data.level === 'number' ? data.level : undefined,
+        imgurl: data.url,
+    }
 }
 
 export async function fetchWordExamples(word: string): Promise<SearchResult[]> {
