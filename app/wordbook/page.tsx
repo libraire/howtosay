@@ -1,5 +1,5 @@
 "use client"
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Menu, Transition } from "@headlessui/react";
@@ -21,7 +21,7 @@ function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(" ")
 }
 
-export default function Home() {
+function WordbookPageContent() {
     const { isAuthenticated, isLoading, login } = useCustomAuth();
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -227,6 +227,20 @@ export default function Home() {
 
         </main>
     );
+}
+
+export default function Home() {
+    return (
+        <Suspense
+            fallback={
+                <main className="flex min-h-screen flex-col items-center bg-[#101010] pb-10">
+                    <Navbar />
+                </main>
+            }
+        >
+            <WordbookPageContent />
+        </Suspense>
+    )
 }
 
 function getMemoryLabel(status: string) {
