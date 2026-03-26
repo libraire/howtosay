@@ -44,7 +44,7 @@ export default function Navbar({ check = true }: { check?: boolean }) {
                                 <Link
                                     key={item.href}
                                     href={item.href}
-                                    className={`relative pb-1 text-[12px] font-semibold tracking-[0.24em] transition ${
+                                    className={`relative inline-flex w-[124px] justify-center pb-1 text-center text-[12px] font-semibold tracking-[0.24em] transition ${
                                         isActive ? "text-black/72" : "text-black/42 hover:text-black/78"
                                     }`}
                                 >
