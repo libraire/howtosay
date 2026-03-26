@@ -62,7 +62,7 @@ export default function DailyPage() {
                 <div className="mt-10 max-w-2xl px-6 text-center">
                     <h1 className="text-4xl font-medium tracking-tight text-white">Daily Guess</h1>
                     <p className="mt-3 text-sm text-white/65">
-                        A lightweight daily challenge to learn one word from image hints and spelling practice.
+                        A short daily word-guess challenge with text clues and spelling practice.
                     </p>
                 </div>
 
@@ -71,7 +71,12 @@ export default function DailyPage() {
                 ) : hasError ? (
                     <div className="mt-16 text-sm text-white/55">Unable to load today&apos;s words right now.</div>
                 ) : wordList.length > 0 ? (
-                    <PractiseComponent list={wordList} onClose={undefined} mode="daily" />
+                    <PractiseComponent
+                        list={wordList}
+                        onClose={undefined}
+                        mode="daily"
+                        showVisualHints={false}
+                    />
                 ) : (
                     <div className="mt-16 text-sm text-white/55">No daily challenge is available yet.</div>
                 )}

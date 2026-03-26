@@ -9,15 +9,26 @@ import { useCustomAuth } from "@/app/context/CustomAuthProvider";
 import HelpSlideOver from "./HelpSlideOver";
 import ToolBoxComponent from "./ToolBoxComponent";
 import StarComponent from "./StarComponent";
-import { fetchDefinitions as fetchDefinitionsApi } from "@/app/lib/dict-api";
+import { fetchDefinitions as fetchDefinitionsApi, fetchMarkedWords } from "@/app/lib/dict-api";
 import { markWord as markWordApi, submitReviewResult, unmarkWord as unmarkWordApi } from "@/app/lib/practice-api";
 
-export type PractiseMode = "reading" | "review" | "daily" | "custom";
+export type PractiseMode = "reading" | "review" | "daily" | "custom" | "image-mode" | "grade-mode";
+
+type SelectItem = {
+    value: string
+    label: string
+}
 
 type Props = {
-    list: Word[]
+    list?: Word[]
     onClose: (() => void) | undefined
     mode: PractiseMode
+    loadWords?: (selection: string) => Promise<Word[]>
+    selectItems?: SelectItem[]
+    initialSelection?: string
+    refillOnEnd?: boolean
+    showExample?: boolean
+    showVisualHints?: boolean
 }
 
 function shuffleList(list: Word[]) {
@@ -37,11 +48,61 @@ function buildBaseWordList(list: Word[]): Word[] {
     }))
 }
 
-const PractiseComponent: React.FC<Props> = ({ list, onClose, mode }) => {
+async function enrichWordList(list: Word[], isAuthenticated: boolean): Promise<Word[]> {
+    const baseList = buildBaseWordList(list)
+
+    if (baseList.length === 0) {
+        return []
+    }
+
+    const definitionWords = Array.from(
+        new Set(baseList.filter((item) => !item.definition).map((item) => item.word).filter(Boolean))
+    )
+
+    const [definitions, markedWords] = await Promise.all([
+        definitionWords.length > 0 ? fetchDefinitionsApi(definitionWords) : Promise.resolve([]),
+        isAuthenticated ? fetchMarkedWords(baseList.map((item) => item.word)) : Promise.resolve([]),
+    ])
+
+    const definitionMap = new Map(
+        definitions.map((item) => [((item.query_word || item.word) || "").toLowerCase(), item])
+    )
+    const markedMap = new Map(markedWords.map((item) => [item.word.toLowerCase(), Boolean(item.mark)]))
+
+    return baseList.map((item) => {
+        const lookup = definitionMap.get(item.word.toLowerCase())
+
+        return {
+            ...item,
+            definition: item.definition || lookup?.definition || "",
+            phonetic: item.phonetic ?? lookup?.phonetic,
+            cn: item.cn ?? lookup?.cn,
+            level: typeof item.level === "number" ? item.level : lookup?.level,
+            display_word: item.display_word || item.surface_word || lookup?.display_word || item.word,
+            surface_word: item.surface_word ?? lookup?.surface_word ?? null,
+            marked: markedMap.has(item.word.toLowerCase()) ? markedMap.get(item.word.toLowerCase()) : item.marked,
+        }
+    })
+}
+
+const PractiseComponent: React.FC<Props> = ({
+    list = [],
+    onClose,
+    mode,
+    loadWords,
+    selectItems = [],
+    initialSelection,
+    refillOnEnd = false,
+    showExample = true,
+    showVisualHints = true,
+}) => {
     const [wordList, setWordList] = useState<Word[]>([])
     const [currentIndex, setCurrentIndex] = useState(0)
     const [completed, setCompleted] = useState<boolean>(false)
     const [isOpen, setIsOpen] = useState(false)
+    const [selection, setSelection] = useState<string>(initialSelection || selectItems[0]?.value || "")
+    const [loadingWords, setLoadingWords] = useState(false)
+    const [loadError, setLoadError] = useState(false)
     const handleOnClose = () => setIsOpen(false)
     const { isAuthenticated, login } = useCustomAuth()
 
@@ -52,60 +113,79 @@ const PractiseComponent: React.FC<Props> = ({ list, onClose, mode }) => {
 
     useEffect(() => {
         let cancelled = false
-        const baseList = buildBaseWordList(list)
 
-        setWordList(baseList)
-        setCurrentIndex(0)
-        setCompleted(false)
+        async function loadStaticWords() {
+            setLoadingWords(true)
+            setLoadError(false)
+            setCurrentIndex(0)
+            setCompleted(false)
 
-        const wordsToLookup = Array.from(
-            new Set(baseList.filter((item) => !item.definition).map((item) => item.word).filter(Boolean))
-        )
-
-        if (wordsToLookup.length === 0) {
-            return () => {
-                cancelled = true
+            try {
+                const nextWords = await enrichWordList(list, isAuthenticated)
+                if (!cancelled) {
+                    setWordList(nextWords)
+                }
+            } catch (error) {
+                if (!cancelled) {
+                    console.error("Failed to load practice words:", error)
+                    setWordList(buildBaseWordList(list))
+                    setLoadError(true)
+                }
+            } finally {
+                if (!cancelled) {
+                    setLoadingWords(false)
+                }
             }
         }
 
-        fetchDefinitionsApi(wordsToLookup)
-            .then((definitions) => {
-                if (cancelled) {
-                    return
-                }
-
-                const definitionMap = new Map(
-                    definitions.map((item) => [((item.query_word || item.word) || "").toLowerCase(), item])
-                )
-
-                setWordList(baseList.map((item) => {
-                    const lookup = definitionMap.get(item.word.toLowerCase())
-                    if (!lookup) {
-                        return item
-                    }
-
-                    return {
-                        ...item,
-                        definition: item.definition || lookup.definition || "",
-                        phonetic: item.phonetic ?? lookup.phonetic,
-                        cn: item.cn ?? lookup.cn,
-                        level: typeof item.level === "number" ? item.level : lookup.level,
-                        display_word: item.display_word || item.surface_word || lookup.display_word || item.word,
-                        surface_word: item.surface_word ?? lookup.surface_word ?? null,
-                    }
-                }))
-            })
-            .catch((error) => {
-                if (!cancelled) {
-                    console.error("Failed to load practice definitions:", error)
-                    setWordList(baseList)
-                }
-            })
+        if (!loadWords) {
+            loadStaticWords()
+        }
 
         return () => {
             cancelled = true
         }
-    }, [list])
+    }, [isAuthenticated, list, loadWords])
+
+    useEffect(() => {
+        if (!loadWords || !selection) {
+            return
+        }
+
+        let cancelled = false
+        const loader = loadWords
+
+        async function loadSelectableWords() {
+            setLoadingWords(true)
+            setLoadError(false)
+            setCurrentIndex(0)
+            setCompleted(false)
+
+            try {
+                const loadedWords = await loader(selection)
+                const nextWords = await enrichWordList(loadedWords, isAuthenticated)
+                if (!cancelled) {
+                    setWordList(nextWords)
+                }
+            } catch (error) {
+                console.error("Failed to load selectable practice words:", error)
+                if (!cancelled) {
+                    setWordList([])
+                    setLoadError(true)
+                }
+            } finally {
+                if (!cancelled) {
+                    setLoadingWords(false)
+                }
+            }
+        }
+
+        loadSelectableWords()
+
+        return () => {
+            cancelled = true
+        }
+    }, [isAuthenticated, loadWords, selection])
 
     useEffect(() => {
         if (wordList.length === 0) {
@@ -118,9 +198,33 @@ const PractiseComponent: React.FC<Props> = ({ list, onClose, mode }) => {
         }
     }, [currentIndex, wordList.length])
 
-    function nextWord() {
+    async function nextWord() {
         setCompleted(false)
-        setCurrentIndex((prevIndex) => Math.min(prevIndex + 1, wordList.length - 1))
+        if (currentIndex < wordList.length - 1) {
+            setCurrentIndex((prevIndex) => prevIndex + 1)
+            return
+        }
+
+        if (!loadWords || !refillOnEnd || !selection) {
+            setCurrentIndex((prevIndex) => Math.min(prevIndex + 1, wordList.length - 1))
+            return
+        }
+
+        const loader = loadWords
+
+        setLoadingWords(true)
+        setLoadError(false)
+        try {
+            const loadedWords = await loader(selection)
+            const nextWords = await enrichWordList(loadedWords, isAuthenticated)
+            setWordList(nextWords)
+            setCurrentIndex(0)
+        } catch (error) {
+            console.error("Failed to refill practice words:", error)
+            setLoadError(true)
+        } finally {
+            setLoadingWords(false)
+        }
     }
 
     function prevWord() {
@@ -200,8 +304,8 @@ const PractiseComponent: React.FC<Props> = ({ list, onClose, mode }) => {
         <div className={styles.boardContainer}>
 
             <ToolBoxComponent
-                selectItems={[]}
-                selectLevel={undefined}
+                selectItems={selectItems}
+                selectLevel={selectItems.length > 0 ? setSelection : undefined}
                 marked={marked}
                 mark={markWord}
                 unmark={unmarkWord}
@@ -217,18 +321,26 @@ const PractiseComponent: React.FC<Props> = ({ list, onClose, mode }) => {
 
             {completed && <StarComponent word={displayWord}></StarComponent>}
 
-            <WordComponent
-                word={displayWord}
-                next={() => nextWord()}
-                complete={() => setCompleted(true)}
-                onSolved={handleSolved}
-                onSkip={handleSkipped}
-                definition={definition}
-                imgurl={word?.imgurl ?? ""}
-                emoji={word?.emoji ?? ""}
-                showExample={true}
-                prev={() => prevWord()}
-            />
+            {loadingWords ? (
+                <div className="px-6 py-16 text-center text-sm text-white/55">Loading practice words...</div>
+            ) : loadError ? (
+                <div className="px-6 py-16 text-center text-sm text-white/55">Unable to load practice words right now.</div>
+            ) : word ? (
+                <WordComponent
+                    word={displayWord}
+                    next={() => nextWord()}
+                    complete={() => setCompleted(true)}
+                    onSolved={handleSolved}
+                    onSkip={handleSkipped}
+                    definition={definition}
+                    imgurl={showVisualHints ? (word?.imgurl ?? "") : ""}
+                    emoji={showVisualHints ? (word?.emoji ?? "") : ""}
+                    showExample={showExample}
+                    prev={() => prevWord()}
+                />
+            ) : (
+                <div className="px-6 py-16 text-center text-sm text-white/55">No practice words are available.</div>
+            )}
 
             <KeyBoardComponent />
             <HelpSlideOver open={isOpen} onClose={handleOnClose} />
