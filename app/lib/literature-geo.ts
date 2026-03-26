@@ -68,12 +68,20 @@ const authorCountryMap: Record<string, CountryCode> = {
     "Octavio Paz": "MX",
 }
 
-export function getAuthorCountryCode(authorName: string): CountryCode | null {
+function isCountryCode(value: string): value is CountryCode {
+    return value in countryMeta
+}
+
+export function getAuthorCountryCode(authorName: string, countryCode?: string | null): CountryCode | null {
+    if (countryCode && isCountryCode(countryCode)) {
+        return countryCode
+    }
+
     return authorCountryMap[authorName] ?? null
 }
 
-export function getAuthorCountryName(authorName: string): string | null {
-    const code = getAuthorCountryCode(authorName)
+export function getAuthorCountryName(authorName: string, countryCode?: string | null): string | null {
+    const code = getAuthorCountryCode(authorName, countryCode)
     return code ? countryMeta[code].name : null
 }
 
@@ -81,7 +89,7 @@ export function getCountryHighlights(items: LiteraryTimelineItem[]): CountryHigh
     const groups = new Map<CountryCode, Set<string>>()
 
     items.forEach((item) => {
-        const code = getAuthorCountryCode(item.author_name)
+        const code = getAuthorCountryCode(item.author_name, item.author_country_code)
 
         if (!code) {
             return

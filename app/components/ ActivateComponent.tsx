@@ -2,17 +2,25 @@
 import React from "react";
 import { useState } from 'react'
 import { verifyLicense } from "@/app/lib/practice-api";
+import { useCustomAuth } from "@/app/context/CustomAuthProvider";
 
-export default function Component() {
+type Props = {
+    open: boolean
+    onClose?: () => void
+}
+
+export default function Component({ open, onClose }: Props) {
 
     const [license, setLicense] = useState('');
     const [reason, setReason] = useState('');
-    const [isPro, setIsPro] = useState(false);
     const [isValid, setIsValid] = useState(true);
+    const { refreshAuth } = useCustomAuth()
+
     async function activate() {
         verifyLicense(license).then((data) => {
             if (data.status == 'ok') {
-                setIsPro(true)
+                refreshAuth().catch((error) => console.error(error))
+                onClose?.()
             } else {
                 setIsValid(false)
                 setReason(data.reason ?? '')
@@ -20,9 +28,20 @@ export default function Component() {
         })
     }
 
-    return (
-        !isPro && <div className="fixed top-0 left-0 right-0 bg-gray-900 h-screen z-50 flex items-center flex-col pt-40">
+    if (!open) {
+        return null
+    }
 
+    return (
+        <div
+            className="fixed inset-0 z-50 bg-black/70 px-6 py-10 backdrop-blur-sm"
+            onClick={() => onClose?.()}
+        >
+            <div className="mx-auto flex min-h-full max-w-xl items-start justify-center pt-24">
+                <div
+                    className="w-full bg-gray-900 px-8 py-8 text-white"
+                    onClick={(event) => event.stopPropagation()}
+                >
             <h1 className="text-4xl font-medium tracking-tight mb-4">Activate Pro</h1>
             {!isValid && <h1 className="text-xl font-medium tracking-tight mb-4 text-red-500">Invalid License: {reason}</h1>}
 
@@ -57,7 +76,8 @@ export default function Component() {
                     Buy License
                 </a>
             </div>
-
+                </div>
+            </div>
         </div>
     )
 

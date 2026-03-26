@@ -5,11 +5,12 @@ import { getAuthorCountryCode, type CountryHighlight } from "@/app/lib/literatur
 type Props = {
     highlights: CountryHighlight[]
     activeAuthor?: string | null
+    activeAuthorCountryCode?: string | null
     className?: string
 }
 
-export default function LiteratureWorldMap({ highlights, activeAuthor, className = "" }: Props) {
-    const activeCountry = activeAuthor ? getAuthorCountryCode(activeAuthor) : null
+export default function LiteratureWorldMap({ highlights, activeAuthor, activeAuthorCountryCode, className = "" }: Props) {
+    const activeCountry = activeAuthor ? getAuthorCountryCode(activeAuthor, activeAuthorCountryCode) : null
     const activeHighlight = activeCountry
         ? highlights.find((country) => country.code === activeCountry) ?? null
         : null

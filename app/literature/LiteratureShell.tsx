@@ -14,6 +14,7 @@ type Props = {
 
 export default function LiteratureShell({ initialData, className }: Props) {
     const [activeAuthor, setActiveAuthor] = useState<string | null>(null)
+    const [activeAuthorCountryCode, setActiveAuthorCountryCode] = useState<string | null>(null)
     const [loadedItems, setLoadedItems] = useState(initialData.data)
     const scrollContainerRef = useRef<HTMLDivElement | null>(null)
     const highlights = useMemo(() => getCountryHighlights(loadedItems), [loadedItems])
@@ -33,6 +34,7 @@ export default function LiteratureShell({ initialData, className }: Props) {
                         <LiteratureWorldMap
                             highlights={highlights}
                             activeAuthor={activeAuthor}
+                            activeAuthorCountryCode={activeAuthorCountryCode}
                             className="translate-x-[8%] scale-[1.12] opacity-70"
                         />
                     </div>
@@ -44,6 +46,7 @@ export default function LiteratureShell({ initialData, className }: Props) {
                             initialData={initialData}
                             scrollContainerRef={scrollContainerRef}
                             onActiveAuthorChange={setActiveAuthor}
+                            onActiveAuthorCountryCodeChange={setActiveAuthorCountryCode}
                             onItemsChange={setLoadedItems}
                         />
                     </div>

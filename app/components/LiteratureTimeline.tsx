@@ -9,6 +9,7 @@ type Props = {
     initialData: LiteraryTimelinePage
     scrollContainerRef: RefObject<HTMLDivElement | null>
     onActiveAuthorChange?: (author: string | null) => void
+    onActiveAuthorCountryCodeChange?: (countryCode: string | null) => void
     onItemsChange?: (items: LiteraryTimelineItem[]) => void
 }
 
@@ -16,7 +17,13 @@ function yearLabel(year: number | null): string {
     return year ? String(year) : "未知年代"
 }
 
-export default function LiteratureTimeline({ initialData, scrollContainerRef, onActiveAuthorChange, onItemsChange }: Props) {
+export default function LiteratureTimeline({
+    initialData,
+    scrollContainerRef,
+    onActiveAuthorChange,
+    onActiveAuthorCountryCodeChange,
+    onItemsChange,
+}: Props) {
     const [items, setItems] = useState<LiteraryTimelineItem[]>(initialData.data)
     const [page, setPage] = useState(initialData.current_page)
     const [lastPage, setLastPage] = useState(initialData.last_page)
@@ -53,6 +60,11 @@ export default function LiteratureTimeline({ initialData, scrollContainerRef, on
     useEffect(() => {
         onActiveAuthorChange?.(hoveredAuthor)
     }, [hoveredAuthor, onActiveAuthorChange])
+
+    useEffect(() => {
+        const hoveredItem = items.find((item) => item.author_name === hoveredAuthor) ?? null
+        onActiveAuthorCountryCodeChange?.(hoveredItem?.author_country_code ?? null)
+    }, [hoveredAuthor, items, onActiveAuthorCountryCodeChange])
 
     useEffect(() => {
         if (!selectedId) {

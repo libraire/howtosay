@@ -4,6 +4,7 @@ export interface LiteraryTimelineItem {
     title: string
     preview: string
     author_name: string
+    author_country_code?: string | null
     work_title: string
     work_year: number | null
     language: string | null
@@ -26,6 +27,7 @@ export interface LiteraryPassageDetail {
     title: string
     excerpt: string
     author_name: string
+    author_country_code?: string | null
     work_title: string
     work_year: number | null
     language: string | null

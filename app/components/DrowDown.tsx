@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
-import { BookmarkSquareIcon, FireIcon, PhotoIcon, PuzzlePieceIcon, RocketLaunchIcon, BoltIcon, Squares2X2Icon, InformationCircleIcon, ArrowPathIcon, ChartBarSquareIcon, BookOpenIcon } from '@heroicons/react/24/outline'
+import { FireIcon, PhotoIcon, PuzzlePieceIcon, BoltIcon, Squares2X2Icon, InformationCircleIcon, ChartBarSquareIcon } from '@heroicons/react/24/outline'
 
 function classNames(...classes: string[]): string {
     return classes.filter(Boolean).join(' ')
@@ -50,22 +50,6 @@ export default function MyDropDown() {
             >
                 <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                     <div className="py-1">
-                        <div className="border-b border-gray-100 py-1">
-
-                        <Menu.Item>
-                            {({ active }) => (
-                                <a
-                                    href='/wordbook'
-                                        className={classNames(
-                                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                            'block px-4 py-2 text-sm'
-                                        )}
-                                >
-                                    <BookmarkSquareIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> Word Book
-                                </a>
-                            )}
-                        </Menu.Item>
-
                         <Menu.Item>
                             {({ active }) => (
                                 <a
@@ -79,23 +63,6 @@ export default function MyDropDown() {
                                 </a>
                             )}
                         </Menu.Item>
-
-                        <Menu.Item>
-                            {({ active }) => (
-                                <a
-                                    href='/review'
-                                    className={classNames(
-                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                        'block px-4 py-2 text-sm'
-                                    )}
-                                >
-                                    <ArrowPathIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> Review Queue
-                                </a>
-                            )}
-                        </Menu.Item>
-
-                        </div>
-
 
                         <Menu.Item>
                             {({ active }) => (
@@ -142,23 +109,6 @@ export default function MyDropDown() {
                         <Menu.Item>
                             {({ active }) => (
                                 <a
-                                    href='/literature'
-                                    className={classNames(
-                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                        'block px-4 py-2 text-sm'
-                                    )}
-                                >
-                                    <BookOpenIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> Literature Timeline
-                                </a>
-                            )}
-                        </Menu.Item>
-
-
-
-
-                        <Menu.Item>
-                            {({ active }) => (
-                                <a
                                     href="https://chromewebstore.google.com/detail/how-to-say/okpmmopmkbaicfojimaafnloaacggnfp?hl=zh-CN"
                                     target="_blank"
                                     rel="noopener noreferrer"
@@ -168,20 +118,6 @@ export default function MyDropDown() {
                                     )}
                                 >
                                     <PuzzlePieceIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> Chrome Extension
-                                </a>
-                            )}
-                        </Menu.Item>
-
-                        <Menu.Item>
-                            {({ active }) => (
-                                <a
-                                    href='/features'
-                                    className={classNames(
-                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                        'block px-4 py-2 text-sm'
-                                    )}
-                                >
-                                    <RocketLaunchIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> Features & Pricing
                                 </a>
                             )}
                         </Menu.Item>
