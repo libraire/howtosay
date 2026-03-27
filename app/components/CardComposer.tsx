@@ -1,0 +1,150 @@
+"use client"
+
+import { useEffect, useState } from "react"
+import { CardBlockEditor } from "@/app/components/CardBlocks"
+import type { CardBlock, CardModel } from "@/app/lib/cards-models"
+
+function sanitizeBlocks(blocks: CardBlock[]): CardBlock[] {
+    return blocks
+        .map((block) => ({
+            ...block,
+            content: block.content?.trim() || undefined,
+            url: block.url?.trim() || undefined,
+            caption: block.caption?.trim() || undefined,
+        }))
+        .filter((block) => (block.type === "text" ? !!block.content : !!block.url))
+}
+
+export default function CardComposer({
+    initialCard,
+    submitLabel,
+    busy = false,
+    onSubmit,
+    onCancel,
+}: {
+    initialCard?: CardModel | null
+    submitLabel: string
+    busy?: boolean
+    onSubmit: (payload: {
+        title: string
+        prompt_blocks: CardBlock[]
+        answer_blocks: CardBlock[]
+        notes_blocks: CardBlock[] | null
+        is_active: boolean
+    }) => Promise<void>
+    onCancel?: () => void
+}) {
+    const [title, setTitle] = useState("")
+    const [promptBlocks, setPromptBlocks] = useState<CardBlock[]>([{ type: "text", content: "" }])
+    const [answerBlocks, setAnswerBlocks] = useState<CardBlock[]>([{ type: "text", content: "" }])
+    const [notesBlocks, setNotesBlocks] = useState<CardBlock[]>([])
+    const [isActive, setIsActive] = useState(true)
+    const [error, setError] = useState("")
+
+    useEffect(() => {
+        setTitle(initialCard?.title ?? "")
+        setPromptBlocks(initialCard?.promptBlocks?.length ? initialCard.promptBlocks : [{ type: "text", content: "" }])
+        setAnswerBlocks(initialCard?.answerBlocks?.length ? initialCard.answerBlocks : [{ type: "text", content: "" }])
+        setNotesBlocks(initialCard?.notesBlocks?.length ? initialCard.notesBlocks : [])
+        setIsActive(initialCard?.isActive ?? true)
+        setError("")
+    }, [initialCard])
+
+    async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+        event.preventDefault()
+        setError("")
+
+        const nextPromptBlocks = sanitizeBlocks(promptBlocks)
+        const nextAnswerBlocks = sanitizeBlocks(answerBlocks)
+        const nextNotesBlocks = sanitizeBlocks(notesBlocks)
+
+        if (title.trim().length === 0) {
+            setError("Title is required.")
+            return
+        }
+
+        if (nextPromptBlocks.length === 0 || nextAnswerBlocks.length === 0) {
+            setError("Prompt and answer each need at least one filled block.")
+            return
+        }
+
+        try {
+            await onSubmit({
+                title: title.trim(),
+                prompt_blocks: nextPromptBlocks,
+                answer_blocks: nextAnswerBlocks,
+                notes_blocks: nextNotesBlocks.length > 0 ? nextNotesBlocks : null,
+                is_active: isActive,
+            })
+
+            if (!initialCard) {
+                setTitle("")
+                setPromptBlocks([{ type: "text", content: "" }])
+                setAnswerBlocks([{ type: "text", content: "" }])
+                setNotesBlocks([])
+                setIsActive(true)
+            }
+        } catch (submitError) {
+            setError(submitError instanceof Error ? submitError.message : "Unable to save card.")
+        }
+    }
+
+    return (
+        <form onSubmit={handleSubmit} className="space-y-5 rounded-[32px] border border-white/10 bg-white/[0.04] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.2)]">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+                <div>
+                    <h2 className="text-xl font-medium text-white">{initialCard ? "Edit card" : "Create a card"}</h2>
+                    <p className="mt-1 text-sm text-white/48">
+                        Build cards from text, images, audio, and links. Learners will see the prompt first, then reveal the answer.
+                    </p>
+                </div>
+                <label className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-white/72">
+                    <input
+                        type="checkbox"
+                        checked={isActive}
+                        onChange={(event) => setIsActive(event.target.checked)}
+                        className="h-4 w-4 rounded border-white/20 bg-[#111111]"
+                    />
+                    Active in review
+                </label>
+            </div>
+
+            <input
+                type="text"
+                value={title}
+                onChange={(event) => setTitle(event.target.value)}
+                placeholder="Card title"
+                className="h-12 w-full rounded-2xl border border-white/10 bg-[#111111] px-4 text-sm text-white placeholder:text-white/30 focus:border-white/20 focus:outline-none"
+            />
+
+            <CardBlockEditor label="Prompt" blocks={promptBlocks} onChange={setPromptBlocks} />
+            <CardBlockEditor label="Answer" blocks={answerBlocks} onChange={setAnswerBlocks} />
+            <CardBlockEditor label="Notes" blocks={notesBlocks} onChange={setNotesBlocks} optional />
+
+            {error && (
+                <div className="rounded-2xl border border-[#d17a7a]/30 bg-[#d17a7a]/10 px-4 py-3 text-sm text-[#f0c9c9]">
+                    {error}
+                </div>
+            )}
+
+            <div className="flex flex-wrap items-center gap-3">
+                <button
+                    type="submit"
+                    disabled={busy}
+                    className="inline-flex h-11 items-center rounded-xl bg-white px-5 text-sm font-medium text-black transition hover:bg-white/90 disabled:cursor-not-allowed disabled:bg-white/50"
+                >
+                    {busy ? "Saving..." : submitLabel}
+                </button>
+                {onCancel && (
+                    <button
+                        type="button"
+                        onClick={onCancel}
+                        className="inline-flex h-11 items-center rounded-xl border border-white/10 bg-white/[0.04] px-5 text-sm font-medium text-white transition hover:bg-white/10"
+                    >
+                        Cancel
+                    </button>
+                )}
+            </div>
+        </form>
+    )
+}
