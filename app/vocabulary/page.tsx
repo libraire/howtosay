@@ -79,18 +79,65 @@ function VocabularyPageContent() {
     }
 
     useEffect(() => {
-        if (!isLoading && !isAuthenticated) {
-            login()
+        if (isLoading || !isAuthenticated) {
             return
         }
 
         fetchCollection(page, level, statusFilter, searchKeyword)
-    }, [isAuthenticated, isLoading, level, login, page, searchKeyword, statusFilter])
+    }, [isAuthenticated, isLoading, level, page, searchKeyword, statusFilter])
 
-    if (isLoading || !isAuthenticated) {
+    if (isLoading) {
         return (
             <main className="flex min-h-screen flex-col items-center bg-[#101010] pb-10">
                 <Navbar />
+            </main>
+        );
+    }
+
+    if (!isAuthenticated) {
+        return (
+            <main className="flex min-h-screen flex-col items-center bg-[#101010] pb-10">
+                <Navbar />
+                <section className="w-full max-w-5xl px-6 pb-12 pt-8">
+                    <div className="rounded-[32px] border border-white/10 bg-white/[0.04] p-8 shadow-[0_32px_100px_rgba(0,0,0,0.24)] backdrop-blur-sm">
+                        <p className="text-xs uppercase tracking-[0.28em] text-white/35">Vocabulary</p>
+                        <h1 className="mt-3 text-3xl font-medium tracking-tight text-white">Build your personal word library</h1>
+                        <p className="mt-4 max-w-2xl text-sm leading-7 text-white/58">
+                            Save words you meet while reading, filter them by level and memory state, and start targeted practice from your own collection.
+                        </p>
+
+                        <div className="mt-8 grid gap-4 md:grid-cols-3">
+                            <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
+                                <div className="text-sm text-white">Organize what you save</div>
+                                <div className="mt-2 text-sm leading-6 text-white/55">Browse your words by level, search quickly, and focus on exactly the set you want to revisit.</div>
+                            </div>
+                            <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
+                                <div className="text-sm text-white">See memory status</div>
+                                <div className="mt-2 text-sm leading-6 text-white/55">Track which words are fragile, building, stable, or already mastered.</div>
+                            </div>
+                            <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
+                                <div className="text-sm text-white">Practice from your list</div>
+                                <div className="mt-2 text-sm leading-6 text-white/55">Turn your saved vocabulary into focused typing and recall sessions whenever you are ready.</div>
+                            </div>
+                        </div>
+
+                        <div className="mt-8 flex flex-wrap items-center gap-3">
+                            <button
+                                type="button"
+                                onClick={() => login()}
+                                className="inline-flex h-11 items-center rounded-xl bg-white px-5 text-sm font-medium text-black transition hover:bg-white/90"
+                            >
+                                Login to open vocabulary
+                            </button>
+                            <Link
+                                href="/"
+                                className="inline-flex h-11 items-center rounded-xl border border-white/10 bg-white/[0.04] px-5 text-sm font-medium text-white transition hover:bg-white/10"
+                            >
+                                Back to home
+                            </Link>
+                        </div>
+                    </div>
+                </section>
             </main>
         );
     }

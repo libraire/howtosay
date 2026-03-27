@@ -21,15 +21,12 @@ export default function ReviewPage() {
     const [practise, setPractise] = useState(false)
 
     useEffect(() => {
-        if (!isLoading && !isAuthenticated) {
-            login()
+        if (isLoading || !isAuthenticated) {
             return
         }
 
-        if (isAuthenticated) {
-            loadReviewPage()
-        }
-    }, [isAuthenticated, isLoading, login])
+        loadReviewPage()
+    }, [isAuthenticated, isLoading])
 
     async function loadReviewPage() {
         setLoadingPage(true)
@@ -52,10 +49,58 @@ export default function ReviewPage() {
         }
     }
 
-    if (isLoading || !isAuthenticated) {
+    if (isLoading) {
         return (
             <main className="flex min-h-screen flex-col items-center bg-[#101010] pb-10">
                 <Navbar />
+            </main>
+        )
+    }
+
+    if (!isAuthenticated) {
+        return (
+            <main className="min-h-screen bg-[#101010] pb-12">
+                <Navbar />
+                <section className="mx-auto w-full max-w-6xl px-6 pb-12 pt-8">
+                    <div className="rounded-[32px] border border-white/10 bg-white/[0.04] p-8 shadow-[0_32px_100px_rgba(0,0,0,0.24)] backdrop-blur-sm">
+                        <p className="text-xs uppercase tracking-[0.28em] text-white/35">Progress</p>
+                        <h1 className="mt-3 text-3xl font-medium tracking-tight text-white">See your review rhythm in one place</h1>
+                        <p className="mt-4 max-w-2xl text-sm leading-7 text-white/58">
+                            This page brings together your due queue, recent activity, memory profile, and the next best review action so you can keep the system healthy.
+                        </p>
+
+                        <div className="mt-8 grid gap-4 md:grid-cols-3">
+                            <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
+                                <div className="text-sm text-white">Due queue overview</div>
+                                <div className="mt-2 text-sm leading-6 text-white/55">See how many words are waiting and when it makes sense to start another review round.</div>
+                            </div>
+                            <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
+                                <div className="text-sm text-white">Memory profile</div>
+                                <div className="mt-2 text-sm leading-6 text-white/55">Spot fragile words, stable words, and areas that still need repeated support.</div>
+                            </div>
+                            <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
+                                <div className="text-sm text-white">Weekly momentum</div>
+                                <div className="mt-2 text-sm leading-6 text-white/55">Follow review volume, streaks, and recent additions so progress stays visible.</div>
+                            </div>
+                        </div>
+
+                        <div className="mt-8 flex flex-wrap items-center gap-3">
+                            <button
+                                type="button"
+                                onClick={() => login()}
+                                className="inline-flex h-11 items-center rounded-xl bg-white px-5 text-sm font-medium text-black transition hover:bg-white/90"
+                            >
+                                Login to view progress
+                            </button>
+                            <Link
+                                href="/"
+                                className="inline-flex h-11 items-center rounded-xl border border-white/10 bg-white/[0.04] px-5 text-sm font-medium text-white transition hover:bg-white/10"
+                            >
+                                Back to home
+                            </Link>
+                        </div>
+                    </div>
+                </section>
             </main>
         )
     }
