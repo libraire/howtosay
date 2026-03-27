@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react"
 import { Cormorant_Garamond } from "next/font/google"
-import { HeartIcon as HeartOutlineIcon, PlayIcon } from "@heroicons/react/24/outline"
+import { HeartIcon as HeartOutlineIcon } from "@heroicons/react/24/outline"
 import { HeartIcon as HeartSolidIcon } from "@heroicons/react/24/solid"
 import { fetchDefinitions } from "@/app/lib/dict-api"
 import { addWords } from "@/app/lib/practice-api"
@@ -57,6 +57,27 @@ function isUnauthenticatedError(error: unknown) {
 
     const message = error.message.toLowerCase()
     return message.includes("unauthenticated") || message.includes("unauthorized") || message.includes("status 401")
+}
+
+function TypewriterIcon({ className }: { className?: string }) {
+    return (
+        <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.7"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={className}
+            aria-hidden="true"
+        >
+            <path d="M7 8.5V6.8C7 5.81 7.81 5 8.8 5h6.4C16.19 5 17 5.81 17 6.8v1.7" />
+            <path d="M5.5 9.5h13a2.5 2.5 0 0 1 2.5 2.5v4.5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V12a2.5 2.5 0 0 1 2.5-2.5Z" />
+            <path d="M8 13.5h.01M11 13.5h.01M14 13.5h.01M17 13.5h.01" />
+            <path d="M7.5 16.5h9" />
+            <path d="M9 9.5h6" />
+        </svg>
+    )
 }
 
 export default function ReadingPassage({
@@ -307,13 +328,8 @@ export default function ReadingPassage({
                                     title={practiceLoading ? "Preparing practice" : "Start practice"}
                                     className="rounded-full bg-white/[0.035] p-2.5 text-white/46 transition hover:bg-white hover:text-black"
                                 >
-                                    <PlayIcon className="h-5 w-5" />
+                                    <TypewriterIcon className="h-5 w-5" />
                                 </button>
-                                {!isAuthenticated && (
-                                    <span className="pointer-events-none absolute bottom-full left-1/2 mb-2 hidden -translate-x-1/2 whitespace-nowrap rounded-full border border-white/10 bg-[#161311] px-3 py-1 text-[11px] font-medium text-white/78 shadow-[0_12px_30px_rgba(0,0,0,0.35)] group-hover:block group-focus-within:block">
-                                        Login to start practice
-                                    </span>
-                                )}
                             </div>
                             <div className="group relative">
                                 <button

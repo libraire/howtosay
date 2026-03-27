@@ -92,10 +92,10 @@ export default function ReviewPage() {
                         <div className="rounded-[32px] border border-white/10 bg-white/[0.04] p-6 shadow-[0_32px_100px_rgba(0,0,0,0.24)] backdrop-blur-sm">
                             <div className="flex flex-col gap-6 border-b border-white/10 pb-6 lg:flex-row lg:items-end lg:justify-between">
                                 <div>
-                                    <p className="text-xs uppercase tracking-[0.28em] text-white/35">Review</p>
+                                    <p className="text-xs uppercase tracking-[0.28em] text-white/35">Progress</p>
                                     <h1 className="mt-3 text-3xl font-medium tracking-tight text-white">Learning overview</h1>
                                     <p className="mt-3 max-w-2xl text-sm leading-7 text-white/58">
-                                        Review now uses the dashboard as its home base: check what is due, see where your memory is fragile, then jump straight into the queue.
+                                        Track what is due, see where your memory is fragile, and jump straight into a review round when you are ready.
                                     </p>
                                 </div>
 

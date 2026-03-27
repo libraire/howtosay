@@ -41,14 +41,13 @@ export default function Home() {
       return
     }
 
-    if (!isAuthenticated) {
-      login()
-      return
-    }
-
     setIsPreparingPractice(true)
     try {
-      const words = await filterWordsFromContent(passage.excerpt)
+      const words = passage.practiceWords && passage.practiceWords.length > 0
+        ? passage.practiceWords
+        : isAuthenticated
+          ? await filterWordsFromContent(passage.excerpt)
+          : []
       const uniqueWords = words.filter((item, index, list) => {
         return list.findIndex((candidate) => candidate.word === item.word) === index
       })

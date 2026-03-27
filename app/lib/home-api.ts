@@ -1,6 +1,7 @@
 "use client"
 
 import { fetchJson } from "@/app/lib/api-client"
+import type { WordModel } from "@/app/lib/dict-models"
 import type { LiteraryPassage } from "@/app/lib/home-models"
 
 const mockPassage: LiteraryPassage = {
@@ -14,6 +15,33 @@ const mockPassage: LiteraryPassage = {
     accent: "#dcc38f",
     isFavorited: false,
     isPersisted: false,
+    practiceWords: [],
+}
+
+function mapPracticeWords(data: unknown): WordModel[] {
+    if (!Array.isArray(data)) {
+        return []
+    }
+
+    return data
+        .filter((item): item is Record<string, unknown> => !!item && typeof item === "object")
+        .map((item) => ({
+            word: typeof item.word === "string" ? item.word : "",
+            display_word: typeof item.display_word === "string" ? item.display_word : undefined,
+            surface_word: typeof item.surface_word === "string" ? item.surface_word : null,
+            definition: typeof item.definition === "string" ? item.definition : undefined,
+            cn: typeof item.cn === "string" ? item.cn : undefined,
+            phonetic: typeof item.phonetic === "string" ? item.phonetic : undefined,
+            level: typeof item.level === "number" ? item.level : undefined,
+            in_bank: typeof item.in_bank === "boolean" ? item.in_bank : undefined,
+            canonical: typeof item.canonical === "string" ? item.canonical : undefined,
+            memory_badge: typeof item.memory_badge === "string" ? item.memory_badge : null,
+            memory_status: typeof item.memory_status === "string" ? item.memory_status : null,
+            progress_status: typeof item.progress_status === "string" ? item.progress_status : null,
+            difficulty: typeof item.difficulty === "number" ? item.difficulty : null,
+            stability: typeof item.stability === "number" ? item.stability : null,
+        }))
+        .filter((item) => item.word.length > 0)
 }
 
 function mapPassage(data: Record<string, unknown>): LiteraryPassage {
@@ -28,6 +56,7 @@ function mapPassage(data: Record<string, unknown>): LiteraryPassage {
         accent: typeof data.theme_accent === "string" && data.theme_accent.length > 0 ? data.theme_accent : "#dcc38f",
         isFavorited: Boolean(data.is_favorited),
         isPersisted: true,
+        practiceWords: mapPracticeWords(data.practice_words),
     }
 }
 

@@ -1,3 +1,5 @@
+import type { WordModel } from "@/app/lib/dict-models"
+
 export interface LiteraryPassage {
     id: number | string
     slug?: string
@@ -9,4 +11,5 @@ export interface LiteraryPassage {
     accent: string
     isFavorited?: boolean
     isPersisted?: boolean
+    practiceWords?: WordModel[]
 }
