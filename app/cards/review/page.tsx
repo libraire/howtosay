@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { Suspense, useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import Navbar from "@/app/components/Navbar"
@@ -11,7 +11,7 @@ import { fetchCardDueSummary, fetchCardReviewQueue, submitCardReviewResult } fro
 import type { CardDueSummary, CardReviewItem } from "@/app/lib/cards-models"
 import { formatCopy } from "@/app/lib/copy"
 
-export default function CardsReviewPage() {
+function CardsReviewPageContent() {
     const { isAuthenticated, isLoading, login } = useCustomAuth()
     const { copy } = useAppPreferences()
     const searchParams = useSearchParams()
@@ -247,6 +247,20 @@ export default function CardsReviewPage() {
                 )}
             </section>
         </main>
+    )
+}
+
+export default function CardsReviewPage() {
+    return (
+        <Suspense
+            fallback={
+                <main className="theme-page min-h-screen pb-12">
+                    <Navbar />
+                </main>
+            }
+        >
+            <CardsReviewPageContent />
+        </Suspense>
     )
 }
 
