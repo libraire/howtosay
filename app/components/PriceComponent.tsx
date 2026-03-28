@@ -1,91 +1,109 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { Icon } from "@iconify/react";
-import {
-    Button,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    Divider,
-    Link,
-    Spacer,
-} from "@heroui/react";
-
+import { TiersEnum } from "./pricing-types";
+import ModalDialog from "./ModalDialog";
 import { tiers } from "./pricing-tiers";
-import ModalDialog from "./ModalDialog"
+import { useAppPreferences } from "@/app/context/AppPreferencesProvider";
 
-export default function Component() {
-
+export default function PriceComponent() {
+    const { copy } = useAppPreferences()
     const [isOpen, setIsOpen] = useState(false)
 
-    const handleEmailClick = (e: any) => {
-        setIsOpen(true)
-    };
+    const localizedTiers = tiers.map((tier) => {
+        if (tier.key === TiersEnum.Free) {
+            return {
+                ...tier,
+                title: copy.pricingTiers.free.title,
+                price: copy.pricingTiers.free.price,
+                description: copy.pricingTiers.free.description,
+                features: copy.pricingTiers.free.features,
+                buttonText: copy.pricingTiers.free.buttonText,
+            }
+        }
+
+        if (tier.key === TiersEnum.Edu) {
+            return {
+                ...tier,
+                title: copy.pricingTiers.edu.title,
+                price: copy.pricingTiers.edu.price,
+                description: copy.pricingTiers.edu.description,
+                features: copy.pricingTiers.edu.features,
+                buttonText: copy.pricingTiers.edu.buttonText,
+            }
+        }
+
+        return {
+            ...tier,
+            title: copy.pricingTiers.pro.title,
+            price: copy.pricingTiers.pro.price,
+            description: copy.pricingTiers.pro.description,
+            features: copy.pricingTiers.pro.features,
+            buttonText: copy.pricingTiers.pro.buttonText,
+        }
+    })
 
     return (
-        <div className="flex max-w-4xl flex-col items-center py-24">
+        <div className="flex max-w-5xl flex-col items-center px-6 py-24">
             <div className="flex max-w-xl flex-col text-center">
-                <h2 className="font-medium text-indigo-600">Plans</h2>
-                <h1 className="text-4xl font-medium tracking-tight">Access the complete learning workflow.</h1>
-                <p className="mt-4 text-sm leading-7 text-default-500">
-                    Start free to evaluate the product, or upgrade for full access to advanced modes,
-                    deeper vocabulary coverage, and personal learning tools.
+                <p className="theme-faint text-sm uppercase tracking-[0.28em]">{copy.pricing.eyebrow}</p>
+                <h1 className="mt-4 text-4xl font-medium tracking-tight">{copy.pricing.title}</h1>
+                <p className="theme-muted mt-4 text-sm leading-7">
+                    {copy.pricing.intro}
                 </p>
-                <Spacer y={4} />
             </div>
-            <Spacer y={8} />
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-3">
-                {tiers.map((tier) => (
-                    <Card key={tier.key} className="p-3 bg-[#17171A]" shadow="md">
-                        <CardHeader className="flex flex-col items-start gap-2 pb-6">
-                            <h2 className="text-large font-medium">{tier.title}</h2>
-                            <p className="text-medium text-default-500">{tier.description}</p>
-                        </CardHeader>
-                        <Divider />
-                        <CardBody className="gap-8">
-                            <p className="flex items-baseline gap-1 pt-2">
-                                <span className="inline bg-gradient-to-br from-foreground to-foreground-600 bg-clip-text text-4xl font-semibold leading-7 tracking-tight ">
-                                    {tier.price}
-                                </span>
-                            </p>
-                            <ul className="flex flex-col gap-2">
-                                {tier.features?.map((feature) => (
-                                    <li key={feature} className="flex items-center gap-2">
-                                        <Icon className="text-indigo-600" icon="ci:check" width={24} />
-                                        <p className="text-default-500">{feature}</p>
-                                    </li>
-                                ))}
-                            </ul>
-                        </CardBody>
-                        <CardFooter>
-                            <Button
-                                fullWidth
-                                as={Link}
+
+            <div className="mt-12 grid w-full grid-cols-1 gap-4 sm:grid-cols-3">
+                {localizedTiers.map((tier) => (
+                    <div key={tier.key} className="theme-panel rounded-[28px] p-6">
+                        <div className="border-b pb-6" style={{ borderColor: "var(--border-soft)" }}>
+                            <h2 className="text-2xl font-medium">{tier.title}</h2>
+                            <p className="theme-muted mt-2 text-sm leading-6">{tier.description}</p>
+                        </div>
+
+                        <div className="mt-6">
+                            <p className="text-4xl font-semibold tracking-tight">{tier.price}</p>
+                        </div>
+
+                        <ul className="mt-6 flex flex-col gap-3">
+                            {tier.features?.map((feature: string) => (
+                                <li key={feature} className="flex items-center gap-2 text-sm" style={{ color: "var(--text-secondary)" }}>
+                                    <Icon className="shrink-0" icon="ci:check" width={22} style={{ color: "var(--accent)" }} />
+                                    <span>{feature}</span>
+                                </li>
+                            ))}
+                        </ul>
+
+                        <div className="mt-8">
+                            <a
                                 href={tier.href}
-                                onClick={(e) => {
-                                    if (tier.href == "#") {
-                                        handleEmailClick(e)
+                                onClick={(event) => {
+                                    if (tier.href === "#") {
+                                        event.preventDefault()
+                                        setIsOpen(true)
                                     }
                                 }}
-                                className="bg-indigo-600 rounded-lg"
+                                className={`inline-flex h-11 w-full items-center justify-center rounded-xl text-sm font-medium transition ${
+                                    tier.href === "#" ? "theme-button-secondary" : "theme-button-primary"
+                                }`}
                             >
                                 {tier.buttonText}
-                            </Button>
-                        </CardFooter>
-                    </Card>
+                            </a>
+                        </div>
+                    </div>
                 ))}
             </div>
-            <Spacer y={12} />
+
             <ModalDialog
-                title="Request Pro"
-                content="Please email bytegush@hotmail.com with your learning use case and expected usage."
-                confirm="Go Back"
+                title={copy.pricing.requestProTitle}
+                content={copy.pricing.requestProContent}
+                confirm={copy.pricing.requestProConfirm}
                 open={isOpen}
                 onClose={() => {
                     setIsOpen(false)
-                }} />
+                }}
+            />
         </div>
     );
 }

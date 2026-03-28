@@ -1,4 +1,4 @@
-import type { Frequency, Tier } from "./pricing-types";
+import type { Tier } from "./pricing-types";
 import { TiersEnum } from "./pricing-types";
 
 export const tiers: Array<Tier> = [

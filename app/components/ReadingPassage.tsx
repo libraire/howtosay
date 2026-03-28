@@ -6,6 +6,7 @@ import { HeartIcon as HeartOutlineIcon } from "@heroicons/react/24/outline"
 import { HeartIcon as HeartSolidIcon } from "@heroicons/react/24/solid"
 import { fetchDefinitions } from "@/app/lib/dict-api"
 import { addWords } from "@/app/lib/practice-api"
+import { useAppPreferences } from "@/app/context/AppPreferencesProvider"
 import { useCustomAuth } from "@/app/context/CustomAuthProvider"
 
 const displaySerif = Cormorant_Garamond({
@@ -104,6 +105,7 @@ export default function ReadingPassage({
     canSavePassage: boolean
 }) {
     const { isAuthenticated, login } = useCustomAuth()
+    const { copy } = useAppPreferences()
     const [lookup, setLookup] = useState<LookupState | null>(null)
     const [definitionCache, setDefinitionCache] = useState<Record<string, DefinitionLookup>>({})
     const [addedWords, setAddedWords] = useState<Record<string, boolean>>({})
@@ -134,7 +136,7 @@ export default function ReadingPassage({
                             word: item.word,
                             displayWord: item.surface_word || item.display_word || item.word,
                             surfaceWord: item.surface_word || item.query_word || item.word,
-                            definition: item.definition ?? "No definition available yet.",
+                            definition: item.definition ?? copy.reading.noDefinition,
                         },
                     ])
                 )
@@ -144,7 +146,7 @@ export default function ReadingPassage({
                         word,
                         displayWord: word,
                         surfaceWord: word,
-                        definition: "No definition available yet.",
+                        definition: copy.reading.noDefinition,
                     }
                     return accumulator
                 }, {})
@@ -163,7 +165,7 @@ export default function ReadingPassage({
         return () => {
             cancelled = true
         }
-    }, [isAuthenticated, uniqueWords])
+    }, [copy.reading.noDefinition, isAuthenticated, uniqueWords])
 
     function clearHideTimer() {
         if (hideTimerRef.current) {
@@ -214,7 +216,7 @@ export default function ReadingPassage({
 
         if (!isAuthenticated) {
             setLookup((prev) => prev && prev.tokenId === tokenId
-                ? { ...prev, definition: "Login to view definitions.", loading: false }
+                ? { ...prev, definition: copy.reading.loginToViewDefinitions, loading: false }
                 : prev)
             return
         }
@@ -224,7 +226,8 @@ export default function ReadingPassage({
             const resolvedWord = words[0]?.word ?? word
             const surfaceWord = words[0]?.surface_word ?? word
             const displayWord = words[0]?.surface_word || words[0]?.display_word || word
-            const definition = words[0]?.definition ?? "No definition available yet."
+            const definition = words[0]?.definition ?? copy.reading.noDefinition
+
             setDefinitionCache((prev) => ({
                 ...prev,
                 [word]: {
@@ -234,6 +237,7 @@ export default function ReadingPassage({
                     definition,
                 },
             }))
+
             setLookup((prev) => prev && prev.tokenId === tokenId
                 ? {
                     ...prev,
@@ -247,8 +251,8 @@ export default function ReadingPassage({
                 : prev)
         } catch (error) {
             const definition = isUnauthenticatedError(error)
-                ? "Login to view definitions."
-                : "Failed to load definition."
+                ? copy.reading.loginToViewDefinitions
+                : copy.reading.failedToLoadDefinition
 
             setLookup((prev) => prev && prev.tokenId === tokenId
                 ? { ...prev, definition, loading: false }
@@ -278,8 +282,8 @@ export default function ReadingPassage({
                 style={{ backgroundColor: `${accent}18` }}
             />
             <div className="relative mx-auto max-w-3xl">
-                <blockquote className={`${displaySerif.className} text-[1.65rem] leading-[1.52] text-[#f6efe3] sm:text-[2.15rem] lg:text-[2.45rem]`}>
-                    <span className="mr-2 text-[#e2c48f]">“</span>
+                <blockquote className={`${displaySerif.className} text-[1.65rem] leading-[1.52] text-[color:var(--quote-text)] sm:text-[2.15rem] lg:text-[2.45rem]`}>
+                    <span className="mr-2 text-[color:var(--quote-accent)]">“</span>
                     {tokens.map((token, index) => {
                         const word = normalizeWord(token)
                         const tokenId = `${word || "token"}-${index}`
@@ -292,7 +296,11 @@ export default function ReadingPassage({
                         return (
                             <span
                                 key={`${token}-${index}`}
-                                className={`cursor-help rounded-sm transition ${isActive ? "bg-white/10 text-[#fff4d6]" : "hover:bg-white/7 hover:text-[#fff0c8]"}`}
+                                className={`cursor-help rounded-sm transition ${
+                                    isActive
+                                        ? "bg-[var(--button-secondary-hover)] text-[color:var(--text-primary)]"
+                                        : "hover:bg-[var(--button-secondary-bg)] hover:text-[color:var(--text-primary)]"
+                                }`}
                                 onMouseEnter={(event) => handleWordEnter(token, tokenId, event.currentTarget)}
                                 onMouseLeave={scheduleHide}
                             >
@@ -300,7 +308,7 @@ export default function ReadingPassage({
                             </span>
                         )
                     })}
-                    <span className="ml-2 text-[#e2c48f]">”</span>
+                    <span className="ml-2 text-[color:var(--quote-accent)]">”</span>
                 </blockquote>
 
                 <footer className="mt-14 pt-6">
@@ -312,9 +320,9 @@ export default function ReadingPassage({
                     />
                     <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
                         <div>
-                            <p className="text-sm uppercase tracking-[0.28em] text-white/38">Author</p>
-                            <p className="mt-3 text-base font-semibold text-white/84">{author}</p>
-                            <p className="mt-2 text-base italic text-white/64">
+                            <p className="theme-faint text-sm uppercase tracking-[0.28em]">{copy.reading.author}</p>
+                            <p className="mt-3 text-base font-semibold">{author}</p>
+                            <p className="theme-muted mt-2 text-base italic">
                                 {year ? `${work} · ${year}` : work}
                             </p>
                         </div>
@@ -324,9 +332,9 @@ export default function ReadingPassage({
                                 <button
                                     type="button"
                                     onClick={onPractice}
-                                    aria-label={practiceLoading ? "Preparing practice" : "Start practice"}
-                                    title={practiceLoading ? "Preparing practice" : "Start practice"}
-                                    className="rounded-full bg-white/[0.035] p-2.5 text-white/46 transition hover:bg-white hover:text-black"
+                                    aria-label={practiceLoading ? copy.reading.preparingPractice : copy.reading.startPractice}
+                                    title={practiceLoading ? copy.reading.preparingPractice : copy.reading.startPractice}
+                                    className="theme-button-secondary rounded-full p-2.5 transition"
                                 >
                                     <TypewriterIcon className="h-5 w-5" />
                                 </button>
@@ -338,21 +346,21 @@ export default function ReadingPassage({
                                     disabled={!canSavePassage}
                                     aria-label={
                                         canSavePassage
-                                            ? (passageSaved ? "Remove saved passage" : "Save this passage")
-                                            : "Save is unavailable for preview passages"
+                                            ? (passageSaved ? copy.reading.removeSavedPassage : copy.reading.savePassage)
+                                            : copy.reading.previewSaveUnavailable
                                     }
                                     title={
                                         canSavePassage
-                                            ? (passageSaved ? "Remove saved passage" : "Save this passage")
-                                            : "Save is unavailable for preview passages"
+                                            ? (passageSaved ? copy.reading.removeSavedPassage : copy.reading.savePassage)
+                                            : copy.reading.previewSaveUnavailable
                                     }
-                                    className="rounded-full bg-white/[0.035] p-2.5 text-white/46 transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:bg-white/[0.025] disabled:text-white/20"
+                                    className="theme-button-secondary rounded-full p-2.5 transition disabled:cursor-not-allowed disabled:opacity-30"
                                 >
                                     {passageSaved ? <HeartSolidIcon className="h-5 w-5" /> : <HeartOutlineIcon className="h-5 w-5" />}
                                 </button>
                                 {!isAuthenticated && canSavePassage && (
-                                    <span className="pointer-events-none absolute bottom-full left-1/2 mb-2 hidden -translate-x-1/2 whitespace-nowrap rounded-full border border-white/10 bg-[#161311] px-3 py-1 text-[11px] font-medium text-white/78 shadow-[0_12px_30px_rgba(0,0,0,0.35)] group-hover:block group-focus-within:block">
-                                        Login to save passages
+                                    <span className="theme-menu pointer-events-none absolute bottom-full left-1/2 mb-2 hidden -translate-x-1/2 whitespace-nowrap rounded-full px-3 py-1 text-[11px] font-medium text-[color:var(--text-secondary)] group-hover:block group-focus-within:block">
+                                        {copy.reading.loginToSavePassages}
                                     </span>
                                 )}
                             </div>
@@ -363,18 +371,18 @@ export default function ReadingPassage({
 
             {lookup && (
                 <div
-                    className="fixed z-50 w-[280px] rounded-2xl border border-white/10 bg-[#161311]/95 p-4 text-sm text-white shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur"
+                    className="theme-menu fixed z-50 w-[280px] rounded-2xl p-4 text-sm backdrop-blur"
                     style={{ top: lookup.top, left: lookup.left }}
                     onMouseEnter={clearHideTimer}
                     onMouseLeave={scheduleHide}
                 >
                     <div className="flex items-start justify-between gap-3">
                         <div>
-                            <p className="text-xs uppercase tracking-[0.28em] text-white/35">Lookup</p>
-                            <p className="mt-2 text-lg font-semibold capitalize text-[#fff0c8]">{lookup.displayWord}</p>
+                            <p className="theme-faint text-xs uppercase tracking-[0.28em]">{copy.reading.lookup}</p>
+                            <p className="mt-2 text-lg font-semibold capitalize text-[color:var(--accent)]">{lookup.displayWord}</p>
                             {lookup.word !== lookup.displayWord && (
-                                <p className="mt-1 text-xs uppercase tracking-[0.2em] text-white/38">
-                                    Canonical: {lookup.word}
+                                <p className="theme-faint mt-1 text-xs uppercase tracking-[0.2em]">
+                                    {copy.reading.canonical}: {lookup.word}
                                 </p>
                             )}
                         </div>
@@ -382,21 +390,21 @@ export default function ReadingPassage({
                             <button
                                 type="button"
                                 onClick={handleAddWord}
-                                aria-label={lookup.added ? "Added to word list" : "Add to word list"}
-                                title={lookup.added ? "Added to word list" : "Add to word list"}
+                                aria-label={lookup.added ? copy.reading.addedToWordList : copy.reading.addToWordList}
+                                title={lookup.added ? copy.reading.addedToWordList : copy.reading.addToWordList}
                                 className={`rounded-full p-2 transition ${lookup.added ? "bg-[#3c5f45] text-white" : "bg-[#e2c48f] text-[#1a1713] hover:bg-[#edd3a2]"}`}
                             >
                                 {lookup.added ? <HeartSolidIcon className="h-4 w-4" /> : <HeartOutlineIcon className="h-4 w-4" />}
                             </button>
                             {!isAuthenticated && !lookup.added && (
-                                <span className="pointer-events-none absolute bottom-full right-0 mb-2 hidden whitespace-nowrap rounded-full border border-white/10 bg-[#161311] px-3 py-1 text-[11px] font-medium text-white/78 shadow-[0_12px_30px_rgba(0,0,0,0.35)] group-hover:block group-focus-within:block">
-                                    Login to add words
+                                <span className="theme-menu pointer-events-none absolute bottom-full right-0 mb-2 hidden whitespace-nowrap rounded-full px-3 py-1 text-[11px] font-medium text-[color:var(--text-secondary)] group-hover:block group-focus-within:block">
+                                    {copy.reading.loginToAddWords}
                                 </span>
                             )}
                         </div>
                     </div>
-                    <p className="mt-4 leading-6 text-white/72">
-                        {lookup.loading ? "Loading definition..." : lookup.definition}
+                    <p className="theme-muted mt-4 leading-6">
+                        {lookup.loading ? copy.reading.loadingDefinition : lookup.definition}
                     </p>
                 </div>
             )}

@@ -51,7 +51,7 @@ export default function ReviewPage() {
 
     if (isLoading) {
         return (
-            <main className="flex min-h-screen flex-col items-center bg-[#101010] pb-10">
+            <main className="theme-page flex min-h-screen flex-col items-center pb-10">
                 <Navbar />
             </main>
         )
@@ -59,28 +59,28 @@ export default function ReviewPage() {
 
     if (!isAuthenticated) {
         return (
-            <main className="min-h-screen bg-[#101010] pb-12">
+            <main className="theme-page min-h-screen pb-12">
                 <Navbar />
                 <section className="mx-auto w-full max-w-6xl px-6 pb-12 pt-8">
-                    <div className="rounded-[32px] border border-white/10 bg-white/[0.04] p-8 shadow-[0_32px_100px_rgba(0,0,0,0.24)] backdrop-blur-sm">
-                        <p className="text-xs uppercase tracking-[0.28em] text-white/35">Progress</p>
-                        <h1 className="mt-3 text-3xl font-medium tracking-tight text-white">See your review rhythm in one place</h1>
-                        <p className="mt-4 max-w-2xl text-sm leading-7 text-white/58">
+                    <div className="theme-surface rounded-[32px] p-8">
+                        <p className="theme-faint text-xs uppercase tracking-[0.28em]">Progress</p>
+                        <h1 className="mt-3 text-3xl font-medium tracking-tight">See your review rhythm in one place</h1>
+                        <p className="theme-muted mt-4 max-w-2xl text-sm leading-7">
                             This page brings together your due queue, recent activity, memory profile, and the next best review action so you can keep the system healthy.
                         </p>
 
                         <div className="mt-8 grid gap-4 md:grid-cols-3">
-                            <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
-                                <div className="text-sm text-white">Due queue overview</div>
-                                <div className="mt-2 text-sm leading-6 text-white/55">See how many words are waiting and when it makes sense to start another review round.</div>
+                            <div className="theme-card rounded-3xl p-5">
+                                <div className="text-sm">Due queue overview</div>
+                                <div className="theme-muted mt-2 text-sm leading-6">See how many words are waiting and when it makes sense to start another review round.</div>
                             </div>
-                            <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
-                                <div className="text-sm text-white">Memory profile</div>
-                                <div className="mt-2 text-sm leading-6 text-white/55">Spot fragile words, stable words, and areas that still need repeated support.</div>
+                            <div className="theme-card rounded-3xl p-5">
+                                <div className="text-sm">Memory profile</div>
+                                <div className="theme-muted mt-2 text-sm leading-6">Spot fragile words, stable words, and areas that still need repeated support.</div>
                             </div>
-                            <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
-                                <div className="text-sm text-white">Weekly momentum</div>
-                                <div className="mt-2 text-sm leading-6 text-white/55">Follow review volume, streaks, and recent additions so progress stays visible.</div>
+                            <div className="theme-card rounded-3xl p-5">
+                                <div className="text-sm">Weekly momentum</div>
+                                <div className="theme-muted mt-2 text-sm leading-6">Follow review volume, streaks, and recent additions so progress stays visible.</div>
                             </div>
                         </div>
 
@@ -88,13 +88,13 @@ export default function ReviewPage() {
                             <button
                                 type="button"
                                 onClick={() => login()}
-                                className="inline-flex h-11 items-center rounded-xl bg-white px-5 text-sm font-medium text-black transition hover:bg-white/90"
+                                className="theme-button-primary inline-flex h-11 items-center rounded-xl px-5 text-sm font-medium transition"
                             >
                                 Login to view progress
                             </button>
                             <Link
                                 href="/"
-                                className="inline-flex h-11 items-center rounded-xl border border-white/10 bg-white/[0.04] px-5 text-sm font-medium text-white transition hover:bg-white/10"
+                                className="theme-button-secondary inline-flex h-11 items-center rounded-xl px-5 text-sm font-medium transition"
                             >
                                 Back to home
                             </Link>
@@ -114,7 +114,7 @@ export default function ReviewPage() {
     const canStartReview = !loadingPage && wordList.length > 0
 
     return (
-        <main className="min-h-screen bg-[#101010] pb-12">
+        <main className="theme-page min-h-screen pb-12">
             <Navbar />
 
             {practise ? (
@@ -134,31 +134,31 @@ export default function ReviewPage() {
                     <AudioComponent str={"xxxx"} />
 
                     <section className="mx-auto w-full max-w-6xl px-6 pb-12 pt-8">
-                        <div className="rounded-[32px] border border-white/10 bg-white/[0.04] p-6 shadow-[0_32px_100px_rgba(0,0,0,0.24)] backdrop-blur-sm">
-                            <div className="flex flex-col gap-6 border-b border-white/10 pb-6 lg:flex-row lg:items-end lg:justify-between">
+                        <div className="theme-surface rounded-[32px] p-6">
+                            <div className="flex flex-col gap-6 border-b pb-6 lg:flex-row lg:items-end lg:justify-between" style={{ borderColor: "var(--border-soft)" }}>
                                 <div>
-                                    <p className="text-xs uppercase tracking-[0.28em] text-white/35">Progress</p>
-                                    <h1 className="mt-3 text-3xl font-medium tracking-tight text-white">Learning overview</h1>
-                                    <p className="mt-3 max-w-2xl text-sm leading-7 text-white/58">
+                                    <p className="theme-faint text-xs uppercase tracking-[0.28em]">Progress</p>
+                                    <h1 className="mt-3 text-3xl font-medium tracking-tight">Learning overview</h1>
+                                    <p className="theme-muted mt-3 max-w-2xl text-sm leading-7">
                                         Track what is due, see where your memory is fragile, and jump straight into a review round when you are ready.
                                     </p>
                                 </div>
 
                                 <div className="flex flex-wrap items-center gap-3">
-                                    <div className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-white/70">
+                                    <div className="theme-button-secondary rounded-full px-4 py-2 text-sm">
                                         {loadingPage ? "Loading..." : `${totalDue} words due`}
                                     </div>
                                     {canStartReview && (
                                         <button
                                             type="button"
                                             onClick={() => setPractise(true)}
-                                            className="inline-flex h-10 items-center rounded-xl bg-white px-4 text-sm font-medium text-black transition hover:bg-white/90"
+                                            className="theme-button-primary inline-flex h-10 items-center rounded-xl px-4 text-sm font-medium transition"
                                         >
                                             Start review
                                         </button>
                                     )}
                                     {!canStartReview && !loadingPage && (
-                                        <Link href="/vocabulary" className="inline-flex h-10 items-center rounded-xl border border-white/10 bg-white/[0.04] px-4 text-sm font-medium text-white transition hover:bg-white/10">
+                                        <Link href="/vocabulary" className="theme-button-secondary inline-flex h-10 items-center rounded-xl px-4 text-sm font-medium transition">
                                             Open vocabulary
                                         </Link>
                                     )}
@@ -166,7 +166,7 @@ export default function ReviewPage() {
                             </div>
 
                             {loadingPage || !summary ? (
-                                <div className="py-16 text-center text-sm text-white/50">Loading review dashboard...</div>
+                                <div className="theme-muted py-16 text-center text-sm">Loading review dashboard...</div>
                             ) : (
                                 <>
                                     <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">

@@ -5,6 +5,7 @@ import AudioComponent from "../components/AudioComponent"
 import Navbar from "../components/Navbar"
 import PractiseComponent from "../components/PractiseComponent"
 import type { Word } from "../components/types"
+import { useAppPreferences } from "../context/AppPreferencesProvider"
 import { fetchDailyWords } from "../lib/dict-api"
 
 function shuffleWords(list: Word[]) {
@@ -17,6 +18,7 @@ function shuffleWords(list: Word[]) {
 }
 
 export default function DailyPage() {
+    const { copy } = useAppPreferences()
     const [wordList, setWordList] = useState<Word[]>([])
     const [loading, setLoading] = useState(true)
     const [hasError, setHasError] = useState(false)
@@ -54,22 +56,22 @@ export default function DailyPage() {
     }, [])
 
     return (
-        <main className="flex min-h-screen flex-col items-center bg-[#101010]">
+        <main className="theme-page flex min-h-screen flex-col items-center">
             <Navbar check={false} />
             <AudioComponent str={"xxxx"} />
 
             <section className="flex w-full flex-col items-center">
                 <div className="mt-10 max-w-2xl px-6 text-center">
-                    <h1 className="text-4xl font-medium tracking-tight text-white">Daily Guess</h1>
-                    <p className="mt-3 text-sm text-white/65">
-                        A short daily word-guess challenge with text clues and spelling practice.
+                    <h1 className="text-4xl font-medium tracking-tight">{copy.daily.title}</h1>
+                    <p className="theme-muted mt-3 text-sm">
+                        {copy.daily.intro}
                     </p>
                 </div>
 
                 {loading ? (
-                    <div className="mt-16 text-sm text-white/55">Loading daily challenge...</div>
+                    <div className="theme-muted mt-16 text-sm">{copy.daily.loading}</div>
                 ) : hasError ? (
-                    <div className="mt-16 text-sm text-white/55">Unable to load today&apos;s words right now.</div>
+                    <div className="theme-muted mt-16 text-sm">{copy.daily.error}</div>
                 ) : wordList.length > 0 ? (
                     <PractiseComponent
                         list={wordList}
@@ -78,7 +80,7 @@ export default function DailyPage() {
                         showVisualHints={false}
                     />
                 ) : (
-                    <div className="mt-16 text-sm text-white/55">No daily challenge is available yet.</div>
+                    <div className="theme-muted mt-16 text-sm">{copy.daily.empty}</div>
                 )}
             </section>
         </main>

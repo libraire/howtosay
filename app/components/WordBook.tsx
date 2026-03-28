@@ -5,6 +5,7 @@ import LevelComponent from "./LevelComponent"
 import type { WordModel } from "@/app/lib/dict-models";
 import { ignoreWord, removeWord, updateWordLevel } from "@/app/lib/practice-api";
 import { fetchDefinitions } from "@/app/lib/dict-api";
+import { useAppPreferences } from "@/app/context/AppPreferencesProvider";
 
 type HoverCardState = {
     index: number
@@ -18,6 +19,7 @@ type DefinitionLookup = {
 }
 
 const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: number | null, name: string }) => void }> = ({ wordList, onCollectionChange }) => {
+    const { copy } = useAppPreferences()
 
     const [mylist, setWordList] = useState<WordModel[]>(wordList ?? []);
     const [hoverCard, setHoverCard] = useState<HoverCardState | null>(null)
@@ -129,23 +131,23 @@ const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: 
             case "ignored":
                 return "border-[#c7b4e6]/20 bg-[#c7b4e6]/10 text-[#eadff8]"
             default:
-                return "border-white/10 bg-white/[0.03] text-white/45"
+                return "theme-button-secondary text-[var(--text-faint)]"
         }
     }
 
     function memoryBadgeLabel(badge?: string | null) {
         switch (badge) {
             case "fragile":
-                return "Fragile"
+                return copy.wordBook.fragile
             case "building":
-                return "Building"
+                return copy.wordBook.building
             case "stable":
-                return "Stable"
+                return copy.wordBook.stable
             case "mastered":
             case "ignored":
-                return "Mastered"
+                return copy.wordBook.mastered
             default:
-                return "Untracked"
+                return copy.wordBook.untracked
         }
     }
 
@@ -153,42 +155,42 @@ const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: 
         setHoverCard({
             index,
             word: item.display_word || item.canonical || item.word,
-            definition: item.definition || "Loading definition...",
+            definition: item.definition || copy.wordBook.loadingDefinition,
         })
     }
 
     return (
         <div className="w-full">
-            <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-[0_24px_80px_rgba(0,0,0,0.18)]">
+            <div className="theme-panel overflow-hidden rounded-3xl">
                 <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-white/10">
-                        <thead className="bg-white/[0.03]">
+                    <table className="min-w-full" style={{ borderColor: "var(--border-soft)" }}>
+                        <thead style={{ background: "var(--button-secondary-bg)" }}>
                             <tr>
-                                <th scope="col" className="py-4 pl-6 pr-3 text-left text-xs font-medium uppercase tracking-[0.22em] text-white/45">
-                                    Word
+                                <th scope="col" className="theme-faint py-4 pl-6 pr-3 text-left text-xs font-medium uppercase tracking-[0.22em]">
+                                    {copy.wordBook.word}
                                 </th>
-                                <th scope="col" className="px-3 py-4 text-left text-xs font-medium uppercase tracking-[0.22em] text-white/45">
-                                    Memory
+                                <th scope="col" className="theme-faint px-3 py-4 text-left text-xs font-medium uppercase tracking-[0.22em]">
+                                    {copy.wordBook.memory}
                                 </th>
-                                <th scope="col" className="px-3 py-4 text-left text-xs font-medium uppercase tracking-[0.22em] text-white/45">
-                                    Familiarity
+                                <th scope="col" className="theme-faint px-3 py-4 text-left text-xs font-medium uppercase tracking-[0.22em]">
+                                    {copy.wordBook.familiarity}
                                 </th>
-                                <th scope="col" className="px-3 py-4 text-left text-xs font-medium uppercase tracking-[0.22em] text-white/45">
-                                    Query
+                                <th scope="col" className="theme-faint px-3 py-4 text-left text-xs font-medium uppercase tracking-[0.22em]">
+                                    {copy.wordBook.query}
                                 </th>
-                                <th scope="col" className="px-6 py-4 text-left text-xs font-medium uppercase tracking-[0.22em] text-white/45">
-                                    Actions
+                                <th scope="col" className="theme-faint px-6 py-4 text-left text-xs font-medium uppercase tracking-[0.22em]">
+                                    {copy.wordBook.actions}
                                 </th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/10">
+                        <tbody style={{ borderColor: "var(--border-soft)" }}>
                             {mylist?.length > 0 ? mylist.map((item, index) => (
-                                <tr key={index} className="transition hover:bg-white/[0.025]">
-                                    <td className="whitespace-nowrap py-4 pl-6 pr-3 text-sm font-medium text-white">
+                                <tr key={index} className="transition hover:bg-[var(--button-secondary-bg)]">
+                                    <td className="whitespace-nowrap py-4 pl-6 pr-3 text-sm font-medium">
                                         <div className="relative inline-flex items-center">
                                             <button
                                                 type="button"
-                                                className="inline-flex w-fit cursor-help items-center rounded-md text-left decoration-white/20 underline-offset-4 transition hover:text-[#fff0c8]"
+                                                className="inline-flex w-fit cursor-help items-center rounded-md text-left underline decoration-[var(--border-strong)] underline-offset-4 transition hover:text-[var(--quote-accent)]"
                                                 onMouseEnter={() => showHoverCard(item, index)}
                                                 onMouseLeave={() => setHoverCard(null)}
                                             >
@@ -196,48 +198,48 @@ const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: 
                                             </button>
                                             {hoverCard?.index === index && (
                                                 <div
-                                                    className="pointer-events-none absolute left-full top-1/2 z-20 ml-2 w-[320px] -translate-y-1/2 rounded-2xl border border-white/10 bg-[#161311]/95 p-4 text-sm text-white shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur"
+                                                    className="theme-menu pointer-events-none absolute left-full top-1/2 z-20 ml-2 w-[320px] -translate-y-1/2 rounded-2xl p-4 text-sm shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur"
                                                 >
-                                                    <div className="text-xs uppercase tracking-[0.28em] text-white/35">Definition</div>
-                                                    <div className="mt-2 text-base font-semibold text-[#fff0c8]">{hoverCard.word}</div>
-                                                    <div className="mt-3 whitespace-pre-line leading-6 text-white/72">
+                                                    <div className="theme-faint text-xs uppercase tracking-[0.28em]">{copy.wordBook.definition}</div>
+                                                    <div className="mt-2 text-base font-semibold text-[var(--quote-accent)]">{hoverCard.word}</div>
+                                                    <div className="theme-muted mt-3 whitespace-pre-line leading-6">
                                                         {hoverCard.definition}
                                                     </div>
                                                 </div>
                                             )}
                                         </div>
                                     </td>
-                                    <td className="whitespace-nowrap px-3 py-4 text-sm text-white/70">
+                                    <td className="theme-muted whitespace-nowrap px-3 py-4 text-sm">
                                         <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-medium ${memoryBadgeClass(getDisplayMemoryBadge(item))}`}>
                                             {memoryBadgeLabel(getDisplayMemoryBadge(item))}
                                         </span>
                                     </td>
-                                    <td className="whitespace-nowrap px-3 py-4 text-sm text-white/70">
+                                    <td className="theme-muted whitespace-nowrap px-3 py-4 text-sm">
                                         <LevelComponent updateLevel={(level) => {
                                             handleUpdateLevel(item, level == item.level ? 0 : level)
                                         }} currentLevel={getDisplayFamiliarityLevel(item)} pages={[1, 2, 3, 4, 5]} />
                                     </td>
-                                    <td className="whitespace-nowrap px-3 py-4 text-sm text-white/55">{item.query_count ?? 0}</td>
+                                    <td className="theme-faint whitespace-nowrap px-3 py-4 text-sm">{item.query_count ?? 0}</td>
                                     <td className="whitespace-nowrap px-6 py-4 text-sm font-medium">
-                                        <div className="flex items-center gap-4 text-white/55">
+                                        <div className="theme-faint flex items-center gap-4">
                                             <button
                                                 type="button"
                                                 className="transition hover:text-white"
                                                 onClick={() => handleIgnoreWord(item, index)}
-                                                title="Ignore word"
+                                                title={copy.wordBook.ignoreWord}
                                             >
                                                 <EyeSlashIcon className="h-5 w-5" />
                                             </button>
 
-                                            <Link target="_blank" href={'https://youglish.com/pronounce/' + item.word + '/english?'} className="transition hover:text-white" title="Listen on YouGlish">
+                                            <Link target="_blank" href={'https://youglish.com/pronounce/' + item.word + '/english?'} className="transition hover:text-[var(--text-primary)]" title={copy.wordBook.listenOnYouGlish}>
                                                 <PlayCircleIcon className="h-5 w-5" />
                                             </Link>
 
                                             <button
                                                 type="button"
-                                                className="transition hover:text-white"
+                                                className="transition hover:text-[var(--text-primary)]"
                                                 onClick={() => handleRemoveWord(item, index)}
-                                                title="Remove word"
+                                                title={copy.wordBook.removeWord}
                                             >
                                                 <TrashIcon className="h-5 w-5" />
                                             </button>
@@ -246,8 +248,8 @@ const WordBook: React.FC<{ wordList: WordModel[], onCollectionChange: (e: { id: 
                                 </tr>
                             )) : (
                                 <tr>
-                                    <td colSpan={5} className="px-6 py-12 text-center text-sm text-white/45">
-                                        No saved words in this view yet.
+                                    <td colSpan={5} className="theme-faint px-6 py-12 text-center text-sm">
+                                        {copy.wordBook.empty}
                                     </td>
                                 </tr>
                             )}

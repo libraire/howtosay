@@ -6,9 +6,11 @@ import Navbar from "@/app/components/Navbar"
 import { useCustomAuth } from "@/app/context/CustomAuthProvider"
 import { createDeck, fetchDecks } from "@/app/lib/cards-api"
 import type { DeckSummary } from "@/app/lib/cards-models"
+import { useAppPreferences } from "@/app/context/AppPreferencesProvider"
 
 export default function CardsPage() {
     const { isAuthenticated, isLoading, login } = useCustomAuth()
+    const { copy } = useAppPreferences()
     const [decks, setDecks] = useState<DeckSummary[]>([])
     const [loadingDecks, setLoadingDecks] = useState(true)
     const [saving, setSaving] = useState(false)
@@ -30,7 +32,7 @@ export default function CardsPage() {
             setDecks(await fetchDecks())
         } catch (deckError) {
             console.error("Failed to load decks:", deckError)
-            setError(deckError instanceof Error ? deckError.message : "Unable to load decks.")
+            setError(deckError instanceof Error ? deckError.message : copy.cards.loadDecksFailed)
         } finally {
             setLoadingDecks(false)
         }
@@ -53,7 +55,7 @@ export default function CardsPage() {
             setName("")
             setDescription("")
         } catch (createError) {
-            setError(createError instanceof Error ? createError.message : "Unable to create deck.")
+            setError(createError instanceof Error ? createError.message : copy.cards.createDeckFailed)
         } finally {
             setSaving(false)
         }
@@ -64,7 +66,7 @@ export default function CardsPage() {
 
     if (isLoading) {
         return (
-            <main className="min-h-screen bg-[#101010]">
+            <main className="theme-page min-h-screen">
                 <Navbar />
             </main>
         )
@@ -72,32 +74,32 @@ export default function CardsPage() {
 
     if (!isAuthenticated) {
         return (
-            <main className="min-h-screen bg-[#101010] pb-12">
+            <main className="theme-page min-h-screen pb-12">
                 <Navbar />
                 <section className="mx-auto w-full max-w-6xl px-6 pb-12 pt-8">
-                    <div className="rounded-[36px] border border-white/10 bg-white/[0.04] p-8 shadow-[0_32px_100px_rgba(0,0,0,0.24)]">
-                        <p className="text-xs uppercase tracking-[0.28em] text-white/35">Cards</p>
-                        <h1 className="mt-3 text-3xl font-medium tracking-tight text-white">Build reusable memory decks for anything</h1>
-                        <p className="mt-4 max-w-2xl text-sm leading-7 text-white/58">
-                            Create Anki-like cards for concepts, interview answers, language notes, or any material you want to revisit on a schedule.
+                    <div className="theme-surface rounded-[36px] p-8">
+                        <p className="theme-faint text-xs uppercase tracking-[0.28em]">{copy.cards.title}</p>
+                        <h1 className="mt-3 text-3xl font-medium tracking-tight">{copy.cards.marketingTitle}</h1>
+                        <p className="theme-muted mt-4 max-w-2xl text-sm leading-7">
+                            {copy.cards.marketingBody}
                         </p>
 
                         <div className="mt-8 grid gap-4 md:grid-cols-3">
-                            <FeatureCard title="Any content" text="Mix text, images, audio, and links inside the same card." />
-                            <FeatureCard title="Deck-based review" text="Group cards by topic and review only the deck you care about." />
-                            <FeatureCard title="Memory curve reuse" text="Use the same scheduling engine already powering the vocabulary experience." />
+                            <FeatureCard title={copy.cards.feature1Title} text={copy.cards.feature1Body} />
+                            <FeatureCard title={copy.cards.feature2Title} text={copy.cards.feature2Body} />
+                            <FeatureCard title={copy.cards.feature3Title} text={copy.cards.feature3Body} />
                         </div>
 
                         <div className="mt-8 flex flex-wrap gap-3">
                             <button
                                 type="button"
                                 onClick={() => login()}
-                                className="inline-flex h-11 items-center rounded-xl bg-white px-5 text-sm font-medium text-black transition hover:bg-white/90"
+                                className="theme-button-primary inline-flex h-11 items-center rounded-xl px-5 text-sm font-medium transition"
                             >
-                                Login to create cards
+                                {copy.cards.loginCta}
                             </button>
-                            <Link href="/" className="inline-flex h-11 items-center rounded-xl border border-white/10 bg-white/[0.04] px-5 text-sm font-medium text-white transition hover:bg-white/10">
-                                Back to home
+                            <Link href="/" className="theme-button-secondary inline-flex h-11 items-center rounded-xl px-5 text-sm font-medium transition">
+                                {copy.common.backHome}
                             </Link>
                         </div>
                     </div>
@@ -107,37 +109,37 @@ export default function CardsPage() {
     }
 
     return (
-        <main className="min-h-screen bg-[#101010] pb-12">
+        <main className="theme-page min-h-screen pb-12">
             <Navbar />
             <section className="mx-auto w-full max-w-6xl px-6 pb-12 pt-8">
                 <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-                    <div className="rounded-[36px] border border-white/10 bg-white/[0.04] p-8 shadow-[0_32px_100px_rgba(0,0,0,0.24)]">
-                        <p className="text-xs uppercase tracking-[0.28em] text-white/35">Cards</p>
-                        <h1 className="mt-3 text-3xl font-medium tracking-tight text-white">Your memory decks</h1>
-                        <p className="mt-4 max-w-2xl text-sm leading-7 text-white/58">
-                            Keep reusable review decks beside your vocabulary workflow and open a focused review round whenever cards come due.
+                    <div className="theme-surface rounded-[36px] p-8">
+                        <p className="theme-faint text-xs uppercase tracking-[0.28em]">{copy.cards.title}</p>
+                        <h1 className="mt-3 text-3xl font-medium tracking-tight">{copy.cards.decksTitle}</h1>
+                        <p className="theme-muted mt-4 max-w-2xl text-sm leading-7">
+                            {copy.cards.decksBody}
                         </p>
 
                         <div className="mt-8 grid gap-4 sm:grid-cols-3">
-                            <StatCard label="Decks" value={decks.length} />
-                            <StatCard label="Cards" value={totalCards} />
-                            <StatCard label="Due now" value={totalDue} />
+                            <StatCard label={copy.cards.statsDecks} value={decks.length} />
+                            <StatCard label={copy.cards.statsCards} value={totalCards} />
+                            <StatCard label={copy.cards.statsDueNow} value={totalDue} />
                         </div>
 
                         <div className="mt-8">
                             <Link
                                 href="/cards/review"
-                                className="inline-flex h-11 items-center rounded-xl bg-white px-5 text-sm font-medium text-black transition hover:bg-white/90"
+                                className="theme-button-primary inline-flex h-11 items-center rounded-xl px-5 text-sm font-medium transition"
                             >
-                                Open cards review
+                                {copy.cards.openReview}
                             </Link>
                         </div>
                     </div>
 
-                    <form onSubmit={handleCreateDeck} className="rounded-[36px] border border-white/10 bg-white/[0.04] p-8 shadow-[0_32px_100px_rgba(0,0,0,0.24)]">
-                        <h2 className="text-xl font-medium text-white">Create a deck</h2>
-                        <p className="mt-2 text-sm leading-7 text-white/48">
-                            Start with a topic, then add cards inside the deck page.
+                    <form onSubmit={handleCreateDeck} className="theme-surface rounded-[36px] p-8">
+                        <h2 className="text-xl font-medium">{copy.cards.createDeckTitle}</h2>
+                        <p className="theme-faint mt-2 text-sm leading-7">
+                            {copy.cards.createDeckBody}
                         </p>
 
                         <div className="mt-6 space-y-4">
@@ -145,15 +147,15 @@ export default function CardsPage() {
                                 type="text"
                                 value={name}
                                 onChange={(event) => setName(event.target.value)}
-                                placeholder="Deck name"
-                                className="h-12 w-full rounded-2xl border border-white/10 bg-[#111111] px-4 text-sm text-white placeholder:text-white/30 focus:border-white/20 focus:outline-none"
+                                placeholder={copy.cards.deckName}
+                                className="theme-input h-12 w-full rounded-2xl px-4 text-sm focus:outline-none"
                             />
                             <textarea
                                 rows={4}
                                 value={description}
                                 onChange={(event) => setDescription(event.target.value)}
-                                placeholder="What kind of material lives in this deck?"
-                                className="w-full rounded-2xl border border-white/10 bg-[#111111] px-4 py-3 text-sm text-white placeholder:text-white/30 focus:border-white/20 focus:outline-none"
+                                placeholder={copy.cards.deckDescription}
+                                className="theme-input w-full rounded-2xl px-4 py-3 text-sm focus:outline-none"
                             />
                         </div>
 
@@ -166,51 +168,51 @@ export default function CardsPage() {
                         <button
                             type="submit"
                             disabled={saving}
-                            className="mt-6 inline-flex h-11 items-center rounded-xl bg-white px-5 text-sm font-medium text-black transition hover:bg-white/90 disabled:cursor-not-allowed disabled:bg-white/50"
+                            className="theme-button-primary mt-6 inline-flex h-11 items-center rounded-xl px-5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50"
                         >
-                            {saving ? "Creating..." : "Create deck"}
+                            {saving ? copy.cards.creatingDeck : copy.cards.createDeck}
                         </button>
                     </form>
                 </div>
 
-                <div className="mt-8 rounded-[36px] border border-white/10 bg-white/[0.04] p-6 shadow-[0_32px_100px_rgba(0,0,0,0.24)]">
+                <div className="theme-surface mt-8 rounded-[36px] p-6">
                     <div className="flex items-center justify-between gap-4">
                         <div>
-                            <h2 className="text-xl font-medium text-white">Deck library</h2>
-                            <p className="mt-2 text-sm text-white/48">Open a deck to add, edit, archive, or review its cards.</p>
+                            <h2 className="text-xl font-medium">{copy.cards.libraryTitle}</h2>
+                            <p className="theme-faint mt-2 text-sm">{copy.cards.libraryBody}</p>
                         </div>
                     </div>
 
                     {loadingDecks ? (
-                        <div className="py-12 text-center text-sm text-white/48">Loading decks...</div>
+                        <div className="theme-faint py-12 text-center text-sm">{copy.cards.loadingDecks}</div>
                     ) : decks.length === 0 ? (
-                        <div className="py-12 text-center text-sm text-white/48">No decks yet. Create your first deck to start building cards.</div>
+                        <div className="theme-faint py-12 text-center text-sm">{copy.cards.emptyDecks}</div>
                     ) : (
                         <div className="mt-6 grid gap-4 md:grid-cols-2">
                             {decks.map((deck) => (
                                 <Link
                                     key={deck.id}
                                     href={`/cards/decks/${deck.id}`}
-                                    className="rounded-3xl border border-white/10 bg-black/20 p-5 transition hover:bg-black/30"
+                                    className="theme-card rounded-3xl p-5 transition hover:bg-[var(--button-secondary-hover)]"
                                 >
                                     <div className="flex items-start justify-between gap-3">
                                         <div>
-                                            <h3 className="text-lg font-medium text-white">{deck.name}</h3>
-                                            <p className="mt-2 text-sm leading-7 text-white/48">
-                                                {deck.description || "No description yet."}
+                                            <h3 className="text-lg font-medium">{deck.name}</h3>
+                                            <p className="theme-faint mt-2 text-sm leading-7">
+                                                {deck.description || copy.common.noDescription}
                                             </p>
                                         </div>
                                         {deck.isArchived && (
-                                            <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-xs uppercase tracking-[0.18em] text-white/55">
-                                                Archived
+                                            <span className="theme-button-secondary rounded-full px-3 py-1 text-xs uppercase tracking-[0.18em]">
+                                                {copy.common.archived}
                                             </span>
                                         )}
                                     </div>
 
-                                    <div className="mt-5 flex flex-wrap gap-2 text-xs uppercase tracking-[0.18em] text-white/45">
-                                        <span>{deck.cardCount} cards</span>
-                                        <span>{deck.dueCount} due</span>
-                                        <span>{deck.newCardCount} new</span>
+                                    <div className="theme-faint mt-5 flex flex-wrap gap-2 text-xs uppercase tracking-[0.18em]">
+                                        <span>{copy.cards.cardsCount.replace("{count}", String(deck.cardCount))}</span>
+                                        <span>{copy.cards.dueCount.replace("{count}", String(deck.dueCount))}</span>
+                                        <span>{copy.cards.newCount.replace("{count}", String(deck.newCardCount))}</span>
                                     </div>
                                 </Link>
                             ))}
@@ -224,18 +226,18 @@ export default function CardsPage() {
 
 function StatCard({ label, value }: { label: string; value: number }) {
     return (
-        <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
-            <div className="text-sm text-white/45">{label}</div>
-            <div className="mt-3 text-3xl font-medium tracking-tight text-white">{value}</div>
+        <div className="theme-card rounded-3xl p-5">
+            <div className="theme-faint text-sm">{label}</div>
+            <div className="mt-3 text-3xl font-medium tracking-tight">{value}</div>
         </div>
     )
 }
 
 function FeatureCard({ title, text }: { title: string; text: string }) {
     return (
-        <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
-            <div className="text-sm font-medium text-white">{title}</div>
-            <div className="mt-2 text-sm leading-6 text-white/55">{text}</div>
+        <div className="theme-card rounded-3xl p-5">
+            <div className="text-sm font-medium">{title}</div>
+            <div className="theme-muted mt-2 text-sm leading-6">{text}</div>
         </div>
     )
 }

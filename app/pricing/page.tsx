@@ -4,10 +4,13 @@ import AudioComponent from "../components/AudioComponent"
 import Navbar from "../components/Navbar"
 import PriceComponent from "../components/PriceComponent"
 import VideoPlayer from "../components/VideoComponent"
+import { useAppPreferences } from "../context/AppPreferencesProvider"
 
 export default function PricingPage() {
+    const { copy } = useAppPreferences()
+
     return (
-        <main className="flex min-h-screen flex-col items-center bg-[#101010]">
+        <main className="theme-page flex min-h-screen flex-col items-center">
             <Navbar check={false} />
             <AudioComponent str={"xxxx"} />
 
@@ -16,33 +19,29 @@ export default function PricingPage() {
 
                 <section className="w-full max-w-6xl px-6 pb-24">
                     <div className="mx-auto max-w-3xl text-center">
-                        <h2 className="text-3xl font-medium tracking-tight text-white">What Pro unlocks</h2>
-                        <p className="mt-3 text-sm leading-7 text-white/60">
-                            HowToSay Pro is designed for learners who want a more structured workflow, deeper exposure,
-                            and better control over long-term vocabulary retention.
+                        <h2 className="text-3xl font-medium tracking-tight">{copy.pricing.unlockTitle}</h2>
+                        <p className="theme-muted mt-3 text-sm leading-7">
+                            {copy.pricing.unlockDescription}
                         </p>
                     </div>
 
                     <div className="mt-12 grid gap-5 md:grid-cols-3">
-                        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-                            <h3 className="text-lg font-medium text-white">Advanced practice modes</h3>
-                            <p className="mt-3 text-sm leading-7 text-white/60">
-                                Move beyond basic guessing with richer exercises, audio-supported prompts, and more
-                                demanding recognition-to-recall flows.
+                        <div className="theme-card rounded-2xl p-6">
+                            <h3 className="text-lg font-medium">{copy.pricing.advancedTitle}</h3>
+                            <p className="theme-muted mt-3 text-sm leading-7">
+                                {copy.pricing.advancedDescription}
                             </p>
                         </div>
-                        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-                            <h3 className="text-lg font-medium text-white">Deeper content coverage</h3>
-                            <p className="mt-3 text-sm leading-7 text-white/60">
-                                Access broader vocabulary, more examples, and stronger sentence context for learning
-                                words in real usage rather than in isolation.
+                        <div className="theme-card rounded-2xl p-6">
+                            <h3 className="text-lg font-medium">{copy.pricing.coverageTitle}</h3>
+                            <p className="theme-muted mt-3 text-sm leading-7">
+                                {copy.pricing.coverageDescription}
                             </p>
                         </div>
-                        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-                            <h3 className="text-lg font-medium text-white">Personal learning control</h3>
-                            <p className="mt-3 text-sm leading-7 text-white/60">
-                                Maintain your own word book, organize what matters, and keep reviewing with a workflow
-                                built for continuous progress.
+                        <div className="theme-card rounded-2xl p-6">
+                            <h3 className="text-lg font-medium">{copy.pricing.controlTitle}</h3>
+                            <p className="theme-muted mt-3 text-sm leading-7">
+                                {copy.pricing.controlDescription}
                             </p>
                         </div>
                     </div>

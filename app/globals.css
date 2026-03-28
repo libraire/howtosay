@@ -2,10 +2,63 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 0, 0, 0;
-  --background-end-rgb: 0, 0, 0;
+:root,
+html[data-theme="dark"] {
+  --page-bg: #101010;
+  --page-bg-soft: #141311;
+  --surface-solid: rgba(22, 19, 17, 0.94);
+  --surface-frost: rgba(255, 255, 255, 0.04);
+  --surface-strong: #111111;
+  --overlay-bg: rgba(0, 0, 0, 0.82);
+  --header-bg: rgba(16, 16, 16, 0.88);
+  --header-border: rgba(255, 255, 255, 0.08);
+  --border-soft: rgba(255, 255, 255, 0.1);
+  --border-strong: rgba(255, 255, 255, 0.16);
+  --text-primary: #f6efe3;
+  --text-secondary: rgba(246, 239, 227, 0.78);
+  --text-muted: rgba(246, 239, 227, 0.58);
+  --text-faint: rgba(246, 239, 227, 0.36);
+  --button-primary-bg: #f6efe3;
+  --button-primary-text: #171310;
+  --button-secondary-bg: rgba(255, 255, 255, 0.04);
+  --button-secondary-hover: rgba(255, 255, 255, 0.1);
+  --input-bg: rgba(0, 0, 0, 0.18);
+  --accent: #d3b07a;
+  --quote-text: #f6efe3;
+  --quote-accent: #e2c48f;
+  --glow-amber: rgba(138, 103, 64, 0.22);
+  --glow-teal: rgba(47, 72, 88, 0.3);
+  --glow-rose: rgba(95, 75, 139, 0.12);
+  --surface-shadow: 0 24px 80px rgba(0, 0, 0, 0.22);
+}
+
+html[data-theme="light"] {
+  --page-bg: #f7f3ed;
+  --page-bg-soft: #fffaf4;
+  --surface-solid: rgba(255, 255, 255, 0.96);
+  --surface-frost: rgba(255, 255, 255, 0.74);
+  --surface-strong: #ffffff;
+  --overlay-bg: rgba(244, 238, 229, 0.76);
+  --header-bg: rgba(255, 255, 255, 0.88);
+  --header-border: rgba(96, 72, 48, 0.12);
+  --border-soft: rgba(96, 72, 48, 0.12);
+  --border-strong: rgba(96, 72, 48, 0.18);
+  --text-primary: #201912;
+  --text-secondary: rgba(32, 25, 18, 0.8);
+  --text-muted: rgba(32, 25, 18, 0.62);
+  --text-faint: rgba(32, 25, 18, 0.42);
+  --button-primary-bg: #201912;
+  --button-primary-text: #fffaf4;
+  --button-secondary-bg: rgba(96, 72, 48, 0.06);
+  --button-secondary-hover: rgba(96, 72, 48, 0.1);
+  --input-bg: rgba(255, 255, 255, 0.88);
+  --accent: #b7874d;
+  --quote-text: #2b2218;
+  --quote-accent: #b7874d;
+  --glow-amber: rgba(214, 175, 123, 0.18);
+  --glow-teal: rgba(118, 172, 178, 0.18);
+  --glow-rose: rgba(201, 160, 176, 0.16);
+  --surface-shadow: 0 24px 70px rgba(66, 47, 29, 0.08);
 }
 
 html {
@@ -13,13 +66,9 @@ html {
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  color: var(--text-primary);
+  background: var(--page-bg);
+  transition: background-color 200ms ease, color 200ms ease;
 }
 
 @layer utilities {
@@ -38,7 +87,83 @@ body {
 }
 
 em {
-  color: #f2d56c;
+  color: var(--accent);
+}
+
+.theme-page {
+  min-height: 100vh;
+  color: var(--text-primary);
+  background:
+    radial-gradient(circle at left top, var(--glow-amber), transparent 32%),
+    radial-gradient(circle at right top, var(--glow-teal), transparent 36%),
+    linear-gradient(180deg, var(--page-bg) 0%, var(--page-bg-soft) 100%);
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+.theme-surface {
+  background: var(--surface-frost);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--surface-shadow);
+  backdrop-filter: blur(20px);
+}
+
+.theme-panel {
+  background: var(--surface-solid);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--surface-shadow);
+}
+
+.theme-card {
+  background: var(--surface-frost);
+  border: 1px solid var(--border-soft);
+}
+
+.theme-overlay {
+  background: var(--overlay-bg);
+}
+
+.theme-input {
+  background: var(--input-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--border-soft);
+}
+
+.theme-input::placeholder {
+  color: var(--text-faint);
+}
+
+.theme-button-primary {
+  background: var(--button-primary-bg);
+  color: var(--button-primary-text);
+}
+
+.theme-button-primary:hover {
+  filter: brightness(0.96);
+}
+
+.theme-button-secondary {
+  background: var(--button-secondary-bg);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-soft);
+}
+
+.theme-button-secondary:hover {
+  background: var(--button-secondary-hover);
+  color: var(--text-primary);
+}
+
+.theme-menu {
+  background: var(--surface-solid);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--surface-shadow);
+}
+
+.theme-muted {
+  color: var(--text-muted);
+}
+
+.theme-faint {
+  color: var(--text-faint);
 }
 
 @keyframes map-country-pulse {

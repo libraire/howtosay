@@ -1,6 +1,16 @@
 import { Fragment, useEffect, useState } from 'react'
 import { Menu, Transition } from '@headlessui/react'
-import { FireIcon, PhotoIcon, PuzzlePieceIcon, BoltIcon, Bars3Icon, InformationCircleIcon, ChartBarSquareIcon } from '@heroicons/react/24/outline'
+import {
+    FireIcon,
+    PhotoIcon,
+    PuzzlePieceIcon,
+    BoltIcon,
+    Bars3Icon,
+    InformationCircleIcon,
+    MoonIcon,
+    SunIcon,
+} from '@heroicons/react/24/outline'
+import { useAppPreferences } from "@/app/context/AppPreferencesProvider"
 
 function classNames(...classes: string[]): string {
     return classes.filter(Boolean).join(' ')
@@ -8,6 +18,20 @@ function classNames(...classes: string[]): string {
 
 export default function MyDropDown() {
     const [mounted, setMounted] = useState(false)
+    const { copy, locale, setLocale, theme, toggleTheme } = useAppPreferences()
+    const menuItems = [
+        { href: '/daily', label: copy.menu.dailyGuess, icon: BoltIcon },
+        { href: '/image', label: copy.menu.imageMode, icon: PhotoIcon },
+        { href: '/grade', label: copy.menu.gradingExercise, icon: FireIcon },
+        {
+            href: 'https://chromewebstore.google.com/detail/how-to-say/okpmmopmkbaicfojimaafnloaacggnfp?hl=zh-CN',
+            label: copy.menu.chromeExtension,
+            icon: PuzzlePieceIcon,
+            external: true,
+            divider: true,
+        },
+        { href: '/about', label: copy.menu.about, icon: InformationCircleIcon },
+    ]
 
     useEffect(() => {
         setMounted(true)
@@ -18,10 +42,10 @@ export default function MyDropDown() {
             <div className="relative inline-block text-left">
                 <button
                     type="button"
-                    aria-label="Open tools menu"
-                    className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-black/10 bg-black text-white shadow-sm transition hover:scale-[1.03] hover:bg-black/90 hover:shadow-md"
+                    aria-label={copy.menu.openToolsMenu}
+                    className="theme-button-primary inline-flex h-11 w-11 items-center justify-center rounded-full shadow-sm transition hover:scale-[1.03] hover:shadow-md"
                 >
-                    <Bars3Icon className="h-6 w-6 stroke-[2.4] text-white" aria-hidden="true" />
+                    <Bars3Icon className="h-6 w-6 stroke-[2.4]" aria-hidden="true" />
                 </button>
             </div>
         )
@@ -31,10 +55,10 @@ export default function MyDropDown() {
         <Menu as="div" className="relative inline-block text-left">
             <div>
                 <Menu.Button
-                    aria-label="Open tools menu"
-                    className="inline-flex h-11 w-11 items-center justify-center  text-white shadow-sm transition hover:scale-[1.03] hover:bg-black/90 hover:shadow-md"
+                    aria-label={copy.menu.openToolsMenu}
+                    className="theme-button-primary inline-flex h-11 w-11 items-center justify-center rounded-full shadow-sm transition hover:scale-[1.03] hover:shadow-md"
                 >
-                    <Bars3Icon className="h-6 w-6 stroke-[2.4] text-white" aria-hidden="true" />
+                    <Bars3Icon className="h-6 w-6 stroke-[2.4]" aria-hidden="true" />
                 </Menu.Button>
             </div>
 
@@ -47,80 +71,73 @@ export default function MyDropDown() {
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
             >
-                <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <Menu.Items className="theme-menu absolute right-0 z-10 mt-2 w-64 origin-top-right rounded-2xl p-1.5 focus:outline-none">
                     <div className="py-1">
+                        {menuItems.map((item) => {
+                            const Icon = item.icon
 
-                        <Menu.Item>
-                            {({ active }) => (
-                                <a
-                                    href='/daily'
+                            return (
+                                <Menu.Item key={item.href}>
+                                    {({ active }) => (
+                                        <a
+                                            href={item.href}
+                                            target={item.external ? "_blank" : undefined}
+                                            rel={item.external ? "noopener noreferrer" : undefined}
+                                            className={classNames(
+                                                active ? 'bg-[var(--button-secondary-hover)] text-[color:var(--text-primary)]' : 'text-[color:var(--text-secondary)]',
+                                                item.divider ? 'mt-1 border-t' : '',
+                                                'block rounded-xl px-4 py-2 text-sm transition'
+                                            )}
+                                            style={item.divider ? { borderColor: "var(--border-soft)" } : undefined}
+                                        >
+                                            <Icon className='-ml-0.5 mr-1 inline h-5 w-5 theme-faint' /> {item.label}
+                                        </a>
+                                    )}
+                                </Menu.Item>
+                            )
+                        })}
+
+                        <div className="mx-3 mt-2 border-t pt-3" style={{ borderColor: "var(--border-soft)" }}>
+                            <div className="px-1 text-[11px] font-semibold uppercase tracking-[0.24em] theme-faint">
+                                {copy.menu.appearance}
+                            </div>
+                            <button
+                                type="button"
+                                onClick={toggleTheme}
+                                className="theme-button-secondary mt-2 flex w-full items-center justify-between rounded-xl px-3 py-2 text-sm transition"
+                            >
+                                <span>{theme === "dark" ? copy.menu.lightMode : copy.menu.darkMode}</span>
+                                {theme === "dark" ? <SunIcon className="h-4 w-4" /> : <MoonIcon className="h-4 w-4" />}
+                            </button>
+                        </div>
+
+                        <div className="px-3 pb-3 pt-3">
+                            <div className="px-1 text-[11px] font-semibold uppercase tracking-[0.24em] theme-faint">
+                                {copy.menu.language}
+                            </div>
+                            <div className="mt-2 grid grid-cols-2 gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setLocale("en")}
                                     className={classNames(
-                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                        'block px-4 py-2 text-sm'
+                                        'rounded-xl px-3 py-2 text-sm transition',
+                                        locale === "en" ? 'theme-button-primary' : 'theme-button-secondary'
                                     )}
                                 >
-                                    <BoltIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> Daily Guess
-                                </a>
-                            )}
-                        </Menu.Item>
-
-                        <Menu.Item>
-                            {({ active }) => (
-                                <a
-                                    href='/image'
+                                    {copy.menu.english}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setLocale("zh")}
                                     className={classNames(
-                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                        'block px-4 py-2 text-sm'
+                                        'rounded-xl px-3 py-2 text-sm transition',
+                                        locale === "zh" ? 'theme-button-primary' : 'theme-button-secondary'
                                     )}
                                 >
-                                    <PhotoIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> Image Mode
-                                </a>
-                            )}
-                        </Menu.Item>
-
-                        <Menu.Item>
-                            {({ active }) => (
-                                <a
-                                    href='/grade'
-                                    className={classNames(
-                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                        'block px-4 py-2 text-sm'
-                                    )}
-                                >
-                                    <FireIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> Grading exercise
-                                </a>
-                            )}
-                        </Menu.Item>
-
-                        <Menu.Item>
-                            {({ active }) => (
-                                <a
-                                    href="https://chromewebstore.google.com/detail/how-to-say/okpmmopmkbaicfojimaafnloaacggnfp?hl=zh-CN"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className={classNames(
-                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                        'block px-4 py-2 text-sm border-t border-gray-100'
-                                    )}
-                                >
-                                    <PuzzlePieceIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> Chrome Extension
-                                </a>
-                            )}
-                        </Menu.Item>
-
-                        <Menu.Item>
-                            {({ active }) => (
-                                <a
-                                    href='/about'
-                                    className={classNames(
-                                        active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                        'block px-4 py-2 text-sm'
-                                    )}
-                                >
-                                    <InformationCircleIcon className='-ml-0.5 mr-1 h-5 w-5 text-gray-600 inline' /> About
-                                </a>
-                            )}
-                        </Menu.Item>
+                                    {copy.menu.chinese}
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </Menu.Items>
             </Transition>
