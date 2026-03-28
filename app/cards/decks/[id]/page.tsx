@@ -175,7 +175,7 @@ export default function DeckDetailPage() {
 
     if (isLoading) {
         return (
-            <main className="min-h-screen bg-[#101010]">
+            <main className="theme-page min-h-screen">
                 <Navbar />
             </main>
         )
@@ -183,18 +183,18 @@ export default function DeckDetailPage() {
 
     if (!isAuthenticated) {
         return (
-            <main className="min-h-screen bg-[#101010] pb-12">
+            <main className="theme-page min-h-screen pb-12">
                 <Navbar />
                 <section className="mx-auto w-full max-w-5xl px-6 pb-12 pt-8">
-                    <div className="rounded-[36px] border border-white/10 bg-white/[0.04] p-8 text-white">
+                    <div className="theme-surface rounded-[36px] p-8">
                         <h1 className="text-3xl font-medium">Login to manage this deck</h1>
-                        <p className="mt-4 max-w-2xl text-sm leading-7 text-white/58">
+                        <p className="theme-muted mt-4 max-w-2xl text-sm leading-7">
                             Deck pages let you edit the deck itself, create cards with multiple content blocks, and control which cards stay active in review.
                         </p>
                         <button
                             type="button"
                             onClick={() => login()}
-                            className="mt-8 inline-flex h-11 items-center rounded-xl bg-white px-5 text-sm font-medium text-black transition hover:bg-white/90"
+                            className="theme-button-primary mt-8 inline-flex h-11 items-center rounded-xl px-5 text-sm font-medium transition"
                         >
                             Login to continue
                         </button>
@@ -205,39 +205,39 @@ export default function DeckDetailPage() {
     }
 
     return (
-        <main className="min-h-screen bg-[#101010] pb-12">
+        <main className="theme-page min-h-screen pb-12">
             <Navbar />
             <section className="mx-auto w-full max-w-6xl px-6 pb-12 pt-8">
                 {loadingDeck ? (
-                    <div className="rounded-[36px] border border-white/10 bg-white/[0.04] px-6 py-16 text-center text-sm text-white/48">
+                    <div className="theme-surface px-6 py-16 text-center text-sm theme-faint rounded-[36px]">
                         Loading deck...
                     </div>
                 ) : !deck ? (
-                    <div className="rounded-[36px] border border-white/10 bg-white/[0.04] px-6 py-16 text-center text-sm text-white/48">
+                    <div className="theme-surface px-6 py-16 text-center text-sm theme-faint rounded-[36px]">
                         Unable to load this deck.
                     </div>
                 ) : (
                     <div className="space-y-6">
                         <div className="flex flex-wrap items-center gap-3">
-                            <Link href="/cards" className="inline-flex h-10 items-center rounded-xl border border-white/10 bg-white/[0.04] px-4 text-sm font-medium text-white transition hover:bg-white/10">
+                            <Link href="/cards" className="theme-button-secondary inline-flex h-10 items-center rounded-xl px-4 text-sm font-medium transition">
                                 Back to cards
                             </Link>
-                            <Link href={`/cards/review?deck=${deck.id}`} className="inline-flex h-10 items-center rounded-xl bg-white px-4 text-sm font-medium text-black transition hover:bg-white/90">
+                            <Link href={`/cards/review?deck=${deck.id}`} className="theme-button-primary inline-flex h-10 items-center rounded-xl px-4 text-sm font-medium transition">
                                 Review this deck
                             </Link>
                         </div>
 
-                        <form onSubmit={handleDeckSave} className="rounded-[36px] border border-white/10 bg-white/[0.04] p-8 shadow-[0_28px_90px_rgba(0,0,0,0.24)]">
+                        <form onSubmit={handleDeckSave} className="theme-surface rounded-[36px] p-8">
                             <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
                                 <div>
-                                    <p className="text-xs uppercase tracking-[0.28em] text-white/35">Deck</p>
-                                    <h1 className="mt-3 text-3xl font-medium tracking-tight text-white">{deck.name}</h1>
-                                    <p className="mt-3 text-sm leading-7 text-white/58">
+                                    <p className="theme-faint text-xs uppercase tracking-[0.28em]">Deck</p>
+                                    <h1 className="mt-3 text-3xl font-medium tracking-tight">{deck.name}</h1>
+                                    <p className="theme-muted mt-3 text-sm leading-7">
                                         {deck.cardCount} cards · {deck.dueCount} due now · {deck.newCardCount} still new
                                     </p>
                                 </div>
                                 <div className="flex flex-wrap gap-3">
-                                    <button type="button" onClick={handleArchiveToggle} className="inline-flex h-11 items-center rounded-xl border border-white/10 bg-white/[0.04] px-5 text-sm font-medium text-white transition hover:bg-white/10">
+                                    <button type="button" onClick={handleArchiveToggle} className="theme-button-secondary inline-flex h-11 items-center rounded-xl px-5 text-sm font-medium transition">
                                         {deck.isArchived ? "Unarchive deck" : "Archive deck"}
                                     </button>
                                     <button type="button" onClick={handleDeleteDeck} className="inline-flex h-11 items-center rounded-xl border border-[#d17a7a]/30 bg-[#d17a7a]/10 px-5 text-sm font-medium text-[#f0c9c9] transition hover:bg-[#d17a7a]/15">
@@ -252,14 +252,14 @@ export default function DeckDetailPage() {
                                     value={deckName}
                                     onChange={(event) => setDeckName(event.target.value)}
                                     placeholder="Deck name"
-                                    className="h-12 rounded-2xl border border-white/10 bg-[#111111] px-4 text-sm text-white placeholder:text-white/30 focus:border-white/20 focus:outline-none"
+                                    className="theme-input h-12 rounded-2xl px-4 text-sm focus:outline-none"
                                 />
                                 <textarea
                                     rows={4}
                                     value={deckDescription}
                                     onChange={(event) => setDeckDescription(event.target.value)}
                                     placeholder="What does this deck cover?"
-                                    className="rounded-2xl border border-white/10 bg-[#111111] px-4 py-3 text-sm text-white placeholder:text-white/30 focus:border-white/20 focus:outline-none"
+                                    className="theme-input rounded-2xl px-4 py-3 text-sm focus:outline-none"
                                 />
                             </div>
 
@@ -272,7 +272,7 @@ export default function DeckDetailPage() {
                             <button
                                 type="submit"
                                 disabled={savingDeck}
-                                className="mt-6 inline-flex h-11 items-center rounded-xl bg-white px-5 text-sm font-medium text-black transition hover:bg-white/90 disabled:cursor-not-allowed disabled:bg-white/50"
+                                className="theme-button-primary mt-6 inline-flex h-11 items-center rounded-xl px-5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50"
                             >
                                 {savingDeck ? "Saving..." : "Save deck"}
                             </button>
@@ -280,17 +280,17 @@ export default function DeckDetailPage() {
 
                         <CardComposer submitLabel="Create card" busy={savingCard} onSubmit={handleCreateCard} />
 
-                        <div className="rounded-[36px] border border-white/10 bg-white/[0.04] p-6 shadow-[0_28px_90px_rgba(0,0,0,0.24)]">
-                            <h2 className="text-xl font-medium text-white">Cards in this deck</h2>
-                            <p className="mt-2 text-sm text-white/48">Edit existing cards inline, or turn them off without deleting the whole deck.</p>
+                        <div className="theme-surface rounded-[36px] p-6">
+                            <h2 className="text-xl font-medium">Cards in this deck</h2>
+                            <p className="theme-muted mt-2 text-sm">Edit existing cards inline, or turn them off without deleting the whole deck.</p>
 
                             <div className="mt-6 space-y-5">
                                 {cards.length === 0 ? (
-                                    <div className="rounded-3xl border border-dashed border-white/10 px-5 py-10 text-center text-sm text-white/42">
+                                    <div className="rounded-3xl border border-dashed px-5 py-10 text-center text-sm theme-faint" style={{ borderColor: "var(--border-soft)" }}>
                                         No cards yet. Create your first card above.
                                     </div>
                                 ) : cards.map((card) => (
-                                    <div key={card.id} className="rounded-3xl border border-white/10 bg-black/20 p-5">
+                                    <div key={card.id} className="theme-card rounded-3xl p-5">
                                         {editingCardId === card.id ? (
                                             <CardComposer
                                                 initialCard={card}
@@ -303,13 +303,13 @@ export default function DeckDetailPage() {
                                             <>
                                                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                                                     <div>
-                                                        <h3 className="text-lg font-medium text-white">{card.title}</h3>
-                                                        <p className="mt-2 text-sm text-white/48">
+                                                        <h3 className="text-lg font-medium">{card.title}</h3>
+                                                        <p className="theme-muted mt-2 text-sm">
                                                             {card.progress?.status || "new"} · {card.isActive ? "active" : "paused"}
                                                         </p>
                                                     </div>
                                                     <div className="flex flex-wrap gap-3">
-                                                        <button type="button" onClick={() => setEditingCardId(card.id)} className="inline-flex h-10 items-center rounded-xl border border-white/10 bg-white/[0.04] px-4 text-sm font-medium text-white transition hover:bg-white/10">
+                                                        <button type="button" onClick={() => setEditingCardId(card.id)} className="theme-button-secondary inline-flex h-10 items-center rounded-xl px-4 text-sm font-medium transition">
                                                             Edit
                                                         </button>
                                                         <button type="button" onClick={() => handleDeleteCard(card.id)} className="inline-flex h-10 items-center rounded-xl border border-[#d17a7a]/30 bg-[#d17a7a]/10 px-4 text-sm font-medium text-[#f0c9c9] transition hover:bg-[#d17a7a]/15">
@@ -320,18 +320,18 @@ export default function DeckDetailPage() {
 
                                                 <div className="mt-5 grid gap-4 lg:grid-cols-2">
                                                     <div>
-                                                        <div className="mb-3 text-xs uppercase tracking-[0.18em] text-white/35">Prompt</div>
+                                                        <div className="theme-faint mb-3 text-xs uppercase tracking-[0.18em]">Prompt</div>
                                                         <CardBlockList blocks={card.promptBlocks} />
                                                     </div>
                                                     <div>
-                                                        <div className="mb-3 text-xs uppercase tracking-[0.18em] text-white/35">Answer</div>
+                                                        <div className="theme-faint mb-3 text-xs uppercase tracking-[0.18em]">Answer</div>
                                                         <CardBlockList blocks={card.answerBlocks} />
                                                     </div>
                                                 </div>
 
                                                 {card.notesBlocks && card.notesBlocks.length > 0 && (
                                                     <div className="mt-4">
-                                                        <div className="mb-3 text-xs uppercase tracking-[0.18em] text-white/35">Notes</div>
+                                                        <div className="theme-faint mb-3 text-xs uppercase tracking-[0.18em]">Notes</div>
                                                         <CardBlockList blocks={card.notesBlocks} />
                                                     </div>
                                                 )}

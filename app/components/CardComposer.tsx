@@ -90,20 +90,20 @@ export default function CardComposer({
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-5 rounded-[32px] border border-white/10 bg-white/[0.04] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.2)]">
+        <form onSubmit={handleSubmit} className="theme-surface space-y-5 rounded-[32px] p-6">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
-                    <h2 className="text-xl font-medium text-white">{initialCard ? "Edit card" : "Create a card"}</h2>
-                    <p className="mt-1 text-sm text-white/48">
+                    <h2 className="text-xl font-medium">{initialCard ? "Edit card" : "Create a card"}</h2>
+                    <p className="theme-muted mt-1 text-sm">
                         Build cards from text, images, audio, and links. Learners will see the prompt first, then reveal the answer.
                     </p>
                 </div>
-                <label className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-sm text-white/72">
+                <label className="theme-button-secondary inline-flex items-center gap-3 rounded-full px-4 py-2 text-sm">
                     <input
                         type="checkbox"
                         checked={isActive}
                         onChange={(event) => setIsActive(event.target.checked)}
-                        className="h-4 w-4 rounded border-white/20 bg-[#111111]"
+                        className="h-4 w-4 rounded"
                     />
                     Active in review
                 </label>
@@ -114,7 +114,7 @@ export default function CardComposer({
                 value={title}
                 onChange={(event) => setTitle(event.target.value)}
                 placeholder="Card title"
-                className="h-12 w-full rounded-2xl border border-white/10 bg-[#111111] px-4 text-sm text-white placeholder:text-white/30 focus:border-white/20 focus:outline-none"
+                className="theme-input h-12 w-full rounded-2xl px-4 text-sm focus:outline-none"
             />
 
             <CardBlockEditor label="Prompt" blocks={promptBlocks} onChange={setPromptBlocks} />
@@ -131,7 +131,7 @@ export default function CardComposer({
                 <button
                     type="submit"
                     disabled={busy}
-                    className="inline-flex h-11 items-center rounded-xl bg-white px-5 text-sm font-medium text-black transition hover:bg-white/90 disabled:cursor-not-allowed disabled:bg-white/50"
+                    className="theme-button-primary inline-flex h-11 items-center rounded-xl px-5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50"
                 >
                     {busy ? "Saving..." : submitLabel}
                 </button>
@@ -139,7 +139,7 @@ export default function CardComposer({
                     <button
                         type="button"
                         onClick={onCancel}
-                        className="inline-flex h-11 items-center rounded-xl border border-white/10 bg-white/[0.04] px-5 text-sm font-medium text-white transition hover:bg-white/10"
+                        className="theme-button-secondary inline-flex h-11 items-center rounded-xl px-5 text-sm font-medium transition"
                     >
                         Cancel
                     </button>

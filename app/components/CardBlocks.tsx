@@ -16,12 +16,12 @@ export function CardBlockList({ blocks }: { blocks: CardBlock[] }) {
     return (
         <div className="space-y-3">
             {blocks.map((block, index) => (
-                <div key={`${block.type}-${index}`} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-sm text-white/78">
+                <div key={`${block.type}-${index}`} className="theme-card rounded-2xl p-4 text-sm" style={{ color: "var(--text-secondary)" }}>
                     {block.type === "text" && <p className="whitespace-pre-wrap leading-7">{block.content}</p>}
                     {block.type === "image" && block.url && (
                         <div className="space-y-3">
                             <img src={block.url} alt={block.caption || "Card image"} className="max-h-72 w-full rounded-xl object-cover" />
-                            {block.caption && <p className="text-xs text-white/55">{block.caption}</p>}
+                            {block.caption && <p className="theme-muted text-xs">{block.caption}</p>}
                         </div>
                     )}
                     {block.type === "audio" && block.url && (
@@ -29,7 +29,7 @@ export function CardBlockList({ blocks }: { blocks: CardBlock[] }) {
                             <audio controls className="w-full">
                                 <source src={block.url} />
                             </audio>
-                            {block.caption && <p className="text-xs text-white/55">{block.caption}</p>}
+                            {block.caption && <p className="theme-muted text-xs">{block.caption}</p>}
                         </div>
                     )}
                     {block.type === "link" && block.url && (
@@ -73,11 +73,11 @@ export function CardBlockEditor({
     }
 
     return (
-        <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
+        <div className="theme-card rounded-3xl p-5">
             <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                    <h3 className="text-base font-medium text-white">{label}</h3>
-                    <p className="mt-1 text-sm text-white/45">
+                    <h3 className="text-base font-medium">{label}</h3>
+                    <p className="theme-faint mt-1 text-sm">
                         {optional ? "Optional blocks shown after the answer." : "Add one or more blocks in the order learners should see them."}
                     </p>
                 </div>
@@ -87,7 +87,7 @@ export function CardBlockEditor({
                             key={type}
                             type="button"
                             onClick={() => addBlock(type)}
-                            className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-medium uppercase tracking-[0.18em] text-white/68 transition hover:bg-white/10"
+                            className="theme-button-secondary rounded-full px-3 py-1.5 text-xs font-medium uppercase tracking-[0.18em] transition"
                         >
                             + {type}
                         </button>
@@ -97,11 +97,11 @@ export function CardBlockEditor({
 
             <div className="mt-5 space-y-4">
                 {blocks.length === 0 ? (
-                    <div className="rounded-2xl border border-dashed border-white/10 px-4 py-5 text-sm text-white/38">
+                    <div className="rounded-2xl border border-dashed px-4 py-5 text-sm theme-faint" style={{ borderColor: "var(--border-soft)" }}>
                         No blocks yet.
                     </div>
                 ) : blocks.map((block, index) => (
-                    <div key={`${label}-${index}`} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                    <div key={`${label}-${index}`} className="theme-panel rounded-2xl p-4">
                         <div className="flex flex-wrap items-center justify-between gap-3">
                             <select
                                 value={block.type}
@@ -109,7 +109,7 @@ export function CardBlockEditor({
                                     const nextType = event.target.value as CardBlockType
                                     updateBlock(index, createEmptyBlock(nextType))
                                 }}
-                                className="rounded-xl border border-white/10 bg-[#111111] px-3 py-2 text-sm text-white focus:border-white/20 focus:outline-none"
+                                className="theme-input rounded-xl px-3 py-2 text-sm focus:outline-none"
                             >
                                 {blockTypes.map((type) => (
                                     <option key={type} value={type}>{type}</option>
@@ -118,7 +118,7 @@ export function CardBlockEditor({
                             <button
                                 type="button"
                                 onClick={() => removeBlock(index)}
-                                className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-medium text-white/62 transition hover:bg-white/10"
+                                className="theme-button-secondary rounded-full px-3 py-1.5 text-xs font-medium transition"
                             >
                                 Remove
                             </button>
@@ -131,7 +131,7 @@ export function CardBlockEditor({
                                     value={block.content || ""}
                                     onChange={(event) => updateBlock(index, { content: event.target.value })}
                                     placeholder="Write the prompt, answer, or note here..."
-                                    className="w-full rounded-2xl border border-white/10 bg-[#111111] px-4 py-3 text-sm text-white placeholder:text-white/30 focus:border-white/20 focus:outline-none"
+                                    className="theme-input w-full rounded-2xl px-4 py-3 text-sm focus:outline-none"
                                 />
                             ) : (
                                 <>
@@ -140,7 +140,7 @@ export function CardBlockEditor({
                                         value={block.url || ""}
                                         onChange={(event) => updateBlock(index, { url: event.target.value })}
                                         placeholder={`${block.type} URL`}
-                                        className="h-11 w-full rounded-2xl border border-white/10 bg-[#111111] px-4 text-sm text-white placeholder:text-white/30 focus:border-white/20 focus:outline-none"
+                                        className="theme-input h-11 w-full rounded-2xl px-4 text-sm focus:outline-none"
                                     />
                                     {block.type === "link" && (
                                         <input
@@ -148,7 +148,7 @@ export function CardBlockEditor({
                                             value={block.content || ""}
                                             onChange={(event) => updateBlock(index, { content: event.target.value })}
                                             placeholder="Link label"
-                                            className="h-11 w-full rounded-2xl border border-white/10 bg-[#111111] px-4 text-sm text-white placeholder:text-white/30 focus:border-white/20 focus:outline-none"
+                                            className="theme-input h-11 w-full rounded-2xl px-4 text-sm focus:outline-none"
                                         />
                                     )}
                                     <input
@@ -156,7 +156,7 @@ export function CardBlockEditor({
                                         value={block.caption || ""}
                                         onChange={(event) => updateBlock(index, { caption: event.target.value })}
                                         placeholder="Caption"
-                                        className="h-11 w-full rounded-2xl border border-white/10 bg-[#111111] px-4 text-sm text-white placeholder:text-white/30 focus:border-white/20 focus:outline-none"
+                                        className="theme-input h-11 w-full rounded-2xl px-4 text-sm focus:outline-none"
                                     />
                                 </>
                             )}

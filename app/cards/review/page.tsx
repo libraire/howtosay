@@ -5,12 +5,15 @@ import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import Navbar from "@/app/components/Navbar"
 import CardReviewBoard from "@/app/components/CardReviewBoard"
+import { useAppPreferences } from "@/app/context/AppPreferencesProvider"
 import { useCustomAuth } from "@/app/context/CustomAuthProvider"
 import { fetchCardDueSummary, fetchCardReviewQueue, submitCardReviewResult } from "@/app/lib/cards-api"
 import type { CardDueSummary, CardReviewItem } from "@/app/lib/cards-models"
+import { formatCopy } from "@/app/lib/copy"
 
 export default function CardsReviewPage() {
     const { isAuthenticated, isLoading, login } = useCustomAuth()
+    const { copy } = useAppPreferences()
     const searchParams = useSearchParams()
     const [summary, setSummary] = useState<CardDueSummary | null>(null)
     const [queue, setQueue] = useState<CardReviewItem[]>([])
@@ -47,7 +50,7 @@ export default function CardsReviewPage() {
             setTotalDue(queueData.totalDue)
         } catch (reviewError) {
             console.error("Failed to load cards review center:", reviewError)
-            setError(reviewError instanceof Error ? reviewError.message : "Unable to load cards review.")
+            setError(reviewError instanceof Error ? reviewError.message : copy.cardsReview.unableToLoad)
             setSummary(null)
             setQueue([])
             setTotalDue(0)
@@ -60,7 +63,7 @@ export default function CardsReviewPage() {
 
     if (isLoading) {
         return (
-            <main className="min-h-screen bg-[#101010]">
+            <main className="theme-page min-h-screen">
                 <Navbar />
             </main>
         )
@@ -68,32 +71,32 @@ export default function CardsReviewPage() {
 
     if (!isAuthenticated) {
         return (
-            <main className="min-h-screen bg-[#101010] pb-12">
+            <main className="theme-page min-h-screen pb-12">
                 <Navbar />
                 <section className="mx-auto w-full max-w-6xl px-6 pb-12 pt-8">
-                    <div className="rounded-[36px] border border-white/10 bg-white/[0.04] p-8 shadow-[0_32px_100px_rgba(0,0,0,0.24)]">
-                        <p className="text-xs uppercase tracking-[0.28em] text-white/35">Cards Review</p>
-                        <h1 className="mt-3 text-3xl font-medium tracking-tight text-white">Review any saved topic on a memory schedule</h1>
-                        <p className="mt-4 max-w-2xl text-sm leading-7 text-white/58">
-                            The cards review center gathers due cards across your decks, lets you flip each one, then grade recall with Anki-style ratings.
+                    <div className="theme-surface rounded-[36px] p-8">
+                        <p className="theme-faint text-xs uppercase tracking-[0.28em]">{copy.cardsReview.title}</p>
+                        <h1 className="mt-3 text-3xl font-medium tracking-tight">{copy.cardsReview.marketingTitle}</h1>
+                        <p className="theme-muted mt-4 max-w-2xl text-sm leading-7">
+                            {copy.cardsReview.marketingBody}
                         </p>
 
                         <div className="mt-8 grid gap-4 md:grid-cols-3">
-                            <PreviewStat title="Due now" text="See what needs attention immediately." />
-                            <PreviewStat title="Overdue" text="Spot cards that have slipped past their ideal interval." />
-                            <PreviewStat title="Deck filter" text="Focus on one deck or clear a mixed queue." />
+                            <PreviewStat title={copy.cardsReview.statDueNow} text={copy.cardsReview.statDueNowBody} />
+                            <PreviewStat title={copy.cardsReview.statOverdue} text={copy.cardsReview.statOverdueBody} />
+                            <PreviewStat title={copy.cardsReview.deckFilter} text={copy.cardsReview.statDeckFilterBody} />
                         </div>
 
                         <div className="mt-8 flex flex-wrap gap-3">
                             <button
                                 type="button"
                                 onClick={() => login()}
-                                className="inline-flex h-11 items-center rounded-xl bg-white px-5 text-sm font-medium text-black transition hover:bg-white/90"
+                                className="theme-button-primary inline-flex h-11 items-center rounded-xl px-5 text-sm font-medium transition"
                             >
-                                Login to review cards
+                                {copy.cardsReview.loginCta}
                             </button>
-                            <Link href="/cards" className="inline-flex h-11 items-center rounded-xl border border-white/10 bg-white/[0.04] px-5 text-sm font-medium text-white transition hover:bg-white/10">
-                                Back to cards
+                            <Link href="/cards" className="theme-button-secondary inline-flex h-11 items-center rounded-xl px-5 text-sm font-medium transition">
+                                {copy.cardsReview.backToCards}
                             </Link>
                         </div>
                     </div>
@@ -103,7 +106,7 @@ export default function CardsReviewPage() {
     }
 
     return (
-        <main className="min-h-screen bg-[#101010] pb-12">
+        <main className="theme-page min-h-screen pb-12">
             <Navbar />
             <section className="mx-auto w-full max-w-6xl px-6 pb-12 pt-8">
                 {reviewing ? (
@@ -121,13 +124,13 @@ export default function CardsReviewPage() {
                     />
                 ) : (
                     <div className="space-y-6">
-                        <div className="rounded-[36px] border border-white/10 bg-white/[0.04] p-8 shadow-[0_32px_100px_rgba(0,0,0,0.24)]">
-                            <div className="flex flex-col gap-6 border-b border-white/10 pb-6 lg:flex-row lg:items-end lg:justify-between">
+                        <div className="theme-surface rounded-[36px] p-8">
+                            <div className="flex flex-col gap-6 border-b pb-6 lg:flex-row lg:items-end lg:justify-between" style={{ borderColor: "var(--border-soft)" }}>
                                 <div>
-                                    <p className="text-xs uppercase tracking-[0.28em] text-white/35">Cards Review</p>
-                                    <h1 className="mt-3 text-3xl font-medium tracking-tight text-white">Memory queue for your custom decks</h1>
-                                    <p className="mt-3 max-w-2xl text-sm leading-7 text-white/58">
-                                        Review what is due right now, inspect overdue load, then start a self-graded card round.
+                                    <p className="theme-faint text-xs uppercase tracking-[0.28em]">{copy.cardsReview.title}</p>
+                                    <h1 className="mt-3 text-3xl font-medium tracking-tight">{copy.cardsReview.queueTitle}</h1>
+                                    <p className="theme-muted mt-3 max-w-2xl text-sm leading-7">
+                                        {copy.cardsReview.queueBody}
                                     </p>
                                 </div>
 
@@ -135,9 +138,9 @@ export default function CardsReviewPage() {
                                     <select
                                         value={selectedDeckId ?? ""}
                                         onChange={(event) => setSelectedDeckId(event.target.value ? Number(event.target.value) : null)}
-                                        className="h-11 rounded-xl border border-white/10 bg-[#111111] px-4 text-sm text-white focus:border-white/20 focus:outline-none"
+                                        className="theme-input h-11 rounded-xl px-4 text-sm focus:outline-none"
                                     >
-                                        <option value="">All decks</option>
+                                        <option value="">{copy.cardsReview.allDecks}</option>
                                         {(summary?.decks ?? []).map((deck) => (
                                             <option key={deck.id} value={deck.id}>
                                                 {deck.name}
@@ -148,22 +151,22 @@ export default function CardsReviewPage() {
                                         type="button"
                                         onClick={() => setReviewing(true)}
                                         disabled={loadingPage || queue.length === 0}
-                                        className="inline-flex h-11 items-center rounded-xl bg-white px-5 text-sm font-medium text-black transition hover:bg-white/90 disabled:cursor-not-allowed disabled:bg-white/50"
+                                        className="theme-button-primary inline-flex h-11 items-center rounded-xl px-5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50"
                                     >
-                                        Start review
+                                        {copy.cardsReview.startReview}
                                     </button>
                                 </div>
                             </div>
 
                             {loadingPage ? (
-                                <div className="py-16 text-center text-sm text-white/48">Loading cards review center...</div>
+                                <div className="theme-faint py-16 text-center text-sm">{copy.cardsReview.loadingCenter}</div>
                             ) : (
                                 <>
                                     <div className="mt-6 grid gap-4 md:grid-cols-4">
-                                        <ReviewStat label="Due now" value={summary?.dueNow ?? 0} />
-                                        <ReviewStat label="Overdue" value={summary?.overdue ?? 0} />
-                                        <ReviewStat label="Due today" value={summary?.dueToday ?? 0} />
-                                        <ReviewStat label="New cards" value={summary?.newCards ?? 0} />
+                                        <ReviewStat label={copy.cardsReview.statDueNow} value={summary?.dueNow ?? 0} />
+                                        <ReviewStat label={copy.cardsReview.statOverdue} value={summary?.overdue ?? 0} />
+                                        <ReviewStat label={copy.cardsReview.statDueToday} value={summary?.dueToday ?? 0} />
+                                        <ReviewStat label={copy.cardsReview.statNewCards} value={summary?.newCards ?? 0} />
                                     </div>
 
                                     {error && (
@@ -173,62 +176,66 @@ export default function CardsReviewPage() {
                                     )}
 
                                     <div className="mt-8 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-                                        <div className="rounded-3xl border border-white/10 bg-black/20 p-6">
-                                            <h2 className="text-lg font-medium text-white">Decks with due cards</h2>
+                                        <div className="theme-card rounded-3xl p-6">
+                                            <h2 className="text-lg font-medium">{copy.cardsReview.decksWithDueCards}</h2>
                                             <div className="mt-5 space-y-3">
                                                 {dueDecks.length === 0 ? (
-                                                    <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-white/45">
-                                                        No due cards right now.
+                                                    <div className="theme-card rounded-2xl px-4 py-4 text-sm theme-faint">
+                                                        {copy.cardsReview.noDueCards}
                                                     </div>
                                                 ) : dueDecks.map((deck) => (
                                                     <Link
                                                         key={deck.id}
                                                         href={`/cards/decks/${deck.id}`}
-                                                        className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 transition hover:bg-white/[0.07]"
+                                                        className="theme-card flex items-center justify-between rounded-2xl px-4 py-4 transition hover:bg-[var(--button-secondary-hover)]"
                                                     >
                                                         <div>
-                                                            <div className="text-sm font-medium text-white">{deck.name}</div>
-                                                            <div className="mt-1 text-xs text-white/45">
-                                                                {deck.cardCount} cards · {deck.newCardCount} new
+                                                            <div className="text-sm font-medium">{deck.name}</div>
+                                                            <div className="theme-faint mt-1 text-xs">
+                                                                {formatCopy(copy.cardsReview.cardsCount, { count: deck.cardCount })} · {formatCopy(copy.cardsReview.newCount, { count: deck.newCardCount })}
                                                             </div>
                                                         </div>
-                                                        <div className="text-right text-xs text-white/45">
-                                                            <div>{deck.dueCount} due</div>
-                                                            <div>{deck.overdueCount} overdue</div>
+                                                        <div className="theme-faint text-right text-xs">
+                                                            <div>{formatCopy(copy.cardsReview.dueCount, { count: deck.dueCount })}</div>
+                                                            <div>{formatCopy(copy.cardsReview.overdueCount, { count: deck.overdueCount })}</div>
                                                         </div>
                                                     </Link>
                                                 ))}
                                             </div>
                                         </div>
 
-                                        <div className="rounded-3xl border border-white/10 bg-black/20 p-6">
-                                            <h2 className="text-lg font-medium text-white">Current round preview</h2>
-                                            <p className="mt-2 text-sm leading-7 text-white/58">
-                                                {selectedDeckId ? "This queue is filtered to one deck." : "This queue blends all currently due decks."}
+                                        <div className="theme-card rounded-3xl p-6">
+                                            <h2 className="text-lg font-medium">{copy.cardsReview.currentRoundPreview}</h2>
+                                            <p className="theme-muted mt-2 text-sm leading-7">
+                                                {selectedDeckId ? copy.cardsReview.filteredToOneDeck : copy.cardsReview.blendedQueue}
                                             </p>
                                             <div className="mt-5 space-y-3">
                                                 {queue.length > 0 ? queue.slice(0, 5).map((card, index) => (
-                                                    <div key={card.id} className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4">
-                                                        <div className="text-sm font-medium text-white">{index + 1}. {card.title}</div>
-                                                        <div className="mt-1 text-xs text-white/45">
-                                                            {card.deckName || "Cards"} · {card.progress.status}
+                                                    <div key={card.id} className="theme-card rounded-2xl px-4 py-4">
+                                                        <div className="text-sm font-medium">{index + 1}. {card.title}</div>
+                                                        <div className="theme-faint mt-1 text-xs">
+                                                            {card.deckName || copy.cardsReview.cardsLabel} · {card.progress.status}
                                                         </div>
                                                     </div>
                                                 )) : (
-                                                    <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-sm text-white/45">
-                                                        {totalDue === 0 ? "No cards are due in this filter." : "Nothing is ready to review yet."}
+                                                    <div className="theme-card rounded-2xl px-4 py-4 text-sm theme-faint">
+                                                        {totalDue === 0 ? copy.cardsReview.noCardsInFilter : copy.cardsReview.nothingReady}
                                                     </div>
                                                 )}
                                             </div>
 
                                             <div className="mt-6 flex flex-wrap gap-3">
-                                                <Link href="/cards" className="inline-flex h-10 items-center rounded-xl border border-white/10 bg-white/[0.04] px-4 text-sm font-medium text-white transition hover:bg-white/10">
-                                                    Open deck library
+                                                <Link href="/cards" className="theme-button-secondary inline-flex h-10 items-center rounded-xl px-4 text-sm font-medium transition">
+                                                    {copy.cardsReview.backToCards}
                                                 </Link>
-                                                {queue.length === 0 && (
-                                                    <Link href="/cards" className="inline-flex h-10 items-center rounded-xl bg-white px-4 text-sm font-medium text-black transition hover:bg-white/90">
-                                                        Create more cards
-                                                    </Link>
+                                                {queue.length > 0 && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setReviewing(true)}
+                                                        className="theme-button-primary inline-flex h-10 items-center rounded-xl px-4 text-sm font-medium transition"
+                                                    >
+                                                        {copy.cardsReview.continue}
+                                                    </button>
                                                 )}
                                             </div>
                                         </div>
@@ -245,18 +252,18 @@ export default function CardsReviewPage() {
 
 function ReviewStat({ label, value }: { label: string; value: number }) {
     return (
-        <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
-            <div className="text-sm text-white/45">{label}</div>
-            <div className="mt-3 text-3xl font-medium tracking-tight text-white">{value}</div>
+        <div className="theme-card rounded-3xl p-5">
+            <div className="theme-faint text-sm">{label}</div>
+            <div className="mt-3 text-3xl font-medium tracking-tight">{value}</div>
         </div>
     )
 }
 
 function PreviewStat({ title, text }: { title: string; text: string }) {
     return (
-        <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
-            <div className="text-sm font-medium text-white">{title}</div>
-            <div className="mt-2 text-sm leading-6 text-white/55">{text}</div>
+        <div className="theme-card rounded-3xl p-5">
+            <div className="text-sm font-medium">{title}</div>
+            <div className="theme-muted mt-2 text-sm leading-6">{text}</div>
         </div>
     )
 }

@@ -9,12 +9,11 @@ import { usePathname } from "next/navigation";
 import { useCustomAuth } from "@/app/context/CustomAuthProvider";
 import { fetchCardDueSummary } from "@/app/lib/cards-api";
 import { useAppPreferences } from "@/app/context/AppPreferencesProvider";
-import { MoonIcon, SunIcon } from "@heroicons/react/24/outline";
 
 export default function Navbar({ check = true }: { check?: boolean }) {
     const pathname = usePathname()
     const { user } = useCustomAuth()
-    const { copy, locale, setLocale, theme, toggleTheme } = useAppPreferences()
+    const { copy } = useAppPreferences()
     const [cardDueCount, setCardDueCount] = useState(0)
 
     void check
@@ -97,24 +96,6 @@ export default function Navbar({ check = true }: { check?: boolean }) {
                 </div>
 
                 <div className="ml-auto flex shrink-0 items-center gap-2 md:min-w-[280px] md:justify-end">
-                    <button
-                        type="button"
-                        onClick={toggleTheme}
-                        aria-label={copy.menu.appearance}
-                        title={theme === "dark" ? copy.menu.lightMode : copy.menu.darkMode}
-                        className="theme-button-secondary inline-flex h-10 w-10 items-center justify-center rounded-full transition"
-                    >
-                        {theme === "dark" ? <SunIcon className="h-5 w-5" /> : <MoonIcon className="h-5 w-5" />}
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setLocale(locale === "en" ? "zh" : "en")}
-                        aria-label={copy.menu.language}
-                        title={copy.menu.language}
-                        className="theme-button-secondary inline-flex h-10 min-w-[68px] items-center justify-center rounded-full px-3 text-sm font-medium transition"
-                    >
-                        {locale === "en" ? copy.menu.chinese : copy.menu.english}
-                    </button>
                     <AuthButton />
                     <MyDropDown />
                 </div>
