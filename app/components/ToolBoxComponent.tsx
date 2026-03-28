@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Menu, Transition } from '@headlessui/react'
 import SelectComponent from "./SelectComponent"
 import Link from 'next/link';
@@ -24,15 +24,19 @@ type Props = {
     playable: boolean,
     showIgnore: boolean
 };
+
+function classNames(...classes: string[]) {
+    return classes.filter(Boolean).join(" ")
+}
+
 export default function ToolBoxComponent({ selectLevel, selectItems, marked, mark, unmark, onClose, word, displayWord, source, random, playable, showIgnore, next }: Props) {
     const audioWord = displayWord || word
 
-    function ignoreWord(word: string) {
-        ignoreWordApi(word, source || "wordbook", displayWord).then(() => {
+    function ignoreWord(wordValue: string) {
+        ignoreWordApi(wordValue, source || "wordbook", displayWord).then(() => {
             next()
         });
     }
-
 
     function report(content: string) {
         reportWordIssue(word, content).then(() => {
@@ -42,8 +46,8 @@ export default function ToolBoxComponent({ selectLevel, selectItems, marked, mar
 
     const [isOpen, setIsOpen] = useState(false);
     const [reportOpen, setReportOpen] = useState(false);
-    const primaryActionClass = "inline-flex h-8 items-center gap-1.5 rounded-full border border-white/12 bg-white/[0.08] px-2.5 text-[13px] font-semibold text-white/88 shadow-[0_1px_6px_rgba(0,0,0,0.16)] backdrop-blur transition hover:bg-white/[0.14]"
-    const subtleActionClass = "inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/12 bg-white/[0.06] text-white/72 shadow-[0_1px_6px_rgba(0,0,0,0.14)] backdrop-blur transition hover:bg-white/[0.12] hover:text-white"
+    const primaryActionClass = "inline-flex h-8 items-center gap-1.5 rounded-full border px-2.5 text-[13px] font-semibold shadow-[0_1px_6px_rgba(0,0,0,0.08)] transition";
+    const subtleActionClass = "inline-flex h-8 w-8 items-center justify-center rounded-full border shadow-[0_1px_6px_rgba(0,0,0,0.08)] transition";
 
     return (
         <>
@@ -69,10 +73,10 @@ export default function ToolBoxComponent({ selectLevel, selectItems, marked, mar
 
                                 mark()
                             }}
-                            className={primaryActionClass}
+                            className={classNames(primaryActionClass, "theme-button-secondary")}
                             title={marked ? "Remove from saved words" : "Save word"}
                         >
-                            <BookmarkIcon className={`h-4 w-4 ${marked ? "fill-white text-white" : ""}`} />
+                            <BookmarkIcon className={classNames("h-4 w-4", marked ? "fill-current" : "")} />
                             <span>{marked ? "Saved" : "Save"}</span>
                         </button>
 
@@ -80,7 +84,7 @@ export default function ToolBoxComponent({ selectLevel, selectItems, marked, mar
                             <button
                                 type="button"
                                 onClick={() => { ignoreWord(word) }}
-                                className={primaryActionClass}
+                                className={classNames(primaryActionClass, "theme-button-secondary")}
                                 title="Ignore this word"
                             >
                                 <EyeSlashIcon className='h-4 w-4' />
@@ -93,9 +97,9 @@ export default function ToolBoxComponent({ selectLevel, selectItems, marked, mar
 
                     <div className="flex items-center gap-1">
                         <Menu as="div" className="relative inline-block text-left">
-                            <Menu.Button className={primaryActionClass}>
+                            <Menu.Button className={classNames(primaryActionClass, "theme-button-secondary")}>
                                 <span>More</span>
-                                <ChevronDownIcon className="h-4 w-4 text-white/60" />
+                                <ChevronDownIcon className="h-4 w-4 theme-faint" />
                             </Menu.Button>
 
                             <Transition
@@ -106,13 +110,16 @@ export default function ToolBoxComponent({ selectLevel, selectItems, marked, mar
                                 leaveFrom="transform opacity-100 scale-100"
                                 leaveTo="transform opacity-0 scale-95"
                             >
-                                <Menu.Items className="absolute right-0 z-20 mt-2 w-48 origin-top-right rounded-2xl border border-black/8 bg-white p-1.5 shadow-[0_16px_42px_rgba(0,0,0,0.18)] focus:outline-none">
+                                <Menu.Items className="theme-menu absolute right-0 z-20 mt-2 w-48 origin-top-right rounded-2xl p-1.5 focus:outline-none">
                                     <Menu.Item>
                                         {({ active }) => (
                                             <button
                                                 type="button"
                                                 onClick={random}
-                                                className={`flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-[13px] font-medium transition ${active ? "bg-black/[0.06] text-black" : "text-black/80"}`}
+                                                className={classNames(
+                                                    "flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-[13px] font-medium transition",
+                                                    active ? "bg-[var(--button-secondary-hover)] text-[color:var(--text-primary)]" : "text-[color:var(--text-secondary)]"
+                                                )}
                                             >
                                                 <ArrowsRightLeftIcon className="h-4 w-4" />
                                                 Shuffle
@@ -125,7 +132,10 @@ export default function ToolBoxComponent({ selectLevel, selectItems, marked, mar
                                             <Link
                                                 target="_blank"
                                                 href={'https://youglish.com/pronounce/' + audioWord + '/english?'}
-                                                className={`flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-[13px] font-medium transition ${active ? "bg-black/[0.06] text-black" : "text-black/80"}`}
+                                                className={classNames(
+                                                    "flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-[13px] font-medium transition",
+                                                    active ? "bg-[var(--button-secondary-hover)] text-[color:var(--text-primary)]" : "text-[color:var(--text-secondary)]"
+                                                )}
                                             >
                                                 <SpeakerWaveIcon className="h-4 w-4" />
                                                 YouGlish
@@ -140,7 +150,10 @@ export default function ToolBoxComponent({ selectLevel, selectItems, marked, mar
                                                 onClick={() => {
                                                     setIsOpen(!isOpen)
                                                 }}
-                                                className={`flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-[13px] font-medium transition ${active ? "bg-black/[0.06] text-black" : "text-black/80"}`}
+                                                className={classNames(
+                                                    "flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-[13px] font-medium transition",
+                                                    active ? "bg-[var(--button-secondary-hover)] text-[color:var(--text-primary)]" : "text-[color:var(--text-secondary)]"
+                                                )}
                                             >
                                                 <QuestionMarkCircleIcon className="h-4 w-4" />
                                                 {isOpen ? "Hide help" : "Keyboard help"}
@@ -153,7 +166,10 @@ export default function ToolBoxComponent({ selectLevel, selectItems, marked, mar
                                             <button
                                                 type="button"
                                                 onClick={() => { setReportOpen(true) }}
-                                                className={`flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-[13px] font-medium transition ${active ? "bg-black/[0.06] text-black" : "text-black/80"}`}
+                                                className={classNames(
+                                                    "flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-[13px] font-medium transition",
+                                                    active ? "bg-[var(--button-secondary-hover)] text-[color:var(--text-primary)]" : "text-[color:var(--text-secondary)]"
+                                                )}
                                             >
                                                 <WrenchScrewdriverIcon className="h-4 w-4" />
                                                 Report
@@ -168,11 +184,11 @@ export default function ToolBoxComponent({ selectLevel, selectItems, marked, mar
                             <button
                                 type="button"
                                 onClick={onClose}
-                                className={subtleActionClass}
+                                className={classNames(subtleActionClass, "theme-button-secondary")}
                                 title="Close practice"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
-                                    <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 1 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
+                                    <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 0 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
                                 </svg>
                             </button>
                         )}
@@ -180,8 +196,8 @@ export default function ToolBoxComponent({ selectLevel, selectItems, marked, mar
                 </div>
 
                 {isOpen && (
-                    <div className="mt-2 rounded-2xl border border-white/10 bg-white/[0.06] px-3 py-2.5 text-[13px] text-white/78 backdrop-blur">
-                        <div className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/45">Keyboard</div>
+                    <div className="theme-card mt-2 rounded-2xl px-3 py-2.5 text-[13px]">
+                        <div className="theme-faint mb-2 text-[11px] font-semibold uppercase tracking-[0.18em]">Keyboard</div>
                         <div className="flex flex-wrap gap-1.5">
                             {[
                                 { keycap: "1", label: "Hint" },
@@ -190,8 +206,8 @@ export default function ToolBoxComponent({ selectLevel, selectItems, marked, mar
                                 { keycap: "<-", label: "Prev" },
                                 { keycap: "->", label: "Next" },
                             ].map((item) => (
-                                <div key={item.label} className="inline-flex items-center gap-1.5 rounded-full bg-white/[0.08] px-2.5 py-1 text-[12px] font-medium text-white/80 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.08)]">
-                                    <span className="rounded-md border border-white/10 bg-black/[0.22] px-1.5 py-0.5 text-[11px] font-semibold text-white/76">
+                                <div key={item.label} className="theme-button-secondary inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] font-medium">
+                                    <span className="rounded-md border px-1.5 py-0.5 text-[11px] font-semibold" style={{ borderColor: "var(--border-soft)", background: "var(--surface-strong)", color: "var(--text-secondary)" }}>
                                         {item.keycap}
                                     </span>
                                     <span>{item.label}</span>
@@ -203,7 +219,6 @@ export default function ToolBoxComponent({ selectLevel, selectItems, marked, mar
             </div>
 
             <ReportDialog open={reportOpen} onClose={() => setReportOpen(false)} report={report} />
-
         </>
     )
 }

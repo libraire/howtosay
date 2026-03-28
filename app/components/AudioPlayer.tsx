@@ -57,7 +57,7 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ word, showLabel = false }) =>
         <div className={showLabel ? '' : 'mt-2'}>
             <button
                 className={showLabel
-                    ? "inline-flex h-8 items-center gap-1.5 rounded-full border border-white/12 bg-white/[0.08] px-2.5 text-[13px] font-semibold text-white/88 shadow-[0_1px_6px_rgba(0,0,0,0.16)] backdrop-blur transition hover:bg-white/[0.14]"
+                    ? "theme-button-secondary inline-flex h-8 items-center gap-1.5 rounded-full border px-2.5 text-[13px] font-semibold shadow-[0_1px_6px_rgba(0,0,0,0.08)] transition"
                     : styles.star_button}
                 onClick={handlePlayPause}
                 title={isPlaying ? "Pause audio" : "Play audio"}

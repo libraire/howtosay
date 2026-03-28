@@ -322,9 +322,9 @@ const PractiseComponent: React.FC<Props> = ({
             {completed && <StarComponent word={displayWord} currentLevel={word?.level ?? 0}></StarComponent>}
 
             {loadingWords ? (
-                <div className="px-6 py-16 text-center text-sm text-white/55">Loading practice words...</div>
+                <div className="theme-muted px-6 py-16 text-center text-sm">Loading practice words...</div>
             ) : loadError ? (
-                <div className="px-6 py-16 text-center text-sm text-white/55">Unable to load practice words right now.</div>
+                <div className="theme-muted px-6 py-16 text-center text-sm">Unable to load practice words right now.</div>
             ) : word ? (
                 <WordComponent
                     word={displayWord}
@@ -339,7 +339,7 @@ const PractiseComponent: React.FC<Props> = ({
                     prev={() => prevWord()}
                 />
             ) : (
-                <div className="px-6 py-16 text-center text-sm text-white/55">No practice words are available.</div>
+                <div className="theme-muted px-6 py-16 text-center text-sm">No practice words are available.</div>
             )}
 
             <KeyBoardComponent />

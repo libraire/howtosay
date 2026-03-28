@@ -17,7 +17,7 @@ export default function InputModal({ open,onClose, report }: { open: boolean, on
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                 >
-                    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                    <div className="theme-overlay fixed inset-0 transition-opacity" />
                 </Transition.Child>
 
                 <div className="fixed inset-0 z-10 overflow-y-auto">
@@ -31,17 +31,17 @@ export default function InputModal({ open,onClose, report }: { open: boolean, on
                             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                         >
-                            <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+                            <Dialog.Panel className="theme-panel relative transform overflow-hidden rounded-[28px] px-4 pb-4 pt-5 text-left transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
                                 <div>
                                     <div className="text-center">
-                                        <Dialog.Title as="h3" className="mb-3 text-base font-semibold leading-6 text-gray-900">
+                                        <Dialog.Title as="h3" className="mb-3 text-base font-semibold leading-6">
                                             Thanks for your report
                                         </Dialog.Title>
                                         <textarea
                                             rows={7}
                                             name="comment"
                                             id="comment"
-                                            className="block w-full resize-none border-2 bg-transparent py-1.5 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 p-2"
+                                            className="theme-input block w-full resize-none rounded-2xl py-2 text-sm focus:outline-none sm:leading-6 p-2"
                                             placeholder="Help us to improve the accuracy of the word"
                                             defaultValue={''}
                                             onChange={(e) => setMessage(e.target.value)}
@@ -52,7 +52,7 @@ export default function InputModal({ open,onClose, report }: { open: boolean, on
                                 <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
                                     <button
                                         type="button"
-                                        className="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:col-start-2"
+                                        className="theme-button-primary inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm sm:col-start-2"
                                         onClick={() => {
                                             report(message)
                                             onClose()
@@ -62,7 +62,7 @@ export default function InputModal({ open,onClose, report }: { open: boolean, on
                                     </button>
                                     <button
                                         type="button"
-                                        className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
+                                        className="theme-button-secondary mt-3 inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm sm:col-start-1 sm:mt-0"
                                         onClick={() => onClose()}
                                         ref={cancelButtonRef}
                                     >
