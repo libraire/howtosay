@@ -6,8 +6,10 @@ import {
     PuzzlePieceIcon,
     BoltIcon,
     Bars3Icon,
+    BookmarkIcon,
     InformationCircleIcon,
     MoonIcon,
+    RectangleStackIcon,
     SunIcon,
 } from '@heroicons/react/24/outline'
 import { useAppPreferences } from "@/app/context/AppPreferencesProvider"
@@ -20,6 +22,8 @@ export default function MyDropDown() {
     const [mounted, setMounted] = useState(false)
     const { copy, locale, setLocale, theme, toggleTheme } = useAppPreferences()
     const menuItems = [
+        { href: '/literature/saved', label: copy.menu.savedLiterature, icon: BookmarkIcon },
+        { href: '/cards', label: copy.menu.cardsPreview, icon: RectangleStackIcon, badge: copy.menu.previewTag },
         { href: '/daily', label: copy.menu.dailyGuess, icon: BoltIcon },
         { href: '/image', label: copy.menu.imageMode, icon: PhotoIcon },
         { href: '/grade', label: copy.menu.gradingExercise, icon: FireIcon },
@@ -43,7 +47,7 @@ export default function MyDropDown() {
                 <button
                     type="button"
                     aria-label={copy.menu.openToolsMenu}
-                    className="theme-button-primary inline-flex h-11 w-11 items-center justify-center rounded-full shadow-sm transition hover:scale-[1.03] hover:shadow-md"
+                    className="theme-button-secondary inline-flex h-11 w-11 items-center justify-center rounded-full shadow-sm transition hover:scale-[1.03] hover:shadow-md"
                 >
                     <Bars3Icon className="h-6 w-6 stroke-[2.4]" aria-hidden="true" />
                 </button>
@@ -56,7 +60,7 @@ export default function MyDropDown() {
             <div>
                 <Menu.Button
                     aria-label={copy.menu.openToolsMenu}
-                    className="theme-button-primary inline-flex h-11 w-11 items-center justify-center rounded-full shadow-sm transition hover:scale-[1.03] hover:shadow-md"
+                    className="theme-button-secondary inline-flex h-11 w-11 items-center justify-center rounded-full shadow-sm transition hover:scale-[1.03] hover:shadow-md"
                 >
                     <Bars3Icon className="h-6 w-6 stroke-[2.4]" aria-hidden="true" />
                 </Menu.Button>
@@ -71,7 +75,7 @@ export default function MyDropDown() {
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
             >
-                <Menu.Items className="theme-menu absolute right-0 z-10 mt-2 w-64 origin-top-right rounded-2xl p-1.5 focus:outline-none">
+                <Menu.Items className="theme-surface absolute right-0 z-10 mt-2 w-64 origin-top-right rounded-2xl p-1.5 focus:outline-none">
                     <div className="py-1">
                         {menuItems.map((item) => {
                             const Icon = item.icon
@@ -90,7 +94,20 @@ export default function MyDropDown() {
                                             )}
                                             style={item.divider ? { borderColor: "var(--border-soft)" } : undefined}
                                         >
-                                            <Icon className='-ml-0.5 mr-1 inline h-5 w-5 theme-faint' /> {item.label}
+                                            <Icon className='-ml-0.5 mr-1 inline h-5 w-5 theme-faint' />
+                                            <span>{item.label}</span>
+                                            {item.badge && (
+                                                <span
+                                                    className="ml-2 inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em]"
+                                                    style={{
+                                                        background: "var(--button-secondary-bg)",
+                                                        color: "var(--accent)",
+                                                        border: "1px solid var(--border-soft)",
+                                                    }}
+                                                >
+                                                    {item.badge}
+                                                </span>
+                                            )}
                                         </a>
                                     )}
                                 </Menu.Item>

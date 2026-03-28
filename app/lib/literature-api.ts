@@ -57,3 +57,47 @@ export async function fetchLiteraryPassageDetail(id: number | string): Promise<L
 
     return getMockLiteraryPassageDetail(id)
 }
+
+export async function fetchFavoriteLiteraryPassages(): Promise<LiteraryPassageDetail[]> {
+    const perPage = 24
+    let page = 1
+    let lastPage = 1
+    const items: Array<{ id: number }> = []
+
+    do {
+        const query = buildQuery({
+            page,
+            per_page: perPage,
+        })
+
+        const data = await fetchJson<LiteraryTimelinePage>(`/hts/api/v1/literary-passages?${query}`, {
+            method: "GET",
+        })
+
+        items.push(...data.data.map((item) => ({ id: item.id })))
+        page = data.current_page + 1
+        lastPage = data.last_page
+    } while (page <= lastPage)
+
+    const favorites: LiteraryPassageDetail[] = []
+
+    for (let index = 0; index < items.length; index += 6) {
+        const batch = items.slice(index, index + 6)
+        const details = await Promise.all(
+            batch.map(async (item) => {
+                try {
+                    const data = await fetchJson<{ status: string, passage?: LiteraryPassageDetail | null }>(`/hts/api/v1/literary-passages/${item.id}`, {
+                        method: "GET",
+                    })
+                    return data.passage ?? null
+                } catch (error) {
+                    return null
+                }
+            })
+        )
+
+        favorites.push(...details.filter((item): item is LiteraryPassageDetail => Boolean(item?.is_favorited)))
+    }
+
+    return favorites
+}
