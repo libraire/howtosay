@@ -6,14 +6,17 @@ import { useParams, useRouter } from "next/navigation"
 import Navbar from "@/app/components/Navbar"
 import CardComposer from "@/app/components/CardComposer"
 import { CardBlockList } from "@/app/components/CardBlocks"
+import { useAppPreferences } from "@/app/context/AppPreferencesProvider"
 import { useCustomAuth } from "@/app/context/CustomAuthProvider"
 import { createCard, deleteCard, deleteDeck, fetchDeckCards, updateCard, updateDeck } from "@/app/lib/cards-api"
 import type { CardModel, DeckSummary } from "@/app/lib/cards-models"
+import { formatCopy } from "@/app/lib/copy"
 
 export default function DeckDetailPage() {
     const params = useParams<{ id: string }>()
     const router = useRouter()
     const { isAuthenticated, isLoading, login } = useCustomAuth()
+    const { copy } = useAppPreferences()
     const [deck, setDeck] = useState<DeckSummary | null>(null)
     const [cards, setCards] = useState<CardModel[]>([])
     const [loadingDeck, setLoadingDeck] = useState(true)
@@ -23,6 +26,14 @@ export default function DeckDetailPage() {
     const [deckName, setDeckName] = useState("")
     const [deckDescription, setDeckDescription] = useState("")
     const [error, setError] = useState("")
+
+    function formatCardStatus(status?: string | null) {
+        if (!status) {
+            return copy.deckDetail.statusNew
+        }
+
+        return copy.cardsReview.badges[status] || status
+    }
 
     const deckId = Number(params?.id ?? 0)
 
@@ -53,7 +64,7 @@ export default function DeckDetailPage() {
             setDeckDescription(data.deck.description || "")
         } catch (deckError) {
             console.error("Failed to load deck:", deckError)
-            setError(deckError instanceof Error ? deckError.message : "Unable to load deck.")
+            setError(deckError instanceof Error ? deckError.message : copy.deckDetail.unableToLoadDeck)
         } finally {
             if (withLoadingState) {
                 setLoadingDeck(false)
@@ -68,7 +79,7 @@ export default function DeckDetailPage() {
         }
 
         if (deckName.trim().length === 0) {
-            setError("Deck name is required.")
+            setError(copy.deckDetail.deckNameRequired)
             return
         }
 
@@ -83,7 +94,7 @@ export default function DeckDetailPage() {
             setDeckName(nextDeck.name)
             setDeckDescription(nextDeck.description || "")
         } catch (deckError) {
-            setError(deckError instanceof Error ? deckError.message : "Unable to save deck.")
+            setError(deckError instanceof Error ? deckError.message : copy.deckDetail.unableToSaveDeck)
         } finally {
             setSavingDeck(false)
         }
@@ -102,7 +113,7 @@ export default function DeckDetailPage() {
             })
             setDeck(nextDeck)
         } catch (deckError) {
-            setError(deckError instanceof Error ? deckError.message : "Unable to update archive status.")
+            setError(deckError instanceof Error ? deckError.message : copy.deckDetail.unableToUpdateArchive)
         } finally {
             setSavingDeck(false)
         }
@@ -113,7 +124,7 @@ export default function DeckDetailPage() {
             return
         }
 
-        const confirmed = window.confirm(`Delete "${deck.name}" and all of its cards?`)
+        const confirmed = window.confirm(formatCopy(copy.deckDetail.deleteDeckConfirm, { name: deck.name }))
         if (!confirmed) {
             return
         }
@@ -122,7 +133,7 @@ export default function DeckDetailPage() {
             await deleteDeck(deck.id)
             router.push("/cards")
         } catch (deckError) {
-            setError(deckError instanceof Error ? deckError.message : "Unable to delete deck.")
+            setError(deckError instanceof Error ? deckError.message : copy.deckDetail.unableToDeleteDeck)
         }
     }
 
@@ -137,7 +148,7 @@ export default function DeckDetailPage() {
             await createCard(deck.id, payload)
             await refreshDeckData()
         } catch (cardError) {
-            setError(cardError instanceof Error ? cardError.message : "Unable to create card.")
+            setError(cardError instanceof Error ? cardError.message : copy.deckDetail.unableToCreateCard)
         } finally {
             setSavingCard(false)
         }
@@ -152,14 +163,14 @@ export default function DeckDetailPage() {
             await refreshDeckData()
             setEditingCardId(null)
         } catch (cardError) {
-            setError(cardError instanceof Error ? cardError.message : "Unable to update card.")
+            setError(cardError instanceof Error ? cardError.message : copy.deckDetail.unableToUpdateCard)
         } finally {
             setSavingCard(false)
         }
     }
 
     async function handleDeleteCard(cardId: number) {
-        const confirmed = window.confirm("Delete this card?")
+        const confirmed = window.confirm(copy.deckDetail.deleteCardConfirm)
         if (!confirmed) {
             return
         }
@@ -169,7 +180,7 @@ export default function DeckDetailPage() {
             await deleteCard(cardId)
             await refreshDeckData()
         } catch (cardError) {
-            setError(cardError instanceof Error ? cardError.message : "Unable to delete card.")
+            setError(cardError instanceof Error ? cardError.message : copy.deckDetail.unableToDeleteCard)
         }
     }
 
@@ -187,16 +198,16 @@ export default function DeckDetailPage() {
                 <Navbar />
                 <section className="mx-auto w-full max-w-5xl px-6 pb-12 pt-8">
                     <div className="theme-surface rounded-[36px] p-8">
-                        <h1 className="text-3xl font-medium">Login to manage this deck</h1>
+                        <h1 className="text-3xl font-medium">{copy.deckDetail.loginTitle}</h1>
                         <p className="theme-muted mt-4 max-w-2xl text-sm leading-7">
-                            Deck pages let you edit the deck itself, create cards with multiple content blocks, and control which cards stay active in review.
+                            {copy.deckDetail.loginBody}
                         </p>
                         <button
                             type="button"
                             onClick={() => login()}
                             className="theme-button-primary mt-8 inline-flex h-11 items-center rounded-xl px-5 text-sm font-medium transition"
                         >
-                            Login to continue
+                            {copy.deckDetail.loginCta}
                         </button>
                     </div>
                 </section>
@@ -210,38 +221,38 @@ export default function DeckDetailPage() {
             <section className="mx-auto w-full max-w-6xl px-6 pb-12 pt-8">
                 {loadingDeck ? (
                     <div className="theme-surface px-6 py-16 text-center text-sm theme-faint rounded-[36px]">
-                        Loading deck...
+                        {copy.deckDetail.loading}
                     </div>
                 ) : !deck ? (
                     <div className="theme-surface px-6 py-16 text-center text-sm theme-faint rounded-[36px]">
-                        Unable to load this deck.
+                        {copy.deckDetail.unableToLoad}
                     </div>
                 ) : (
                     <div className="space-y-6">
                         <div className="flex flex-wrap items-center gap-3">
                             <Link href="/cards" className="theme-button-secondary inline-flex h-10 items-center rounded-xl px-4 text-sm font-medium transition">
-                                Back to cards
+                                {copy.deckDetail.backToCards}
                             </Link>
                             <Link href={`/cards/review?deck=${deck.id}`} className="theme-button-primary inline-flex h-10 items-center rounded-xl px-4 text-sm font-medium transition">
-                                Review this deck
+                                {copy.deckDetail.reviewThisDeck}
                             </Link>
                         </div>
 
                         <form onSubmit={handleDeckSave} className="theme-surface rounded-[36px] p-8">
                             <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
                                 <div>
-                                    <p className="theme-faint text-xs uppercase tracking-[0.28em]">Deck</p>
+                                    <p className="theme-faint text-xs uppercase tracking-[0.28em]">{copy.deckDetail.eyebrow}</p>
                                     <h1 className="mt-3 text-3xl font-medium tracking-tight">{deck.name}</h1>
                                     <p className="theme-muted mt-3 text-sm leading-7">
-                                        {deck.cardCount} cards · {deck.dueCount} due now · {deck.newCardCount} still new
+                                        {formatCopy(copy.deckDetail.deckStats, { cards: deck.cardCount, due: deck.dueCount, newCards: deck.newCardCount })}
                                     </p>
                                 </div>
                                 <div className="flex flex-wrap gap-3">
                                     <button type="button" onClick={handleArchiveToggle} className="theme-button-secondary inline-flex h-11 items-center rounded-xl px-5 text-sm font-medium transition">
-                                        {deck.isArchived ? "Unarchive deck" : "Archive deck"}
+                                        {deck.isArchived ? copy.deckDetail.unarchiveDeck : copy.deckDetail.archiveDeck}
                                     </button>
                                     <button type="button" onClick={handleDeleteDeck} className="inline-flex h-11 items-center rounded-xl border border-[#d17a7a]/30 bg-[#d17a7a]/10 px-5 text-sm font-medium text-[#f0c9c9] transition hover:bg-[#d17a7a]/15">
-                                        Delete deck
+                                        {copy.deckDetail.deleteDeck}
                                     </button>
                                 </div>
                             </div>
@@ -251,14 +262,14 @@ export default function DeckDetailPage() {
                                     type="text"
                                     value={deckName}
                                     onChange={(event) => setDeckName(event.target.value)}
-                                    placeholder="Deck name"
+                                    placeholder={copy.deckDetail.deckNamePlaceholder}
                                     className="theme-input h-12 rounded-2xl px-4 text-sm focus:outline-none"
                                 />
                                 <textarea
                                     rows={4}
                                     value={deckDescription}
                                     onChange={(event) => setDeckDescription(event.target.value)}
-                                    placeholder="What does this deck cover?"
+                                    placeholder={copy.deckDetail.deckDescriptionPlaceholder}
                                     className="theme-input rounded-2xl px-4 py-3 text-sm focus:outline-none"
                                 />
                             </div>
@@ -274,27 +285,27 @@ export default function DeckDetailPage() {
                                 disabled={savingDeck}
                                 className="theme-button-primary mt-6 inline-flex h-11 items-center rounded-xl px-5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50"
                             >
-                                {savingDeck ? "Saving..." : "Save deck"}
+                                {savingDeck ? copy.deckDetail.savingDeck : copy.deckDetail.saveDeck}
                             </button>
                         </form>
 
-                        <CardComposer submitLabel="Create card" busy={savingCard} onSubmit={handleCreateCard} />
+                        <CardComposer submitLabel={copy.deckDetail.createCard} busy={savingCard} onSubmit={handleCreateCard} />
 
                         <div className="theme-surface rounded-[36px] p-6">
-                            <h2 className="text-xl font-medium">Cards in this deck</h2>
-                            <p className="theme-muted mt-2 text-sm">Edit existing cards inline, or turn them off without deleting the whole deck.</p>
+                            <h2 className="text-xl font-medium">{copy.deckDetail.cardsInDeck}</h2>
+                            <p className="theme-muted mt-2 text-sm">{copy.deckDetail.cardsInDeckBody}</p>
 
                             <div className="mt-6 space-y-5">
                                 {cards.length === 0 ? (
                                     <div className="rounded-3xl border border-dashed px-5 py-10 text-center text-sm theme-faint" style={{ borderColor: "var(--border-soft)" }}>
-                                        No cards yet. Create your first card above.
+                                        {copy.deckDetail.noCards}
                                     </div>
                                 ) : cards.map((card) => (
                                     <div key={card.id} className="theme-card rounded-3xl p-5">
                                         {editingCardId === card.id ? (
                                             <CardComposer
                                                 initialCard={card}
-                                                submitLabel="Save card"
+                                                submitLabel={copy.deckDetail.saveCard}
                                                 busy={savingCard}
                                                 onSubmit={(payload) => handleUpdateCard(card.id, payload)}
                                                 onCancel={() => setEditingCardId(null)}
@@ -305,33 +316,33 @@ export default function DeckDetailPage() {
                                                     <div>
                                                         <h3 className="text-lg font-medium">{card.title}</h3>
                                                         <p className="theme-muted mt-2 text-sm">
-                                                            {card.progress?.status || "new"} · {card.isActive ? "active" : "paused"}
+                                                            {formatCardStatus(card.progress?.status)} · {card.isActive ? copy.deckDetail.statusActive : copy.deckDetail.statusPaused}
                                                         </p>
                                                     </div>
                                                     <div className="flex flex-wrap gap-3">
                                                         <button type="button" onClick={() => setEditingCardId(card.id)} className="theme-button-secondary inline-flex h-10 items-center rounded-xl px-4 text-sm font-medium transition">
-                                                            Edit
+                                                            {copy.deckDetail.edit}
                                                         </button>
                                                         <button type="button" onClick={() => handleDeleteCard(card.id)} className="inline-flex h-10 items-center rounded-xl border border-[#d17a7a]/30 bg-[#d17a7a]/10 px-4 text-sm font-medium text-[#f0c9c9] transition hover:bg-[#d17a7a]/15">
-                                                            Delete
+                                                            {copy.deckDetail.delete}
                                                         </button>
                                                     </div>
                                                 </div>
 
                                                 <div className="mt-5 grid gap-4 lg:grid-cols-2">
                                                     <div>
-                                                        <div className="theme-faint mb-3 text-xs uppercase tracking-[0.18em]">Prompt</div>
+                                                        <div className="theme-faint mb-3 text-xs uppercase tracking-[0.18em]">{copy.deckDetail.prompt}</div>
                                                         <CardBlockList blocks={card.promptBlocks} />
                                                     </div>
                                                     <div>
-                                                        <div className="theme-faint mb-3 text-xs uppercase tracking-[0.18em]">Answer</div>
+                                                        <div className="theme-faint mb-3 text-xs uppercase tracking-[0.18em]">{copy.deckDetail.answer}</div>
                                                         <CardBlockList blocks={card.answerBlocks} />
                                                     </div>
                                                 </div>
 
                                                 {card.notesBlocks && card.notesBlocks.length > 0 && (
                                                     <div className="mt-4">
-                                                        <div className="theme-faint mb-3 text-xs uppercase tracking-[0.18em]">Notes</div>
+                                                        <div className="theme-faint mb-3 text-xs uppercase tracking-[0.18em]">{copy.deckDetail.notes}</div>
                                                         <CardBlockList blocks={card.notesBlocks} />
                                                     </div>
                                                 )}

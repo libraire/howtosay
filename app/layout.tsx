@@ -29,10 +29,16 @@ export default function RootLayout({
               (() => {
                 try {
                   const theme = localStorage.getItem("howtosay-theme") || "dark";
-                  const locale = localStorage.getItem("howtosay-locale")
-                    || (navigator.language.toLowerCase().startsWith("zh") ? "zh-CN" : "en");
+                  const detectLocale = (value) => {
+                    const normalized = (value || "").toLowerCase();
+                    if (normalized.startsWith("zh")) return "zh";
+                    if (normalized.startsWith("ja")) return "ja";
+                    if (normalized.startsWith("ko")) return "ko";
+                    return "en";
+                  };
+                  const locale = detectLocale(localStorage.getItem("howtosay-locale") || navigator.language);
                   document.documentElement.dataset.theme = theme;
-                  document.documentElement.lang = locale.startsWith("zh") ? "zh-CN" : "en";
+                  document.documentElement.lang = locale === "zh" ? "zh-CN" : locale === "ja" ? "ja" : locale === "ko" ? "ko" : "en";
                   document.documentElement.style.colorScheme = theme;
                 } catch (error) {
                   document.documentElement.dataset.theme = "dark";

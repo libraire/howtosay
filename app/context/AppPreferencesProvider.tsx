@@ -8,7 +8,7 @@ import {
     useState,
     type ReactNode,
 } from "react"
-import { dictionaries, type Dictionary, type Locale, type Theme } from "@/app/lib/copy"
+import { dictionaries, getDocumentLang, normalizeLocale, type Dictionary, type Locale, type Theme } from "@/app/lib/copy"
 
 type AppPreferencesContextValue = {
     locale: Locale
@@ -29,12 +29,12 @@ function resolveInitialLocale() {
         return "en" as Locale
     }
 
-    const storedLocale = window.localStorage.getItem(LOCALE_STORAGE_KEY)
-    if (storedLocale === "en" || storedLocale === "zh") {
+    const storedLocale = normalizeLocale(window.localStorage.getItem(LOCALE_STORAGE_KEY))
+    if (window.localStorage.getItem(LOCALE_STORAGE_KEY)) {
         return storedLocale
     }
 
-    return window.navigator.language.toLowerCase().startsWith("zh") ? "zh" : "en"
+    return normalizeLocale(window.navigator.language)
 }
 
 function resolveInitialTheme() {
@@ -67,7 +67,7 @@ export function AppPreferencesProvider({ children }: { children: ReactNode }) {
         }
 
         document.documentElement.dataset.theme = theme
-        document.documentElement.lang = locale === "zh" ? "zh-CN" : "en"
+        document.documentElement.lang = getDocumentLang(locale)
         document.documentElement.style.colorScheme = theme
         window.localStorage.setItem(THEME_STORAGE_KEY, theme)
         window.localStorage.setItem(LOCALE_STORAGE_KEY, locale)

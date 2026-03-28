@@ -1,9 +1,11 @@
 import { Fragment, useRef, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
+import { useAppPreferences } from "@/app/context/AppPreferencesProvider"
 
 export default function InputModal({ open,onClose, report }: { open: boolean, onClose: () => void, report: (e: string) => void }) {
     const [message, setMessage] = useState('');
     const cancelButtonRef = useRef(null)
+    const { copy } = useAppPreferences()
 
     return (
         <Transition.Root show={open} as={Fragment}>
@@ -35,14 +37,14 @@ export default function InputModal({ open,onClose, report }: { open: boolean, on
                                 <div>
                                     <div className="text-center">
                                         <Dialog.Title as="h3" className="mb-3 text-base font-semibold leading-6">
-                                            Thanks for your report
+                                            {copy.reportDialog.title}
                                         </Dialog.Title>
                                         <textarea
                                             rows={7}
                                             name="comment"
                                             id="comment"
                                             className="theme-input block w-full resize-none rounded-2xl py-2 text-sm focus:outline-none sm:leading-6 p-2"
-                                            placeholder="Help us to improve the accuracy of the word"
+                                            placeholder={copy.reportDialog.placeholder}
                                             defaultValue={''}
                                             onChange={(e) => setMessage(e.target.value)}
                                             value={message}
@@ -58,7 +60,7 @@ export default function InputModal({ open,onClose, report }: { open: boolean, on
                                             onClose()
                                         }}
                                     >
-                                        Submit
+                                        {copy.reportDialog.submit}
                                     </button>
                                     <button
                                         type="button"
@@ -66,7 +68,7 @@ export default function InputModal({ open,onClose, report }: { open: boolean, on
                                         onClick={() => onClose()}
                                         ref={cancelButtonRef}
                                     >
-                                        Cancel
+                                        {copy.reportDialog.cancel}
                                     </button>
                                 </div>
                             </Dialog.Panel>

@@ -10,7 +10,7 @@ import { fetchFavoriteLiteraryPassages } from "@/app/lib/literature-api"
 import type { LiteraryPassageDetail } from "@/app/lib/literature-models"
 
 function yearLabel(year: number | null) {
-    return year ? String(year) : "Unknown year"
+    return year ? String(year) : ""
 }
 
 export default function SavedLiteraturePage() {
@@ -39,7 +39,7 @@ export default function SavedLiteraturePage() {
             } catch (loadError) {
                 if (!cancelled) {
                     console.error("Failed to load saved literature:", loadError)
-                    setError(loadError instanceof Error ? loadError.message : "Unable to load saved literature.")
+                    setError(loadError instanceof Error ? loadError.message : copy.literatureTimeline.listLoadFailed)
                 }
             } finally {
                 if (!cancelled) {
@@ -126,7 +126,7 @@ export default function SavedLiteraturePage() {
                             {items.map((item) => (
                                 <article key={item.id} className="theme-card rounded-3xl p-6">
                                     <div className="theme-faint text-xs uppercase tracking-[0.24em]">
-                                        {yearLabel(item.work_year)}
+                                        {yearLabel(item.work_year) || copy.literatureTimeline.unknownYear}
                                     </div>
                                     <h2 className="mt-3 text-2xl font-medium">{item.work_title}</h2>
                                     <p className="theme-muted mt-2 text-sm">

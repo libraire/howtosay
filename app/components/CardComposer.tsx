@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { CardBlockEditor } from "@/app/components/CardBlocks"
+import { useAppPreferences } from "@/app/context/AppPreferencesProvider"
 import type { CardBlock, CardModel } from "@/app/lib/cards-models"
 
 function sanitizeBlocks(blocks: CardBlock[]): CardBlock[] {
@@ -34,6 +35,7 @@ export default function CardComposer({
     }) => Promise<void>
     onCancel?: () => void
 }) {
+    const { copy } = useAppPreferences()
     const [title, setTitle] = useState("")
     const [promptBlocks, setPromptBlocks] = useState<CardBlock[]>([{ type: "text", content: "" }])
     const [answerBlocks, setAnswerBlocks] = useState<CardBlock[]>([{ type: "text", content: "" }])
@@ -59,12 +61,12 @@ export default function CardComposer({
         const nextNotesBlocks = sanitizeBlocks(notesBlocks)
 
         if (title.trim().length === 0) {
-            setError("Title is required.")
+            setError(copy.cardComposer.titleRequired)
             return
         }
 
         if (nextPromptBlocks.length === 0 || nextAnswerBlocks.length === 0) {
-            setError("Prompt and answer each need at least one filled block.")
+            setError(copy.cardComposer.blocksRequired)
             return
         }
 
@@ -85,7 +87,7 @@ export default function CardComposer({
                 setIsActive(true)
             }
         } catch (submitError) {
-            setError(submitError instanceof Error ? submitError.message : "Unable to save card.")
+            setError(submitError instanceof Error ? submitError.message : copy.cardComposer.unableToSave)
         }
     }
 
@@ -93,9 +95,9 @@ export default function CardComposer({
         <form onSubmit={handleSubmit} className="theme-surface space-y-5 rounded-[32px] p-6">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
-                    <h2 className="text-xl font-medium">{initialCard ? "Edit card" : "Create a card"}</h2>
+                    <h2 className="text-xl font-medium">{initialCard ? copy.cardComposer.editTitle : copy.cardComposer.createTitle}</h2>
                     <p className="theme-muted mt-1 text-sm">
-                        Build cards from text, images, audio, and links. Learners will see the prompt first, then reveal the answer.
+                        {copy.cardComposer.intro}
                     </p>
                 </div>
                 <label className="theme-button-secondary inline-flex items-center gap-3 rounded-full px-4 py-2 text-sm">
@@ -105,7 +107,7 @@ export default function CardComposer({
                         onChange={(event) => setIsActive(event.target.checked)}
                         className="h-4 w-4 rounded"
                     />
-                    Active in review
+                    {copy.cardComposer.activeInReview}
                 </label>
             </div>
 
@@ -113,7 +115,7 @@ export default function CardComposer({
                 type="text"
                 value={title}
                 onChange={(event) => setTitle(event.target.value)}
-                placeholder="Card title"
+                placeholder={copy.cardComposer.titlePlaceholder}
                 className="theme-input h-12 w-full rounded-2xl px-4 text-sm focus:outline-none"
             />
 
@@ -133,7 +135,7 @@ export default function CardComposer({
                     disabled={busy}
                     className="theme-button-primary inline-flex h-11 items-center rounded-xl px-5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                    {busy ? "Saving..." : submitLabel}
+                    {busy ? copy.cardComposer.saving : submitLabel}
                 </button>
                 {onCancel && (
                     <button
@@ -141,7 +143,7 @@ export default function CardComposer({
                         onClick={onCancel}
                         className="theme-button-secondary inline-flex h-11 items-center rounded-xl px-5 text-sm font-medium transition"
                     >
-                        Cancel
+                        {copy.cardComposer.cancel}
                     </button>
                 )}
             </div>

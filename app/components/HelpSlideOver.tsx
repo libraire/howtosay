@@ -2,9 +2,11 @@ import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import styles from "./ComponentStyle.module.css";
+import { useAppPreferences } from "@/app/context/AppPreferencesProvider";
 
 
 export default function HelpSlideOver({ open, onClose }: { open: boolean, onClose: () => void }) {
+  const { copy } = useAppPreferences()
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -28,7 +30,7 @@ export default function HelpSlideOver({ open, onClose }: { open: boolean, onClos
                     <div className="px-4 sm:px-6">
                       <div className="flex items-start justify-between">
                         <Dialog.Title className="text-base font-semibold leading-6 text-gray-900">
-                          Keyboard Shorcuts
+                          {copy.helpPanel.title}
                         </Dialog.Title>
                         <div className="ml-3 flex h-7 items-center">
                           <button
@@ -36,7 +38,7 @@ export default function HelpSlideOver({ open, onClose }: { open: boolean, onClos
                             className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                             onClick={() => onClose()}
                           >
-                            <span className="sr-only">Close panel</span>
+                            <span className="sr-only">{copy.helpPanel.closePanel}</span>
                             <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                           </button>
                         </div>
@@ -48,19 +50,19 @@ export default function HelpSlideOver({ open, onClose }: { open: boolean, onClos
 
                         <div className={styles.manualItem}>
                           <div className="-mr-1 h-10 w-10 text-gray-950 rounded-lg border-gray-950 border-2 mr-4 text-[30px] text-center" aria-hidden="true" > 1  </div>
-                          Hint
+                          {copy.helpPanel.items[0].label}
                         </div>
                         <div className={styles.manualItem}>
                           <div className="-mr-1 h-10 w-10 text-gray-950 rounded-lg border-gray-950 border-2 mr-4 text-[30px] text-center" aria-hidden="true" > 2  </div>
-                          Pronounce
+                          {copy.helpPanel.items[1].label}
                         </div>
                         <div className={styles.manualItem}>
                           <div className="-mr-1 h-10 w-10 text-gray-950 rounded-lg border-gray-950 border-2 mr-4 text-[30px] text-center" aria-hidden="true" > 3  </div>
-                          Reveal
+                          {copy.helpPanel.items[2].label}
                         </div>
                         <div className={styles.manualItem}>
                           <div className="-mr-1 h-10 w-10 text-gray-950 rounded-lg border-gray-950 border-2 mr-4 text-[30px] text-center" aria-hidden="true" > 4  </div>
-                          Next
+                          {copy.helpPanel.items[3].label}
                         </div>
                       </div>
                     </div>

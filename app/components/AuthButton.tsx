@@ -7,7 +7,7 @@ import { Menu, Transition } from '@headlessui/react'
 import { Fragment } from 'react'
 import { ClipboardDocumentCheckIcon } from '@heroicons/react/24/outline'
 import UserInfo from "@/app/components/UserInfo"
-import { levelOptions } from "@/app/lib/level-options"
+import { getLevelOptions } from "@/app/lib/level-options"
 
 function classNames(...classes: string[]): string {
     return classes.filter(Boolean).join(' ')
@@ -15,7 +15,7 @@ function classNames(...classes: string[]): string {
 
 export default function AuthButton() {
     const { user, isLoading, login, logout, setUserLevel } = useCustomAuth()
-    const { copy } = useAppPreferences()
+    const { copy, locale } = useAppPreferences()
 
     if (isLoading) {
         return (
@@ -72,7 +72,7 @@ export default function AuthButton() {
                                 value={level}
                                 onChange={(e) => setUserLevel(e.target.value).catch((error) => console.error(error))}
                             >
-                                {levelOptions.map((item) => (
+                                {getLevelOptions(locale).map((item) => (
                                     <option key={item.value} value={item.value}>
                                         {item.label}
                                     </option>

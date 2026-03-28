@@ -1,10 +1,12 @@
 import { Fragment, useRef } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
+import { useAppPreferences } from "@/app/context/AppPreferencesProvider"
 
 export default function Component({ open, onClose, title, content, confirm, onConfirm }: { onConfirm: () => void, open: boolean, title: string, content: string, confirm: string, onClose: () => void }) {
 
     const cancelButtonRef = useRef(null)
+    const { copy } = useAppPreferences()
 
     return (
         <Transition.Root show={open} as={Fragment}>
@@ -62,7 +64,7 @@ export default function Component({ open, onClose, title, content, confirm, onCo
                                         onClick={onClose}
                                         ref={cancelButtonRef}
                                     >
-                                        Cancel
+                                        {copy.common.cancel}
                                     </button>
                                 </div>
                             </Dialog.Panel>

@@ -6,9 +6,11 @@ import Navbar from "@/app/components/Navbar";
 import AudioComponent from "@/app/components/AudioComponent";
 import PractiseComponent from "@/app/components/PractiseComponent"
 import { useEffect } from "react";
+import { useAppPreferences } from "@/app/context/AppPreferencesProvider";
 
 export default function Home() {
     const { isAuthenticated, isLoading, login } = useCustomAuth();
+    const { copy } = useAppPreferences()
 
     const [message, setMessage] = useState('');
     const [isButtonDisabled, setButtonDisabled] = useState(false);
@@ -31,7 +33,7 @@ export default function Home() {
 
     const handleSending = () => {
         if (!message) {
-            alert('The content is empty');
+            alert(copy.customPractice.emptyContent);
             return;
         }
 
@@ -71,7 +73,7 @@ export default function Home() {
                                             name="comment"
                                             id="comment"
                                             className="block w-full resize-none border-0 bg-transparent py-1.5 text-white placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 p-2"
-                                            placeholder="Paste word list to practise ..."
+                                            placeholder={copy.customPractice.placeholder}
                                             onChange={(e) => setMessage(e.target.value)}
                                             value={message}
                                         />
@@ -90,7 +92,7 @@ export default function Home() {
                                                     type="button"
                                                     className="-m-2.5 flex h-10 w-10 items-center justify-center rounded-full text-gray-400 hover:text-gray-500"
                                                 >
-                                                    <span className="sr-only">Attach a file</span>
+                                                    <span className="sr-only">{copy.customPractice.attachFile}</span>
                                                 </button>
                                             </div>
 
@@ -104,7 +106,7 @@ export default function Home() {
                                                 onClick={() => { togglePractise() }}
                                                 disabled={isButtonDisabled}
                                             >
-                                                Practise
+                                                {copy.customPractice.practise}
                                             </button>
 
                                         </div>

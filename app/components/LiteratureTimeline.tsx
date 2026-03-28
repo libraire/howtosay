@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, type RefObject } from "react"
 import { LoaderCircle } from "lucide-react"
+import { useAppPreferences } from "@/app/context/AppPreferencesProvider"
 import { fetchLiteraryPassageDetail, fetchLiteratureTimeline } from "@/app/lib/literature-api"
 import type { LiteraryPassageDetail, LiteraryTimelineItem, LiteraryTimelinePage } from "@/app/lib/literature-models"
 
@@ -13,10 +14,6 @@ type Props = {
     onItemsChange?: (items: LiteraryTimelineItem[]) => void
 }
 
-function yearLabel(year: number | null): string {
-    return year ? String(year) : "未知年代"
-}
-
 export default function LiteratureTimeline({
     initialData,
     scrollContainerRef,
@@ -24,6 +21,7 @@ export default function LiteratureTimeline({
     onActiveAuthorCountryCodeChange,
     onItemsChange,
 }: Props) {
+    const { copy } = useAppPreferences()
     const [items, setItems] = useState<LiteraryTimelineItem[]>(initialData.data)
     const [page, setPage] = useState(initialData.current_page)
     const [lastPage, setLastPage] = useState(initialData.last_page)
@@ -50,8 +48,12 @@ export default function LiteratureTimeline({
             return authorFilter
         }
 
-        return "全部文学内容"
-    }, [authorFilter, workFilter])
+        return copy.literatureTimeline.allContent
+    }, [authorFilter, copy.literatureTimeline.allContent, workFilter])
+
+    function yearLabel(year: number | null): string {
+        return year ? String(year) : copy.literatureTimeline.unknownYear
+    }
 
     useEffect(() => {
         onItemsChange?.(items)
@@ -87,7 +89,7 @@ export default function LiteratureTimeline({
             } catch (error) {
                 if (!cancelled) {
                     setSelectedPassage(null)
-                    setDetailError("内容加载失败，请稍后重试。")
+                    setDetailError(copy.literatureTimeline.detailLoadFailed)
                 }
             } finally {
                 if (!cancelled) {
@@ -128,7 +130,7 @@ export default function LiteratureTimeline({
                 setSelectedId(matchedItem?.id ?? null)
             }
         } catch (error) {
-            setListError("时间线加载失败，请稍后重试。")
+            setListError(copy.literatureTimeline.listLoadFailed)
         } finally {
             setLoadingList(false)
         }
@@ -188,7 +190,7 @@ export default function LiteratureTimeline({
                         onClick={showAll}
                         className="theme-muted ml-4 transition hover:text-[color:var(--text-primary)]"
                     >
-                        查看全部
+                        {copy.literatureTimeline.viewAll}
                     </button>
                 </div>
             )}
@@ -248,7 +250,7 @@ export default function LiteratureTimeline({
                         {loadingList && (
                             <div className="theme-faint flex items-center gap-2 text-sm">
                                 <LoaderCircle className="h-4 w-4 animate-spin" />
-                                <span>加载中...</span>
+                                <span>{copy.literatureTimeline.loadingMore}</span>
                             </div>
                         )}
                     </div>
@@ -268,7 +270,7 @@ export default function LiteratureTimeline({
                             {loadingDetail && (
                                 <div className="theme-faint flex items-center gap-2 text-sm">
                                     <LoaderCircle className="h-4 w-4 animate-spin" />
-                                    <span>正在加载内容</span>
+                                    <span>{copy.literatureTimeline.loadingContent}</span>
                                 </div>
                             )}
 

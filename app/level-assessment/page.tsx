@@ -12,7 +12,7 @@ import { levelAssessmentQuestions, recommendLevel } from "../lib/level-assessmen
 
 export default function LevelAssessmentPage() {
     const { user, login, setUserLevel } = useCustomAuth()
-    const { copy } = useAppPreferences()
+    const { copy, locale } = useAppPreferences()
     const [answers, setAnswers] = useState<number[]>(() => Array(levelAssessmentQuestions.length).fill(-1))
     const [submitted, setSubmitted] = useState(false)
     const [isSaving, setIsSaving] = useState(false)
@@ -37,7 +37,7 @@ export default function LevelAssessmentPage() {
         setSaveMessage("")
         try {
             await setUserLevel(recommendedLevel)
-            setSaveMessage(formatCopy(copy.assessment.saveSuccess, { level: getLevelLabel(recommendedLevel) }))
+            setSaveMessage(formatCopy(copy.assessment.saveSuccess, { level: getLevelLabel(recommendedLevel, locale) }))
         } catch (error) {
             console.error(error)
             setSaveMessage(copy.assessment.saveError)
@@ -69,7 +69,7 @@ export default function LevelAssessmentPage() {
                         <div className="text-right">
                             <div className="theme-muted text-sm">{copy.assessment.currentLevel}</div>
                             <div className="mt-1 text-xl font-medium">
-                                {user ? getLevelLabel(user.level ?? 0) : copy.assessment.signInToSave}
+                                {user ? getLevelLabel(user.level ?? 0, locale) : copy.assessment.signInToSave}
                             </div>
                         </div>
                     </div>
@@ -133,7 +133,7 @@ export default function LevelAssessmentPage() {
                         <div className="flex flex-wrap items-center justify-between gap-6">
                             <div>
                                 <div className="theme-faint text-sm uppercase tracking-[0.24em]">{copy.assessment.recommendedLevel}</div>
-                                <div className="mt-3 text-3xl font-medium">{getLevelLabel(recommendedLevel)}</div>
+                                <div className="mt-3 text-3xl font-medium">{getLevelLabel(recommendedLevel, locale)}</div>
                                 <p className="theme-muted mt-3 max-w-xl text-sm leading-7">
                                     {copy.assessment.recommendedDescription}
                                 </p>

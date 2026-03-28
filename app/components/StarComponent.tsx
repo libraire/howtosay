@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useAppPreferences } from "@/app/context/AppPreferencesProvider";
 import { updateWordLevel } from "@/app/lib/practice-api";
 import LevelComponent from "./LevelComponent";
 
@@ -7,6 +8,7 @@ type Props = {
     currentLevel?: number,
 };
 export default function StartComponent({ word, currentLevel = 0 }: Props) {
+    const { copy } = useAppPreferences()
 
     const [selectedLevel, setSelectedLevel] = useState(currentLevel);
 
@@ -23,7 +25,7 @@ export default function StartComponent({ word, currentLevel = 0 }: Props) {
     return (
         <>
             <div className='flex items-center gap-3'>
-                <span className="text-sm text-white/70">Familiarity:</span>
+                <span className="text-sm text-white/70">{copy.starRating.familiarity}</span>
                 <LevelComponent
                     updateLevel={(level) => {
                         updateLevel(word, level)
@@ -33,7 +35,7 @@ export default function StartComponent({ word, currentLevel = 0 }: Props) {
                 />
             </div>
             <div className="text-sm text-white/60">
-                Good Job! Press &lt;Enter&gt; to continue.
+                {copy.starRating.successHint}
             </div>
         </>
     )

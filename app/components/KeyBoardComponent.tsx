@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import styles from "./ComponentStyle.module.css";
 import { FuncKey } from "./types";
+import { useAppPreferences } from "@/app/context/AppPreferencesProvider";
 
 const KeyBoardRowComponent: React.FC<{ char: string }> = ({ char }) => {
   const [wordChar, setChar] = useState<string[]>(char.split(""));
@@ -52,12 +53,17 @@ const KeyBoardRowComponent: React.FC<{ char: string }> = ({ char }) => {
 };
 
 const KeyBoardFuncComponent: React.FC = () => {
-  const [wordChar, setChar] = useState<FuncKey[]>([
-    { char: "▶", key: "2" },
-    { char: "Hint", key: "1" },
-    { char: "Reveal", key: "3" },
-    { char: "Next", key: "4" },
-  ]);
+  const { copy } = useAppPreferences()
+  const [wordChar, setChar] = useState<FuncKey[]>([])
+
+  useEffect(() => {
+    setChar([
+      { char: "▶", key: "2" },
+      { char: copy.helpPanel.items[0].label, key: "1" },
+      { char: copy.helpPanel.items[2].label, key: "3" },
+      { char: copy.helpPanel.items[3].label, key: "4" },
+    ]);
+  }, [copy]);
 
   return (
     <div className={styles.keyboardRow}>

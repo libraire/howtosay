@@ -153,6 +153,26 @@ export default function MyDropDown() {
                                 >
                                     {copy.menu.chinese}
                                 </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setLocale("ja")}
+                                    className={classNames(
+                                        'rounded-xl px-3 py-2 text-sm transition',
+                                        locale === "ja" ? 'theme-button-primary' : 'theme-button-secondary'
+                                    )}
+                                >
+                                    {copy.menu.japanese}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setLocale("ko")}
+                                    className={classNames(
+                                        'rounded-xl px-3 py-2 text-sm transition',
+                                        locale === "ko" ? 'theme-button-primary' : 'theme-button-secondary'
+                                    )}
+                                >
+                                    {copy.menu.korean}
+                                </button>
                             </div>
                         </div>
                     </div>

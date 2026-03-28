@@ -9,6 +9,7 @@ import { useCustomAuth } from "@/app/context/CustomAuthProvider";
 import HelpSlideOver from "./HelpSlideOver";
 import ToolBoxComponent from "./ToolBoxComponent";
 import StarComponent from "./StarComponent";
+import { useAppPreferences } from "@/app/context/AppPreferencesProvider";
 import { fetchDefinitions as fetchDefinitionsApi, fetchMarkedWords } from "@/app/lib/dict-api";
 import { markWord as markWordApi, submitReviewResult, unmarkWord as unmarkWordApi } from "@/app/lib/practice-api";
 
@@ -105,6 +106,7 @@ const PractiseComponent: React.FC<Props> = ({
     const [loadError, setLoadError] = useState(false)
     const handleOnClose = () => setIsOpen(false)
     const { isAuthenticated, login } = useCustomAuth()
+    const { copy } = useAppPreferences()
 
     const word = wordList[currentIndex]
     const marked = !!word?.marked
@@ -322,9 +324,9 @@ const PractiseComponent: React.FC<Props> = ({
             {completed && <StarComponent word={displayWord} currentLevel={word?.level ?? 0}></StarComponent>}
 
             {loadingWords ? (
-                <div className="theme-muted px-6 py-16 text-center text-sm">Loading practice words...</div>
+                <div className="theme-muted px-6 py-16 text-center text-sm">{copy.practice.loadingWords}</div>
             ) : loadError ? (
-                <div className="theme-muted px-6 py-16 text-center text-sm">Unable to load practice words right now.</div>
+                <div className="theme-muted px-6 py-16 text-center text-sm">{copy.practice.loadError}</div>
             ) : word ? (
                 <WordComponent
                     word={displayWord}
@@ -339,7 +341,7 @@ const PractiseComponent: React.FC<Props> = ({
                     prev={() => prevWord()}
                 />
             ) : (
-                <div className="theme-muted px-6 py-16 text-center text-sm">No practice words are available.</div>
+                <div className="theme-muted px-6 py-16 text-center text-sm">{copy.practice.empty}</div>
             )}
 
             <KeyBoardComponent />

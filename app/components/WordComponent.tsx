@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import styles from "./ComponentStyle.module.css";
 import CharComponent from "./Charcomponent";
 import Image from "next/image";
+import { useAppPreferences } from "@/app/context/AppPreferencesProvider";
 import { fetchWordExamples } from "@/app/lib/dict-api";
 
 type Props = {
@@ -31,6 +32,7 @@ const WordComponent: React.FC<Props> = ({
   emoji,
   showExample
 }) => {
+  const { copy } = useAppPreferences()
   const [chars, setChars] = useState<Char[]>([]);
   const [completed, setCompleted] = useState<boolean>(false);
   const [usedHint, setUsedHint] = useState<boolean>(false);
@@ -275,7 +277,7 @@ const WordComponent: React.FC<Props> = ({
 
         {examples.length > 0 && <div className="">
           <div className="text-white mt-6 mb-2 ">
-            Examples:
+            {copy.search.examples}:
           </div>
           {
             examples.map((example, index) => (

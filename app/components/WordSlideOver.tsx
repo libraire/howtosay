@@ -1,10 +1,12 @@
-import { Fragment, useState } from 'react'
+import { Fragment } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import WordList from "@/app/components/WordList";
 import { Word } from "@/app/components/types";
+import { useAppPreferences } from "@/app/context/AppPreferencesProvider";
 
 export default function WordSlideOver({ open, onClose, wordList, practise }: { open: boolean, onClose: () => void, wordList: Word[], practise: () => void }) {
+  const { copy } = useAppPreferences()
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -38,7 +40,7 @@ export default function WordSlideOver({ open, onClose, wordList, practise }: { o
                     <div className="px-4 sm:px-6">
                       <div className="flex items-start justify-between">
                         <Dialog.Title className="text-base font-semibold leading-6 text-gray-900">
-                          Panel title
+                          {copy.wordSlideOver.title}
                         </Dialog.Title>
                         <div className="ml-3 flex h-7 items-center">
                           <button
@@ -46,7 +48,7 @@ export default function WordSlideOver({ open, onClose, wordList, practise }: { o
                             className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                             onClick={() => onClose()}
                           >
-                            <span className="sr-only">Close panel</span>
+                            <span className="sr-only">{copy.wordSlideOver.closePanel}</span>
                             <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                           </button>
                         </div>

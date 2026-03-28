@@ -27,7 +27,10 @@ export default function CardReviewBoard({
 
     const current = queue[0]
     const currentPosition = items.length - queue.length + 1
-    const memoryBadge = useMemo(() => current?.progress.memoryBadge || current?.progress.status || "new", [current])
+    const memoryBadge = useMemo(() => {
+        const rawBadge = current?.progress.memoryBadge || current?.progress.status || "new"
+        return copy.cardsReview.badges[rawBadge] || rawBadge
+    }, [copy.cardsReview.badges, current])
 
     async function handleRate(rating: Rating) {
         if (!current || submitting) {

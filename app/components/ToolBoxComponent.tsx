@@ -8,6 +8,7 @@ import AudioPlayer from './AudioPlayer';
 import ReportDialog from './ReportDialog';
 import { reportWordIssue } from '@/app/lib/practice-api';
 import { ignoreWord as ignoreWordApi } from '@/app/lib/practice-api';
+import { useAppPreferences } from "@/app/context/AppPreferencesProvider";
 
 type Props = {
     selectLevel: ((lv: string) => void) | undefined;
@@ -31,6 +32,7 @@ function classNames(...classes: string[]) {
 
 export default function ToolBoxComponent({ selectLevel, selectItems, marked, mark, unmark, onClose, word, displayWord, source, random, playable, showIgnore, next }: Props) {
     const audioWord = displayWord || word
+    const { copy } = useAppPreferences()
 
     function ignoreWord(wordValue: string) {
         ignoreWordApi(wordValue, source || "wordbook", displayWord).then(() => {
@@ -74,10 +76,10 @@ export default function ToolBoxComponent({ selectLevel, selectItems, marked, mar
                                 mark()
                             }}
                             className={classNames(primaryActionClass, "theme-button-secondary")}
-                            title={marked ? "Remove from saved words" : "Save word"}
+                            title={marked ? copy.toolbox.removeSavedWord : copy.toolbox.saveWord}
                         >
                             <BookmarkIcon className={classNames("h-4 w-4", marked ? "fill-current" : "")} />
-                            <span>{marked ? "Saved" : "Save"}</span>
+                            <span>{marked ? copy.toolbox.saved : copy.toolbox.save}</span>
                         </button>
 
                         {showIgnore && (
@@ -85,10 +87,10 @@ export default function ToolBoxComponent({ selectLevel, selectItems, marked, mar
                                 type="button"
                                 onClick={() => { ignoreWord(word) }}
                                 className={classNames(primaryActionClass, "theme-button-secondary")}
-                                title="Ignore this word"
+                                title={copy.toolbox.ignoreWord}
                             >
                                 <EyeSlashIcon className='h-4 w-4' />
-                                <span>Ignore</span>
+                                <span>{copy.toolbox.ignore}</span>
                             </button>
                         )}
 
@@ -98,7 +100,7 @@ export default function ToolBoxComponent({ selectLevel, selectItems, marked, mar
                     <div className="flex items-center gap-1">
                         <Menu as="div" className="relative inline-block text-left">
                             <Menu.Button className={classNames(primaryActionClass, "theme-button-secondary")}>
-                                <span>More</span>
+                                <span>{copy.toolbox.more}</span>
                                 <ChevronDownIcon className="h-4 w-4 theme-faint" />
                             </Menu.Button>
 
@@ -122,7 +124,7 @@ export default function ToolBoxComponent({ selectLevel, selectItems, marked, mar
                                                 )}
                                             >
                                                 <ArrowsRightLeftIcon className="h-4 w-4" />
-                                                Shuffle
+                                                {copy.toolbox.shuffle}
                                             </button>
                                         )}
                                     </Menu.Item>
@@ -156,7 +158,7 @@ export default function ToolBoxComponent({ selectLevel, selectItems, marked, mar
                                                 )}
                                             >
                                                 <QuestionMarkCircleIcon className="h-4 w-4" />
-                                                {isOpen ? "Hide help" : "Keyboard help"}
+                                                {isOpen ? copy.toolbox.hideHelp : copy.toolbox.keyboardHelp}
                                             </button>
                                         )}
                                     </Menu.Item>
@@ -172,7 +174,7 @@ export default function ToolBoxComponent({ selectLevel, selectItems, marked, mar
                                                 )}
                                             >
                                                 <WrenchScrewdriverIcon className="h-4 w-4" />
-                                                Report
+                                                {copy.toolbox.report}
                                             </button>
                                         )}
                                     </Menu.Item>
@@ -185,7 +187,7 @@ export default function ToolBoxComponent({ selectLevel, selectItems, marked, mar
                                 type="button"
                                 onClick={onClose}
                                 className={classNames(subtleActionClass, "theme-button-secondary")}
-                                title="Close practice"
+                                title={copy.toolbox.closePractice}
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
                                     <path d="M6.28 5.22a.75.75 0 0 0-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 1 0 1.06 1.06L10 11.06l3.72 3.72a.75.75 0 0 0 1.06-1.06L11.06 10l3.72-3.72a.75.75 0 0 0-1.06-1.06L10 8.94 6.28 5.22Z" />
@@ -197,15 +199,9 @@ export default function ToolBoxComponent({ selectLevel, selectItems, marked, mar
 
                 {isOpen && (
                     <div className="theme-card mt-2 rounded-2xl px-3 py-2.5 text-[13px]">
-                        <div className="theme-faint mb-2 text-[11px] font-semibold uppercase tracking-[0.18em]">Keyboard</div>
+                        <div className="theme-faint mb-2 text-[11px] font-semibold uppercase tracking-[0.18em]">{copy.toolbox.keyboard}</div>
                         <div className="flex flex-wrap gap-1.5">
-                            {[
-                                { keycap: "1", label: "Hint" },
-                                { keycap: "2", label: "Pronounce" },
-                                { keycap: "Enter", label: "Reveal / Next" },
-                                { keycap: "<-", label: "Prev" },
-                                { keycap: "->", label: "Next" },
-                            ].map((item) => (
+                            {copy.toolbox.keyboardItems.map((item: { keycap: string; label: string }) => (
                                 <div key={item.label} className="theme-button-secondary inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[12px] font-medium">
                                     <span className="rounded-md border px-1.5 py-0.5 text-[11px] font-semibold" style={{ borderColor: "var(--border-soft)", background: "var(--surface-strong)", color: "var(--text-secondary)" }}>
                                         {item.keycap}

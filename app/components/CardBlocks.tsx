@@ -1,5 +1,6 @@
 "use client"
 
+import { useAppPreferences } from "@/app/context/AppPreferencesProvider"
 import type { CardBlock, CardBlockType } from "@/app/lib/cards-models"
 
 const blockTypes: CardBlockType[] = ["text", "image", "audio", "link"]
@@ -13,6 +14,8 @@ function createEmptyBlock(type: CardBlockType): CardBlock {
 }
 
 export function CardBlockList({ blocks }: { blocks: CardBlock[] }) {
+    const { copy } = useAppPreferences()
+
     return (
         <div className="space-y-3">
             {blocks.map((block, index) => (
@@ -20,7 +23,7 @@ export function CardBlockList({ blocks }: { blocks: CardBlock[] }) {
                     {block.type === "text" && <p className="whitespace-pre-wrap leading-7">{block.content}</p>}
                     {block.type === "image" && block.url && (
                         <div className="space-y-3">
-                            <img src={block.url} alt={block.caption || "Card image"} className="max-h-72 w-full rounded-xl object-cover" />
+                            <img src={block.url} alt={block.caption || copy.cardBlocks.imageAlt} className="max-h-72 w-full rounded-xl object-cover" />
                             {block.caption && <p className="theme-muted text-xs">{block.caption}</p>}
                         </div>
                     )}
@@ -59,6 +62,12 @@ export function CardBlockEditor({
     onChange: (blocks: CardBlock[]) => void
     optional?: boolean
 }) {
+    const { copy } = useAppPreferences()
+
+    function getTypeLabel(type: CardBlockType) {
+        return copy.cardBlocks.types[type]
+    }
+
     function updateBlock(index: number, patch: Partial<CardBlock>) {
         onChange(blocks.map((block, blockIndex) => blockIndex === index ? { ...block, ...patch } : block))
     }
@@ -78,7 +87,7 @@ export function CardBlockEditor({
                 <div>
                     <h3 className="text-base font-medium">{label}</h3>
                     <p className="theme-faint mt-1 text-sm">
-                        {optional ? "Optional blocks shown after the answer." : "Add one or more blocks in the order learners should see them."}
+                        {optional ? copy.cardBlocks.optionalIntro : copy.cardBlocks.requiredIntro}
                     </p>
                 </div>
                 <div className="flex flex-wrap gap-2">
@@ -89,7 +98,7 @@ export function CardBlockEditor({
                             onClick={() => addBlock(type)}
                             className="theme-button-secondary rounded-full px-3 py-1.5 text-xs font-medium uppercase tracking-[0.18em] transition"
                         >
-                            + {type}
+                            + {getTypeLabel(type)}
                         </button>
                     ))}
                 </div>
@@ -98,7 +107,7 @@ export function CardBlockEditor({
             <div className="mt-5 space-y-4">
                 {blocks.length === 0 ? (
                     <div className="rounded-2xl border border-dashed px-4 py-5 text-sm theme-faint" style={{ borderColor: "var(--border-soft)" }}>
-                        No blocks yet.
+                        {copy.cardBlocks.noBlocks}
                     </div>
                 ) : blocks.map((block, index) => (
                     <div key={`${label}-${index}`} className="theme-panel rounded-2xl p-4">
@@ -112,7 +121,7 @@ export function CardBlockEditor({
                                 className="theme-input rounded-xl px-3 py-2 text-sm focus:outline-none"
                             >
                                 {blockTypes.map((type) => (
-                                    <option key={type} value={type}>{type}</option>
+                                    <option key={type} value={type}>{getTypeLabel(type)}</option>
                                 ))}
                             </select>
                             <button
@@ -120,7 +129,7 @@ export function CardBlockEditor({
                                 onClick={() => removeBlock(index)}
                                 className="theme-button-secondary rounded-full px-3 py-1.5 text-xs font-medium transition"
                             >
-                                Remove
+                                {copy.cardBlocks.remove}
                             </button>
                         </div>
 
@@ -130,7 +139,7 @@ export function CardBlockEditor({
                                     rows={4}
                                     value={block.content || ""}
                                     onChange={(event) => updateBlock(index, { content: event.target.value })}
-                                    placeholder="Write the prompt, answer, or note here..."
+                                    placeholder={copy.cardBlocks.textPlaceholder}
                                     className="theme-input w-full rounded-2xl px-4 py-3 text-sm focus:outline-none"
                                 />
                             ) : (
@@ -139,7 +148,7 @@ export function CardBlockEditor({
                                         type="url"
                                         value={block.url || ""}
                                         onChange={(event) => updateBlock(index, { url: event.target.value })}
-                                        placeholder={`${block.type} URL`}
+                                        placeholder={copy.cardBlocks.urlPlaceholder.replace("{type}", getTypeLabel(block.type))}
                                         className="theme-input h-11 w-full rounded-2xl px-4 text-sm focus:outline-none"
                                     />
                                     {block.type === "link" && (
@@ -147,7 +156,7 @@ export function CardBlockEditor({
                                             type="text"
                                             value={block.content || ""}
                                             onChange={(event) => updateBlock(index, { content: event.target.value })}
-                                            placeholder="Link label"
+                                            placeholder={copy.cardBlocks.linkLabelPlaceholder}
                                             className="theme-input h-11 w-full rounded-2xl px-4 text-sm focus:outline-none"
                                         />
                                     )}
@@ -155,7 +164,7 @@ export function CardBlockEditor({
                                         type="text"
                                         value={block.caption || ""}
                                         onChange={(event) => updateBlock(index, { caption: event.target.value })}
-                                        placeholder="Caption"
+                                        placeholder={copy.cardBlocks.captionPlaceholder}
                                         className="theme-input h-11 w-full rounded-2xl px-4 text-sm focus:outline-none"
                                     />
                                 </>
