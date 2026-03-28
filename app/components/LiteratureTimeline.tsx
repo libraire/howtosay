@@ -182,11 +182,11 @@ export default function LiteratureTimeline({
     return (
         <div className="mx-auto max-w-4xl">
             {(authorFilter || workFilter) && (
-                <div className="relative z-10 mb-8 text-sm text-white/45">
+                <div className="theme-faint relative z-10 mb-8 text-sm">
                     <span>{activeLabel}</span>
                     <button
                         onClick={showAll}
-                        className="ml-4 text-white/70 transition hover:text-white"
+                        className="theme-muted ml-4 transition hover:text-[color:var(--text-primary)]"
                     >
                         查看全部
                     </button>
@@ -195,7 +195,7 @@ export default function LiteratureTimeline({
 
             <section className="relative z-10">
                 <div className="relative">
-                    <div className="absolute left-6 top-0 h-full w-px bg-white/10 md:left-1/2 md:-ml-px" />
+                    <div className="absolute left-6 top-0 h-full w-px md:left-1/2 md:-ml-px" style={{ background: "var(--border-soft)" }} />
 
                     <div className="space-y-10">
                         {items.map((item, index) => {
@@ -208,7 +208,7 @@ export default function LiteratureTimeline({
                                 >
                                     <div className={`hidden md:block ${isRight ? "" : "order-2"}`} />
                                     <div className={`relative ml-14 px-4 py-3 backdrop-blur-[1px] md:ml-0 ${isRight ? "md:order-2 md:pl-10" : "md:pr-10 text-left md:text-right"}`}>
-                                        <div className="text-xs tracking-[0.25em] text-white/35">
+                                        <div className="theme-faint text-xs tracking-[0.25em]">
                                             {yearLabel(item.work_year)}
                                         </div>
                                         <div className="mt-2">
@@ -216,18 +216,20 @@ export default function LiteratureTimeline({
                                                 onClick={() => {
                                                     setSelectedId(item.id)
                                                 }}
-                                                className={`text-lg text-white transition hover:text-[#dcc38f] ${
-                                                    selectedId === item.id ? "text-[#dcc38f]" : ""
+                                                className={`text-lg transition ${
+                                                    selectedId === item.id
+                                                        ? "text-[color:var(--accent)]"
+                                                        : "text-[color:var(--text-primary)] hover:text-[color:var(--accent)]"
                                                 }`}
                                             >
                                                 {item.work_title}
                                             </button>
                                         </div>
-                                        <div className="mt-1 text-sm text-white/55">
+                                        <div className="theme-muted mt-1 text-sm">
                                             <span
                                                 onMouseEnter={() => setHoveredAuthor(item.author_name)}
                                                 onMouseLeave={() => setHoveredAuthor(null)}
-                                                className="transition hover:text-white"
+                                                className="transition hover:text-[color:var(--text-primary)]"
                                             >
                                                 {item.author_name}
                                             </span>
@@ -244,7 +246,7 @@ export default function LiteratureTimeline({
                 {hasMore && (
                     <div ref={loadMoreRef} className="mt-10 h-10">
                         {loadingList && (
-                            <div className="flex items-center gap-2 text-sm text-white/45">
+                            <div className="theme-faint flex items-center gap-2 text-sm">
                                 <LoaderCircle className="h-4 w-4 animate-spin" />
                                 <span>加载中...</span>
                             </div>
@@ -255,16 +257,16 @@ export default function LiteratureTimeline({
 
             {selectedId && (
                 <div
-                    className="fixed inset-0 z-50 bg-black/70 px-6 py-10 backdrop-blur-sm"
+                    className="theme-overlay fixed inset-0 z-50 px-6 py-10 backdrop-blur-sm"
                     onClick={() => setSelectedId(null)}
                 >
                     <div className="mx-auto flex min-h-full max-w-3xl items-center justify-center">
                         <div
-                            className="scrollbar-hidden w-full max-h-[80vh] overflow-y-auto bg-[#111111] px-8 py-8 text-white"
+                            className="scrollbar-hidden theme-panel w-full max-h-[80vh] overflow-y-auto rounded-[32px] px-8 py-8"
                             onClick={(event) => event.stopPropagation()}
                         >
                             {loadingDetail && (
-                                <div className="flex items-center gap-2 text-sm text-white/45">
+                                <div className="theme-faint flex items-center gap-2 text-sm">
                                     <LoaderCircle className="h-4 w-4 animate-spin" />
                                     <span>正在加载内容</span>
                                 </div>
@@ -276,12 +278,12 @@ export default function LiteratureTimeline({
 
                             {!loadingDetail && !detailError && selectedPassage && (
                                 <div>
-                                    <div className="text-xs tracking-[0.25em] text-white/35">
+                                    <div className="theme-faint text-xs tracking-[0.25em]">
                                         {yearLabel(selectedPassage.work_year)}
                                     </div>
-                                    <h2 className="mt-3 text-2xl text-white">{selectedPassage.work_title}</h2>
-                                    <p className="mt-1 text-sm text-white/55">{selectedPassage.author_name}</p>
-                                    <div className="mt-8 whitespace-pre-wrap text-[15px] leading-8 text-white/72">
+                                    <h2 className="mt-3 text-2xl">{selectedPassage.work_title}</h2>
+                                    <p className="theme-muted mt-1 text-sm">{selectedPassage.author_name}</p>
+                                    <div className="theme-muted mt-8 whitespace-pre-wrap text-[15px] leading-8">
                                         {selectedPassage.excerpt}
                                     </div>
                                 </div>

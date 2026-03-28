@@ -4,6 +4,7 @@ import { useMemo, useRef, useState } from "react"
 import Navbar from "@/app/components/Navbar"
 import LiteratureTimeline from "@/app/components/LiteratureTimeline"
 import LiteratureWorldMap from "@/app/components/LiteratureWorldMap"
+import { useAppPreferences } from "@/app/context/AppPreferencesProvider"
 import { getCountryHighlights } from "@/app/lib/literature-geo"
 import type { LiteraryTimelinePage } from "@/app/lib/literature-models"
 
@@ -13,6 +14,7 @@ type Props = {
 }
 
 export default function LiteratureShell({ initialData, className }: Props) {
+    const { theme } = useAppPreferences()
     const [activeAuthor, setActiveAuthor] = useState<string | null>(null)
     const [activeAuthorCountryCode, setActiveAuthorCountryCode] = useState<string | null>(null)
     const [loadedItems, setLoadedItems] = useState(initialData.data)
@@ -20,23 +22,30 @@ export default function LiteratureShell({ initialData, className }: Props) {
     const highlights = useMemo(() => getCountryHighlights(loadedItems), [loadedItems])
 
     return (
-        <main className={`flex h-screen flex-col overflow-hidden bg-[#101010] ${className}`}>
+        <main className={`theme-page flex h-screen flex-col overflow-hidden ${className}`}>
             <Navbar />
             <section className="relative flex-1 overflow-hidden px-6 pb-6 pt-6">
                 <div className="absolute inset-0 opacity-70">
-                    <div className="absolute left-[-8rem] top-10 h-72 w-72 rounded-full bg-[#8a6740]/20 blur-3xl" />
-                    <div className="absolute right-[-6rem] top-28 h-80 w-80 rounded-full bg-[#2f4858]/30 blur-3xl" />
-                    <div className="absolute bottom-12 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full bg-[#5f4b8b]/10 blur-3xl" />
+                    <div className="absolute left-[-8rem] top-10 h-72 w-72 rounded-full blur-3xl" style={{ background: "var(--glow-amber)" }} />
+                    <div className="absolute right-[-6rem] top-28 h-80 w-80 rounded-full blur-3xl" style={{ background: "var(--glow-teal)" }} />
+                    <div className="absolute bottom-12 left-1/2 h-64 w-64 -translate-x-1/2 rounded-full blur-3xl" style={{ background: "var(--glow-rose)" }} />
                 </div>
 
                 <div className="pointer-events-none absolute inset-x-[2%] top-1/2 z-0 hidden h-[80%] -translate-y-1/2 md:block">
                     <div className="relative h-full w-full">
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,0,0,0.16)_0%,rgba(0,0,0,0.34)_52%,rgba(0,0,0,0.5)_100%)]" />
+                        <div
+                            className="absolute inset-0"
+                            style={{
+                                background: theme === "dark"
+                                    ? "radial-gradient(circle at center, rgba(0,0,0,0.16) 0%, rgba(0,0,0,0.34) 52%, rgba(0,0,0,0.5) 100%)"
+                                    : "radial-gradient(circle at center, rgba(255,255,255,0.08) 0%, rgba(247,243,237,0.38) 56%, rgba(247,243,237,0.76) 100%)",
+                            }}
+                        />
                         <LiteratureWorldMap
                             highlights={highlights}
                             activeAuthor={activeAuthor}
                             activeAuthorCountryCode={activeAuthorCountryCode}
-                            className="translate-x-[8%] scale-[1.12] opacity-55"
+                            className={`translate-x-[8%] scale-[1.12] ${theme === "dark" ? "opacity-55" : "opacity-60"}`}
                         />
                     </div>
                 </div>

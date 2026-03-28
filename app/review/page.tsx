@@ -12,6 +12,10 @@ import { fetchDashboard } from "@/app/lib/dashboard-api"
 import type { DashboardData } from "@/app/lib/dashboard-models"
 import { getLevelLabel } from "@/app/lib/level-options"
 
+function panelItemClassName() {
+    return "theme-button-secondary flex items-center justify-between rounded-2xl px-4 py-3 text-left text-sm transition hover:bg-[var(--button-secondary-hover)]"
+}
+
 export default function ReviewPage() {
     const { isAuthenticated, isLoading, login } = useCustomAuth()
     const [dashboard, setDashboard] = useState<DashboardData | null>(null)
@@ -187,11 +191,11 @@ export default function ReviewPage() {
                                     </div>
 
                                     <div className="mt-8 grid gap-6 lg:grid-cols-[1.6fr_1fr]">
-                                        <div className="rounded-3xl border border-white/10 bg-black/20 p-6">
+                                        <div className="theme-panel rounded-3xl p-6">
                                             <div className="flex items-center justify-between">
                                                 <div>
-                                                    <h2 className="text-lg font-medium text-white">7-day activity</h2>
-                                                    <p className="mt-1 text-sm text-white/50">Reviews and new words across the last week.</p>
+                                                    <h2 className="text-lg font-medium">7-day activity</h2>
+                                                    <p className="theme-muted mt-1 text-sm">Reviews and new words across the last week.</p>
                                                 </div>
                                             </div>
 
@@ -203,17 +207,17 @@ export default function ReviewPage() {
                                                         <div key={item.date} className="flex flex-1 flex-col items-center gap-2">
                                                             <div className="flex h-40 items-end gap-1">
                                                                 <div
-                                                                    className="w-3 rounded-full bg-white/80"
-                                                                    style={{ height: `${reviewHeight}px` }}
+                                                                    className="w-3 rounded-full"
+                                                                    style={{ height: `${reviewHeight}px`, background: "var(--text-primary)", opacity: 0.76 }}
                                                                     title={`${item.reviews} reviews`}
                                                                 />
                                                                 <div
-                                                                    className="w-3 rounded-full bg-[#9bb7d4]"
-                                                                    style={{ height: `${addHeight}px` }}
+                                                                    className="w-3 rounded-full"
+                                                                    style={{ height: `${addHeight}px`, background: "var(--accent)", opacity: 0.88 }}
                                                                     title={`${item.added} added`}
                                                                 />
                                                             </div>
-                                                            <div className="text-[11px] uppercase tracking-[0.18em] text-white/35">
+                                                            <div className="theme-faint text-[11px] uppercase tracking-[0.18em]">
                                                                 {item.date.slice(5)}
                                                             </div>
                                                         </div>
@@ -222,48 +226,48 @@ export default function ReviewPage() {
                                             </div>
                                         </div>
 
-                                        <div className="rounded-3xl border border-white/10 bg-black/20 p-6">
-                                            <h2 className="text-lg font-medium text-white">Memory profile</h2>
-                                            <p className="mt-2 text-sm leading-7 text-white/58">
+                                        <div className="theme-panel rounded-3xl p-6">
+                                            <h2 className="text-lg font-medium">Memory profile</h2>
+                                            <p className="theme-muted mt-2 text-sm leading-7">
                                                 We translate the memory model into simple states so you can tell which words are fragile, stabilizing, or already long-term.
                                             </p>
 
-                                            <div className="mt-6 space-y-3 text-sm text-white/70">
-                                                <Link href="/vocabulary?status=fragile" className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 transition hover:bg-white/[0.07]">
+                                            <div className="mt-6 space-y-3">
+                                                <Link href="/vocabulary?status=fragile" className={panelItemClassName()}>
                                                     <span>Fragile</span>
-                                                    <span className="text-white">{summary.fragileCount}</span>
+                                                    <span className="text-[color:var(--text-primary)]">{summary.fragileCount}</span>
                                                 </Link>
-                                                <Link href="/vocabulary?status=building" className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 transition hover:bg-white/[0.07]">
+                                                <Link href="/vocabulary?status=building" className={panelItemClassName()}>
                                                     <span>Building</span>
-                                                    <span className="text-white">{summary.buildingCount}</span>
+                                                    <span className="text-[color:var(--text-primary)]">{summary.buildingCount}</span>
                                                 </Link>
-                                                <Link href="/vocabulary?status=stable" className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 transition hover:bg-white/[0.07]">
+                                                <Link href="/vocabulary?status=stable" className={panelItemClassName()}>
                                                     <span>Stable</span>
-                                                    <span className="text-white">{summary.stableCount}</span>
+                                                    <span className="text-[color:var(--text-primary)]">{summary.stableCount}</span>
                                                 </Link>
-                                                <Link href="/vocabulary?status=mastered" className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 transition hover:bg-white/[0.07]">
+                                                <Link href="/vocabulary?status=mastered" className={panelItemClassName()}>
                                                     <span>Mastered</span>
-                                                    <span className="text-white">{summary.masteredCount}</span>
+                                                    <span className="text-[color:var(--text-primary)]">{summary.masteredCount}</span>
                                                 </Link>
                                             </div>
                                         </div>
 
-                                        <div className="rounded-3xl border border-white/10 bg-black/20 p-6">
-                                            <h2 className="text-lg font-medium text-white">Suggested next action</h2>
-                                            <p className="mt-2 text-sm leading-7 text-white/58">
+                                        <div className="theme-panel rounded-3xl p-6">
+                                            <h2 className="text-lg font-medium">Suggested next action</h2>
+                                            <p className="theme-muted mt-2 text-sm leading-7">
                                                 {summary.nextAction === "review" && "Your queue already has due words. Clearing those will improve spacing quality the fastest."}
                                                 {summary.nextAction === "read" && "You could add fresh input, but this page now prioritizes review first so the queue stays healthy before you branch out."}
                                                 {summary.nextAction === "wordbook" && "Your queue is under control. You can still start a review round here, or refine your saved words in vocabulary."}
                                             </p>
 
-                                            <div className="mt-6 space-y-3 text-sm text-white/70">
-                                                <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
+                                            <div className="theme-muted mt-6 space-y-3 text-sm">
+                                                <div className="theme-button-secondary rounded-2xl px-4 py-3">
                                                     {summary.dueNow} words due now
                                                 </div>
-                                                <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
+                                                <div className="theme-button-secondary rounded-2xl px-4 py-3">
                                                     {summary.streakDays} day active streak
                                                 </div>
-                                                <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
+                                                <div className="theme-button-secondary rounded-2xl px-4 py-3">
                                                     {summary.addedThisWeek} words added this week
                                                 </div>
                                             </div>
@@ -271,9 +275,9 @@ export default function ReviewPage() {
                                     </div>
 
                                     <div className="mt-6 grid gap-6 lg:grid-cols-3">
-                                        <div className="rounded-3xl border border-white/10 bg-black/20 p-6">
-                                            <h2 className="text-lg font-medium text-white">Often wrong</h2>
-                                            <p className="mt-2 text-sm leading-7 text-white/58">
+                                        <div className="theme-panel rounded-3xl p-6">
+                                            <h2 className="text-lg font-medium">Often wrong</h2>
+                                            <p className="theme-muted mt-2 text-sm leading-7">
                                                 Words with repeated wrong answers and rising difficulty.
                                             </p>
                                             <div className="mt-5 space-y-3">
@@ -281,30 +285,30 @@ export default function ReviewPage() {
                                                     <Link
                                                         key={item.word}
                                                         href="/vocabulary?status=fragile"
-                                                        className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 transition hover:bg-white/[0.07]"
+                                                        className={panelItemClassName()}
                                                     >
                                                         <div>
-                                                            <div className="text-sm font-medium text-white">{item.word}</div>
-                                                            <div className="mt-1 text-xs text-white/45">
+                                                            <div className="text-sm font-medium">{item.word}</div>
+                                                            <div className="theme-faint mt-1 text-xs">
                                                                 {item.wrongCount ?? 0} wrong answers
                                                             </div>
                                                         </div>
-                                                        <div className="text-right text-xs text-white/45">
+                                                        <div className="theme-faint text-right text-xs">
                                                             <div>Difficulty {item.difficulty ?? 0}</div>
                                                             <div>Stability {item.stability ?? 0}</div>
                                                         </div>
                                                     </Link>
                                                 )) : (
-                                                    <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/45">
+                                                    <div className="theme-button-secondary theme-faint rounded-2xl px-4 py-3 text-sm">
                                                         No repeated wrong-answer words yet.
                                                     </div>
                                                 )}
                                             </div>
                                         </div>
 
-                                        <div className="rounded-3xl border border-white/10 bg-black/20 p-6">
-                                            <h2 className="text-lg font-medium text-white">Needs hints</h2>
-                                            <p className="mt-2 text-sm leading-7 text-white/58">
+                                        <div className="theme-panel rounded-3xl p-6">
+                                            <h2 className="text-lg font-medium">Needs hints</h2>
+                                            <p className="theme-muted mt-2 text-sm leading-7">
                                                 Words you usually reach with support, but have not fully internalized yet.
                                             </p>
                                             <div className="mt-5 space-y-3">
@@ -312,30 +316,30 @@ export default function ReviewPage() {
                                                     <Link
                                                         key={item.word}
                                                         href="/vocabulary?status=fragile"
-                                                        className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 transition hover:bg-white/[0.07]"
+                                                        className={panelItemClassName()}
                                                     >
                                                         <div>
-                                                            <div className="text-sm font-medium text-white">{item.word}</div>
-                                                            <div className="mt-1 text-xs text-white/45">
+                                                            <div className="text-sm font-medium">{item.word}</div>
+                                                            <div className="theme-faint mt-1 text-xs">
                                                                 {item.hintedCount ?? 0} hinted completions
                                                             </div>
                                                         </div>
-                                                        <div className="text-right text-xs text-white/45">
+                                                        <div className="theme-faint text-right text-xs">
                                                             <div>Difficulty {item.difficulty ?? 0}</div>
                                                             <div>Stability {item.stability ?? 0}</div>
                                                         </div>
                                                     </Link>
                                                 )) : (
-                                                    <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/45">
+                                                    <div className="theme-button-secondary theme-faint rounded-2xl px-4 py-3 text-sm">
                                                         No hint-heavy words yet.
                                                     </div>
                                                 )}
                                             </div>
                                         </div>
 
-                                        <div className="rounded-3xl border border-white/10 bg-black/20 p-6">
-                                            <h2 className="text-lg font-medium text-white">Most skipped</h2>
-                                            <p className="mt-2 text-sm leading-7 text-white/58">
+                                        <div className="theme-panel rounded-3xl p-6">
+                                            <h2 className="text-lg font-medium">Most skipped</h2>
+                                            <p className="theme-muted mt-2 text-sm leading-7">
                                                 Words you are most likely to move past before solving.
                                             </p>
                                             <div className="mt-5 space-y-3">
@@ -344,13 +348,13 @@ export default function ReviewPage() {
                                                         key={item.word}
                                                         type="button"
                                                         onClick={() => setPractise(true)}
-                                                        className="flex w-full items-center justify-between rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-left transition hover:bg-white/[0.07]"
+                                                        className={`${panelItemClassName()} w-full`}
                                                     >
-                                                        <div className="text-sm font-medium text-white">{item.word}</div>
-                                                        <div className="text-xs text-white/45">{item.skipCount ?? 0} skips</div>
+                                                        <div className="text-sm font-medium">{item.word}</div>
+                                                        <div className="theme-faint text-xs">{item.skipCount ?? 0} skips</div>
                                                     </button>
                                                 )) : (
-                                                    <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-white/45">
+                                                    <div className="theme-button-secondary theme-faint rounded-2xl px-4 py-3 text-sm">
                                                         No skipped words recorded yet.
                                                     </div>
                                                 )}
@@ -369,10 +373,10 @@ export default function ReviewPage() {
 
 function StatCard({ label, value, hint }: { label: string; value: string | number; hint: string }) {
     return (
-        <div className="rounded-3xl border border-white/10 bg-black/20 p-5">
-            <div className="text-sm text-white/45">{label}</div>
-            <div className="mt-3 text-3xl font-medium tracking-tight text-white">{value}</div>
-            <div className="mt-2 text-sm leading-6 text-white/55">{hint}</div>
+        <div className="theme-card rounded-3xl p-5">
+            <div className="theme-faint text-sm">{label}</div>
+            <div className="mt-3 text-3xl font-medium tracking-tight">{value}</div>
+            <div className="theme-muted mt-2 text-sm leading-6">{hint}</div>
         </div>
     )
 }
