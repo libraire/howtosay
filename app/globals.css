@@ -158,6 +158,12 @@ em {
   box-shadow: var(--surface-shadow);
 }
 
+.theme-menu-solid {
+  background: var(--surface-strong);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--surface-shadow);
+}
+
 .theme-muted {
   color: var(--text-muted);
 }

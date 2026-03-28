@@ -57,7 +57,7 @@ export default function AuthButton() {
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
             >
-                <Menu.Items className="theme-menu absolute right-0 z-10 mt-2 w-64 origin-top-right rounded-2xl focus:outline-none">
+                <Menu.Items className="theme-menu-solid absolute right-0 z-10 mt-2 w-64 origin-top-right rounded-2xl focus:outline-none">
                     <div className="py-1">
                         <div
                             className="flex items-center gap-3 border-b px-4 py-2 text-sm"

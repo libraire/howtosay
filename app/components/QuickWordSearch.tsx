@@ -130,9 +130,6 @@ export default function QuickWordSearch() {
                                             <Dialog.Title className="text-2xl font-medium">
                                                 {copy.search.title}
                                             </Dialog.Title>
-                                            <p className="theme-muted mt-2 text-sm">
-                                                {copy.search.description}
-                                            </p>
                                             <p className="theme-faint mt-2 text-xs uppercase tracking-[0.18em]">
                                                 {copy.search.shortcutHint}
                                             </p>
