@@ -20,6 +20,10 @@ type WordDefinitionLookupResponse = {
     category?: string
 }
 
+type FetchWordDefinitionOptions = {
+    matchVariations?: boolean
+}
+
 export async function fetchDefinitions(words: string[]): Promise<WordModel[]> {
     if (words.length === 0) {
         return []
@@ -33,9 +37,20 @@ export async function fetchDefinitions(words: string[]): Promise<WordModel[]> {
     return data.words ?? []
 }
 
-export async function fetchWordDefinition(word: string): Promise<WordModel> {
+export async function fetchWordDefinition(
+    word: string,
+    options: FetchWordDefinitionOptions = {}
+): Promise<WordModel> {
+    const params = new URLSearchParams({
+        word,
+    })
+
+    if (options.matchVariations === false) {
+        params.set("match_variations", "0")
+    }
+
     const data = await fetchJson<WordDefinitionLookupResponse>(
-        `/hts/api/v1/definition?word=${encodeURIComponent(word)}`,
+        `/hts/api/v1/definition?${params.toString()}`,
         { method: 'GET' }
     )
 

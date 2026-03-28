@@ -73,7 +73,7 @@ export default function QuickWordSearch() {
 
         try {
             const [word, wordExamples] = await Promise.all([
-                fetchWordDefinition(keyword),
+                fetchWordDefinition(keyword, { matchVariations: false }),
                 fetchWordExamples(keyword).catch(() => []),
             ])
             setResult(word)
