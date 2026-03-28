@@ -23,7 +23,7 @@ export default function Navbar({ check = true }: { check?: boolean }) {
 
     return (
         <header
-            className="sticky top-0 z-40 border-b shadow-[0_8px_30px_rgba(0,0,0,0.08)] backdrop-blur-xl"
+            className="sticky top-0 z-40 w-full self-stretch border-b shadow-[0_8px_30px_rgba(0,0,0,0.08)] backdrop-blur-xl"
             style={{
                 borderColor: "var(--header-border)",
                 background: "var(--header-bg)",
