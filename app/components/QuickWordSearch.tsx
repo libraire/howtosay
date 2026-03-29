@@ -16,6 +16,45 @@ function isTypingTarget(target: EventTarget | null) {
     return target.isContentEditable || tagName === "INPUT" || tagName === "TEXTAREA" || tagName === "SELECT"
 }
 
+function escapeRegExp(value: string): string {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+}
+
+function splitIntoSentences(text: string): string[] {
+    return text
+        .split(/(?<=[.!?。！？])\s+/)
+        .map((sentence) => sentence.trim())
+        .filter(Boolean)
+}
+
+function trimExampleAroundWord(example: string, word: string): string {
+    const normalizedExample = example.trim()
+    if (!normalizedExample) {
+        return ""
+    }
+
+    const sentences = splitIntoSentences(normalizedExample)
+    if (sentences.length <= 2 && normalizedExample.length <= 260) {
+        return normalizedExample
+    }
+
+    const matcher = new RegExp(`\\b${escapeRegExp(word)}\\b`, "i")
+    const hitIndex = sentences.findIndex((sentence) => matcher.test(sentence))
+
+    if (hitIndex >= 0) {
+        const excerpt = sentences.slice(hitIndex, hitIndex + 2).join(" ").trim()
+        if (excerpt.length <= 280) {
+            return excerpt
+        }
+    }
+
+    if (normalizedExample.length <= 280) {
+        return normalizedExample
+    }
+
+    return `${normalizedExample.slice(0, 277).trimEnd()}...`
+}
+
 export default function QuickWordSearch() {
     const { copy } = useAppPreferences()
     const [open, setOpen] = useState(false)
@@ -86,6 +125,13 @@ export default function QuickWordSearch() {
             setLoading(false)
         }
     }
+
+    const englishDefinition = result?.en || result?.definition || ""
+    const chineseDefinition = result?.cn || ""
+    const dictionaryExample = result?.example
+        ? trimExampleAroundWord(result.example, result.query_word || result.word)
+        : ""
+    const dictionaryChineseExample = result?.cn_example?.trim() || ""
 
     return (
         <>
@@ -179,24 +225,38 @@ export default function QuickWordSearch() {
                                                         )}
                                                     </div>
                                                     <div className="mt-4 space-y-3">
-                                                        <div>
-                                                            <div className="theme-faint text-xs uppercase tracking-[0.22em]">{copy.search.definition}</div>
-                                                            <div className="mt-2 whitespace-pre-wrap text-sm leading-7">{result.definition || copy.search.notFound}</div>
-                                                        </div>
-                                                        {result.cn && (
+                                                        {englishDefinition && (
+                                                            <div>
+                                                                <div className="theme-faint text-xs uppercase tracking-[0.22em]">{copy.search.definition}</div>
+                                                                <div className="mt-2 whitespace-pre-wrap text-sm leading-7">{englishDefinition}</div>
+                                                            </div>
+                                                        )}
+                                                        {chineseDefinition && (
                                                             <div>
                                                                 <div className="theme-faint text-xs uppercase tracking-[0.22em]">{copy.search.chinese}</div>
-                                                                <div className="mt-2 text-sm leading-7">{result.cn}</div>
+                                                                <div className="mt-2 whitespace-pre-wrap text-sm leading-7">{chineseDefinition}</div>
                                                             </div>
                                                         )}
                                                     </div>
                                                 </div>
 
-                                                {examples.length > 0 && (
+                                                {(dictionaryExample || examples.length > 0) && (
                                                     <div className="theme-card rounded-3xl p-5">
                                                         <div className="theme-faint text-xs uppercase tracking-[0.22em]">{copy.search.examples}</div>
                                                         <div className="mt-3 space-y-3">
-                                                            {examples.map((item, index) => (
+                                                            {dictionaryExample && (
+                                                                <div className="space-y-2">
+                                                                    <p className="theme-muted text-sm leading-7">
+                                                                        {dictionaryExample}
+                                                                    </p>
+                                                                    {dictionaryChineseExample && (
+                                                                        <p className="theme-faint text-sm leading-7">
+                                                                            {dictionaryChineseExample}
+                                                                        </p>
+                                                                    )}
+                                                                </div>
+                                                            )}
+                                                            {!dictionaryExample && examples.map((item, index) => (
                                                                 <p key={`${item.snippet}-${index}`} className="theme-muted text-sm leading-7">
                                                                     {item.snippet}
                                                                 </p>

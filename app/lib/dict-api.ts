@@ -16,6 +16,8 @@ type WordDefinitionLookupResponse = {
     cn?: string
     phonetic?: string
     level?: number | null
+    example?: string
+    cn_example?: string
     url?: string
     category?: string
 }
@@ -64,9 +66,12 @@ export async function fetchWordDefinition(
         surface_word: data.surface_word || null,
         query_word: data.query_word || word,
         definition: data.definition || data.en || '',
+        en: data.en || data.definition || '',
         cn: data.cn,
         phonetic: data.phonetic,
         level: typeof data.level === 'number' ? data.level : undefined,
+        example: data.example,
+        cn_example: data.cn_example,
         imgurl: data.url,
     }
 }

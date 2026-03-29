@@ -4,6 +4,7 @@ export interface WordModel {
     surface_word?: string | null
     query_word?: string
     definition?: string
+    en?: string
     imgurl?: string
     emoji?: string
     marked?: boolean
@@ -11,6 +12,8 @@ export interface WordModel {
     query_count?: number
     phonetic?: string
     cn?: string
+    example?: string
+    cn_example?: string
     in_bank?: boolean
     canonical?: string
     memory_badge?: string | null
