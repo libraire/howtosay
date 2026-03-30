@@ -632,3 +632,16 @@ export function getMockLiteratureTimeline(params: {
 export function getMockLiteraryPassageDetail(id: number | string): LiteraryPassageDetail | null {
     return mockPassages.find((item) => String(item.id) === String(id) || item.slug === id) ?? null
 }
+
+export function getMockFavoriteLiteraryPassages(limit = 6): LiteraryPassageDetail[] {
+    const favoriteIds = [4, 5, 8, 11, 14, 18]
+
+    return favoriteIds
+        .map((id) => mockPassages.find((item) => item.id === id))
+        .filter((item): item is LiteraryPassageDetail => Boolean(item))
+        .slice(0, limit)
+        .map((item) => ({
+            ...item,
+            is_favorited: true,
+        }))
+}
