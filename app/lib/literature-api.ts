@@ -68,6 +68,7 @@ export async function fetchFavoriteLiteraryPassages(): Promise<LiteraryPassageDe
         const query = buildQuery({
             page,
             per_page: perPage,
+            favorited: 1,
         })
 
         const data = await fetchJson<LiteraryTimelinePage>(`/hts/api/v1/literary-passages?${query}`, {

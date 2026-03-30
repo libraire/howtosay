@@ -10,12 +10,8 @@ import { useCustomAuth } from "@/app/context/CustomAuthProvider"
 import { unfavoriteHomepagePassage } from "@/app/lib/home-api"
 import { formatCopy } from "@/app/lib/copy"
 import { fetchFavoriteLiteraryPassages } from "@/app/lib/literature-api"
-import { getMockFavoriteLiteraryPassages } from "@/app/lib/literature-mock"
 import { filterWordsFromContent } from "@/app/lib/material-api"
 import type { LiteraryPassageDetail } from "@/app/lib/literature-models"
-
-const previewFavorites = getMockFavoriteLiteraryPassages()
-const shouldUseMockPreview = process.env.NODE_ENV === "development"
 
 function yearLabel(year: number | null, fallback: string) {
     return year ? String(year) : fallback
@@ -123,7 +119,6 @@ export default function SavedLiteraturePage() {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState("")
     const [activeIndex, setActiveIndex] = useState(0)
-    const [usingMockPreview, setUsingMockPreview] = useState(false)
     const [isRemoving, setIsRemoving] = useState(false)
     const [isPreparingPractice, setIsPreparingPractice] = useState(false)
     const [practiceWords, setPracticeWords] = useState<Word[]>([])
@@ -149,21 +144,13 @@ export default function SavedLiteraturePage() {
             try {
                 const data = await fetchFavoriteLiteraryPassages()
                 if (!cancelled) {
-                    const nextItems = data.length > 0 ? data : shouldUseMockPreview ? previewFavorites : []
-                    setItems(nextItems)
-                    setUsingMockPreview(data.length === 0 && shouldUseMockPreview)
+                    setItems(data)
                     setActiveIndex(0)
                 }
             } catch (loadError) {
                 if (!cancelled) {
                     console.error("Failed to load saved literature:", loadError)
-                    if (shouldUseMockPreview) {
-                        setItems(previewFavorites)
-                        setUsingMockPreview(true)
-                        setActiveIndex(0)
-                    } else {
-                        setError(loadError instanceof Error ? loadError.message : copy.literatureTimeline.listLoadFailed)
-                    }
+                    setError(loadError instanceof Error ? loadError.message : copy.literatureTimeline.listLoadFailed)
                 }
             } finally {
                 if (!cancelled) {
@@ -257,10 +244,7 @@ export default function SavedLiteraturePage() {
 
         setIsRemoving(true)
         try {
-            if (!usingMockPreview) {
-                await unfavoriteHomepagePassage(activeItem.id)
-            }
-
+            await unfavoriteHomepagePassage(activeItem.id)
             setItems((prev) => prev.filter((item) => item.id !== activeItem.id))
             setActiveIndex((prev) => Math.max(0, Math.min(prev, items.length - 2)))
         } catch (removeError) {
